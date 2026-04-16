@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XIAOYU博客编辑器</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Space Mono', monospace;
+      background: #1a1a1a;
+      color: #fff;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    
+    h1 {
+      text-align: center;
+      font-size: 1.5rem;
+      letter-spacing: 0.2em;
+      margin-bottom: 40px;
+      color: #fff;
+    }
+    
+    h1 span { color: #666; }
+    
+    .box {
+      background: #222;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    
+    .box h2 {
+      font-size: 1rem;
+      margin-bottom: 16px;
+      color: #888;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    textarea {
+      width: 100%;
+      min-height: 300px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 16px;
+      color: #e0e0e0;
+      font-family: 'Space Mono', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: vertical;
+    }
+    
+    textarea:focus {
+      outline: none;
+      border-color: #555;
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    
+    button {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .btn-primary {
+      background: #333;
+      color: #fff;
+    }
+    .btn-primary:hover { background: #444; }
+    
+    .btn-copy {
+      background: #2d5016;
+      color: #fff;
+    }
+    .btn-copy:hover { background: #3d6b1e; }
+    
+    .btn-sync {
+      background: #4a148c;
+      color: #fff;
+    }
+    .btn-sync:hover { background: #6a1b9a; }
+    
+    .btn-img {
+      background: #0d47a1;
+      color: #fff;
+    }
+    .btn-img:hover { background: #1565c0; }
+    
+    .preview {
+      background: #fff;
+      color: #0f0f0f;
+      padding: 40px;
+      border-radius: 8px;
+      margin-top: 24px;
+    }
+    
+    .preview h1 { color: #0f0f0f; margin-bottom: 24px; }
+    .preview p { margin: 16px 0; line-height: 1.8; }
+    .preview h2, .preview h3 { margin: 24px 0 12px; }
+    .preview img { max-width: 100%; border-radius: 6px; margin: 16px 0; }
+    .preview a { color: #333; }
+    .preview code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+    .preview pre { background: #f5f5f5; padding: 16px; border-radius: 6px; overflow-x: auto; }
+    .preview blockquote { border-left: 3px solid #333; padding-left: 16px; margin: 16px 0; color: #666; }
+    
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      background: #333;
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    }
+    .toast.show { opacity: 1; }
+    .toast.success { background: #2d5016; }
+    .toast.error { background: #b71c1c; }
+    
+    .stats {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+      font-size: 0.85rem;
+      color: #666;
+    }
+    
+    .help-box {
+      background: #1a1a1a;
+      border: 1px dashed #444;
+      border-radius: 6px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+    
+    .help-box h3 {
+      font-size: 0.9rem;
+      color: #888;
+      margin-bottom: 12px;
+    }
+    
+    .help-box ul {
+      list-style: none;
+      font-size: 0.85rem;
+      color: #666;
+    }
+    
+    .help-box li { margin: 8px 0; }
+    .help-box code { background: #333; padding: 2px 6px; border-radius: 3px; color: #fff; }
+    
+    .upload-area {
+      border: 2px dashed #444;
+      border-radius: 6px;
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 16px;
+    }
+    .upload-area:hover { border-color: #666; background: #2a2a2a; }
+    .upload-area input { display: none; }
+    
+    .uploaded-images {
+      margin-top: 16px;
+    }
+    
+    .img-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #333;
+      padding: 6px 12px;
+      border-radius: 4px;
+      margin: 4px;
+      font-size: 0.8rem;
+    }
+    .img-item img { width: 24px; height: 24px; object-fit: cover; border-radius: 3px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>XIAOYU<span>'</span>S EDITOR</h1>
+    
+    <div class="box">
+      <h2>📝 粘贴文章内容</h2>
+      <textarea id="editor" placeholder="在这里粘贴你的文章内容...
+
+支持 Markdown 语法：
+# 标题
+**粗体** *斜体*
+- 列表项
+![图片描述](图片链接)
+[链接文字](链接)
+`代码`"></textarea>
+      
+      <div class="stats">
+        <span>📝 <span id="charCount">0</span> 字符</span>
+        <span>📖 <span id="wordCount">0</span> 字词</span>
+      </div>
+    </div>
+    
+    <div class="box">
+      <h2>🖼️ 已上传图片</h2>
+      <div class="upload-area" onclick="document.getElementById('imgInput').click()">
+        <input type="file" id="imgInput" accept="image/*" multiple onchange="handleImages(this.files)">
+        <p>🖼️ 点击上传图片 / 拖拽图片到这里</p>
+        <p style="font-size:0.8rem;color:#666;margin-top:8px">支持 JPG, PNG, GIF, WebP</p>
+      </div>
+      <div class="uploaded-images" id="uploadedImages"></div>
+    </div>
+    
+    <div class="box">
+      <h2>⚡ 操作</h2>
+      <div class="btn-group">
+        <button class="btn-copy" onclick="saveDraft()">💾 保存草稿</button>
+        <button class="btn-primary" onclick="copyMarkdown()">📋 复制 Markdown</button>
+        <button class="btn-sync" onclick="sendToAdmin()">🚀 发给晓宇同步</button>
+      </div>
+    </div>
+    
+    <div class="box">
+      <h2>👁️ 预览效果</h2>
+      <div class="preview" id="preview">
+        <p style="color:#999;text-align:center">在上方输入内容后可预览</p>
+      </div>
+    </div>
+    
+    <div class="help-box">
+      <h3>💡 使用说明</h3>
+      <ul>
+        <li>1. 直接在文本框输入文章（支持 Markdown）</li>
+        <li>2. 上传图片后，点击「📋 复制 Markdown」获取格式文本</li>
+        <li>3. 把内容发给晓宇，自动帮你排版同步到网站</li>
+        <li>4. 或者直接在下面粘贴 Markdown，晓宇帮你转换</li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="toast" id="toast"></div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    const editor = document.getElementById('editor');
+    const preview = document.getElementById('preview');
+    const charCount = document.getElementById('charCount');
+    const wordCount = document.getElementById('wordCount');
+    const uploadedImages = document.getElementById('uploadedImages');
+    const toast = document.getElementById('toast');
+    
+    let images = JSON.parse(localStorage.getItem('xiaoyu_images') || '[]');
+    
+    marked.setOptions({ breaks: true, gfm: true });
+    
+    // 实时预览
+    editor.addEventListener('input', updatePreview);
+    
+    function updatePreview() {
+      const content = editor.value;
+      charCount.textContent = content.length;
+      wordCount.textContent = content.trim() ? content.trim().split(/\s+/).length : 0;
+      
+      if (!content) {
+        preview.innerHTML = '<p style="color:#999;text-align:center">在上方输入内容后可预览</p>';
+        return;
+      }
+      
+      // 处理图片引用
+      let html = marked.parse(content);
+      images.forEach(img => {
+        html = html.replace(new RegExp('!' + '\\[([^\\]]*)\\]\\(' + img.filename + '\\)', 'g'), 
+          `![$1](${img.url})`);
+      });
+      preview.innerHTML = html;
+    }
+    
+    function handleImages(files) {
+      Array.from(files).forEach(file => {
+        if (file.size > 5 * 1024 * 1024) {
+          showToast('图片太大: ' + file.name, 'error');
+          return;
+        }
+        
+        const reader = new FileReader();
+        reader.onload = e => {
+          const img = {
+            filename: `img-${Date.now()}-${Math.random().toString(36).substr(2, 5)}.${file.name.split('.').pop()}`,
+            url: e.target.result,
+            name: file.name
+          };
+          images.push(img);
+          localStorage.setItem('xiaoyu_images', JSON.stringify(images));
+          renderImages();
+          showToast('图片已上传，可插入文章', 'success');
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+    
+    function renderImages() {
+      if (images.length === 0) {
+        uploadedImages.innerHTML = '';
+        return;
+      }
+      
+      uploadedImages.innerHTML = images.slice().reverse().map((img, i) => `
+        <div class="img-item" onclick="insertImg('${img.filename}')">
+          <img src="${img.url}" alt="">
+          <span>${img.name}</span>
+        </div>
+      `).join('');
+    }
+    
+    function insertImg(filename) {
+      const img = images.find(i => i.filename === filename);
+      if (!img) return;
+      
+      const markdown = `![${img.name}](${filename})`;
+      const start = editor.selectionStart;
+      const before = editor.value.substring(0, start);
+      const after = editor.value.substring(start);
+      editor.value = before + '\n' + markdown + '\n' + after;
+      editor.focus();
+      updatePreview();
+    }
+    
+    function saveDraft() {
+      localStorage.setItem('xiaoyu_draft', editor.value);
+      localStorage.setItem('xiaoyu_draft_time', Date.now());
+      showToast('草稿已保存', 'success');
+    }
+    
+    function copyMarkdown() {
+      if (!editor.value) {
+        showToast('没有内容可复制', 'error');
+        return;
+      }
+      
+      let content = editor.value;
+      
+      // 附加图片信息
+      if (images.length > 0) {
+        content += '\n\n<!-- IMAGES -->\n' + images.map(i => `${i.filename}|${i.url}|${i.name}`).join('\n');
+      }
+      
+      navigator.clipboard.writeText(content).then(() => {
+        showToast('已复制！发给我帮你同步到网站', 'success');
+      });
+    }
+    
+    function sendToAdmin() {
+      if (!editor.value) {
+        showToast('请先输入内容', 'error');
+        return;
+      }
+      
+      const content = editor.value;
+      const imgData = JSON.stringify(images);
+      
+      // 保存并提示用户
+      localStorage.setItem('xiaoyu_draft', content);
+      localStorage.setItem('xiaoyu_images', imgData);
+      localStorage.setItem('xiaoyu_draft_time', Date.now());
+      
+      // 复制内容
+      let fullContent = content;
+      if (images.length > 0) {
+        fullContent += '\n\n<!-- IMAGES -->\n' + images.map(i => `${i.filename}|${i.url}|${i.name}`).join('\n');
+      }
+      
+      navigator.clipboard.writeText(fullContent).then(() => {
+        showToast('已复制！把内容发给我，自动排版同步', 'success');
+      });
+    }
+    
+    function showToast(msg, type) {
+      toast.textContent = msg;
+      toast.className = 'toast ' + type + ' show';
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+    
+    // 恢复草稿
+    window.onload = function() {
+      const draft = localStorage.getItem('xiaoyu_draft');
+      if (draft) {
+        const time = new Date(parseInt(localStorage.getItem('xiaoyu_draft_time')));
+        if (confirm(`发现 ${time.toLocaleString()} 的草稿，是否恢复？`)) {
+          editor.value = draft;
+          updatePreview();
+        }
+      }
+      renderImages();
+    };
+    
+    // 初始
+    updatePreview();
+  </script>
+</body>
+</html>
