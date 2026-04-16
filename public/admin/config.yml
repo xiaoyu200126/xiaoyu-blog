@@ -1,45 +1,35 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: xiaoyu200126/xiaoyu-blog
   branch: main
 
-# 当使用 GitHub 时，使用如下配置：
-# name: github
-# repo: your-username/your-repo
-# branch: main
+# GitHub Backend 需要在 GitHub 创建 OAuth App
+# 或使用 Netlify Identity 配合 Git Gateway
+# 如果登录失败，需要配置以下任一方式：
 
-media_folder: "source/images/posts"
+# 方式1: 使用 Netlify Identity (需要启用 Netlify Identity)
+# backend:
+#   name: git-gateway
+#   branch: main
+
+media_folder: "public/images/posts"
 public_folder: "/images/posts"
+
+site_url: https://xiaoyu-blog.cn
+display_url: https://xiaoyu-blog.cn
+logo_url: https://xiaoyu-blog.cn/images/logo-new.png
 
 collections:
   - name: "posts"
     label: "文章"
-    folder: "source/_posts"
+    folder: "public"
     create: true
     slug: "{{slug}}"
     preview_path: "{{slug}}"
     fields:
       - {label: "标题", name: "title", widget: "string"}
-      - {label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD HH:mm:ss", date_format: "YYYY-MM-DD", time_format: "HH:mm:ss", default: now}
+      - {label: "发布日期", name: "date", widget: "datetime", format: "YYYY-MM-DD HH:mm:ss"}
       - {label: "作者", name: "author", widget: "string", default: "XIAOYU"}
-      - {label: "封面图片", name: "cover", widget: "image", required: false}
       - {label: "标签", name: "tags", widget: "list", required: false}
       - {label: "分类", name: "categories", widget: "list", required: false}
-      - {label: "摘要", name: "excerpt", widget: "text", required: false}
       - {label: "正文", name: "body", widget: "markdown"}
-      - label: "置顶"
-        name: "sticky"
-        widget: "number"
-        required: false
-        value_type: "int"
-        min: 0
-        max: 100
-        step: 1
-        default: 0
-
-  - name: "pages"
-    label: "页面"
-    folder: "source"
-    create: false
-    fields:
-      - {label: "标题", name: "title", widget: "string"}
-      - {label: "内容", name: "body", widget: "markdown"}
