@@ -4,8 +4,8 @@ requires = ["nodejs-24"]
 
 [dev]
 build = ["echo", "static"]
-run = ["npx", "serve", "-l", "5000", "public"]
+run = ["python3", "-m", "http.server", "5000"]
 
 [deploy]
 build = ["echo", "static"]
-run = ["npx", "serve", "-l", "5000", "public"]
+run = ["python3", "-m", "http.server", "5000"]
