@@ -4,12 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>博客编辑器 - XIAOYU的随笔</title>
-  
-  <!-- Markdown Parser -->
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Mulish:wght@400;700&display=swap" rel="stylesheet">
-  
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -51,28 +46,6 @@
     .btn:hover { background: #444; }
     .btn-save { background: #2a2; }
     .btn-save:hover { background: #3b3; }
-    
-    .file-selector {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 24px;
-      background: #1a1a1a;
-      border-bottom: 1px solid #333;
-    }
-    
-    .file-selector label { font-size: 0.9rem; color: #888; }
-    
-    .file-selector select {
-      padding: 8px 16px;
-      background: #333;
-      color: #fff;
-      border: 1px solid #444;
-      border-radius: 4px;
-      font-family: 'Mulish', sans-serif;
-      font-size: 0.9rem;
-      min-width: 300px;
-    }
     
     .editor-container {
       display: flex;
@@ -152,167 +125,136 @@
     .toast.show { opacity: 1; }
     .toast.success { background: #2a2; }
     .toast.error { background: #a22; }
+    
+    .btn-sync {
+      background: #2196F3;
+    }
+    .btn-sync:hover { background: #1976D2; }
+    
+    .instructions {
+      padding: 16px 24px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #333;
+      font-size: 0.85rem;
+      color: #888;
+    }
+    
+    .instructions strong { color: #fff; }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>XIAOYU's EDITOR</h1>
     <div>
-      <button class="btn" onclick="loadFile()">📂 读取</button>
-      <button class="btn btn-save" onclick="saveFile()">💾 保存草稿</button>
+      <button class="btn" onclick="saveFile()">💾 保存草稿</button>
+      <button class="btn btn-sync" onclick="copyContent()">📋 复制内容</button>
     </div>
   </div>
   
-  <div class="file-selector">
-    <label>选择文件：</label>
-    <select id="fileSelect">
-      <option value="">-- 选择要编辑的文件 --</option>
-      <optgroup label="首页">
-        <option value="public/index.html">index.html (首页)</option>
-      </optgroup>
-      <optgroup label="文章">
-        <option value="public/2024/01/01/hello-world/index.html">你好，世界</option>
-        <option value="public/2024/01/15/ai-journey/index.html">All IN AI - 我的AI学习之路</option>
-        <option value="public/2024/02/01/tools-recommendation/index.html">实用主义者的效率工具清单</option>
-      </optgroup>
-      <optgroup label="页面">
-        <option value="public/about/index.html">about.html (关于)</option>
-        <option value="public/contact/index.html">contact.html (联系)</option>
-      </optgroup>
-    </select>
+  <div class="instructions">
+    <strong>使用说明：</strong> 
+    直接在左侧输入内容（支持 Markdown），右侧实时预览。
+    保存草稿后，复制内容告诉晓宇帮你同步到网站。
   </div>
   
   <div class="status-bar">
-    <span class="status-item" id="statusFile">📄 未选择文件</span>
-    <span class="status-item" id="statusModified" style="display:none"> <span class="status-modified">●</span> 已修改</span>
+    <span class="status-item" id="statusChar">📝 0 字符</span>
+    <span class="status-item" id="statusWords">📖 0 字词</span>
     <span class="status-item" id="statusSaved" style="display:none"> <span class="status-saved">✓</span> 已保存</span>
-    <span style="margin-left:auto;color:#666">编辑完成后告诉晓宇，同步到网站</span>
+    <span style="margin-left:auto;color:#666">编辑完成后告诉晓宇同步</span>
   </div>
   
   <div class="editor-container">
     <div class="editor-pane">
-      <textarea id="editor" placeholder="选择文件后在此编辑..." spellcheck="false"></textarea>
+      <textarea id="editor" placeholder="# 在这里输入内容...
+
+支持 Markdown 语法：
+- **粗体** 和 *斜体*
+- 列表、链接、图片
+- 代码块
+
+编辑后点击「💾 保存草稿」，然后点击「📋 复制内容」把内容发给我" spellcheck="false"></textarea>
     </div>
     <div class="preview-pane" id="preview">
-      <p style="color:#888;text-align:center;margin-top:40%">选择文件后可预览效果</p>
+      <p style="color:#888;text-align:center;margin-top:40%">在左侧输入内容后可预览</p>
     </div>
   </div>
   
   <div class="toast" id="toast"></div>
   
+  <!-- Markdown Parser -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  
   <script>
     const editor = document.getElementById('editor');
     const preview = document.getElementById('preview');
-    const fileSelect = document.getElementById('fileSelect');
-    const statusFile = document.getElementById('statusFile');
-    const statusModified = document.getElementById('statusModified');
+    const statusChar = document.getElementById('statusChar');
+    const statusWords = document.getElementById('statusWords');
     const statusSaved = document.getElementById('statusSaved');
     const toast = document.getElementById('toast');
     
-    let currentFile = null;
-    let isModified = false;
+    let savedContent = '';
     
     marked.setOptions({ breaks: true, gfm: true });
     
     // 监听编辑器变化
     editor.addEventListener('input', function() {
       updatePreview();
-      markModified();
-    });
-    
-    // 文件选择变化
-    fileSelect.addEventListener('change', function() {
-      const file = fileSelect.value;
-      if (!file) return;
-      
-      if (isModified && !confirm('当前有未保存的修改，确定要放弃吗？')) {
-        fileSelect.value = currentFile || '';
-        return;
-      }
-      
-      loadFile(file);
+      updateStats();
     });
     
     function updatePreview() {
       const content = editor.value;
       if (!content) {
-        preview.innerHTML = '<p style="color:#888;text-align:center;margin-top:40%">选择文件后可预览效果</p>';
+        preview.innerHTML = '<p style="color:#888;text-align:center;margin-top:40%">在左侧输入内容后可预览</p>';
         return;
       }
-      
-      // HTML内容预览
-      if (content.includes('<')) {
-        preview.innerHTML = content;
-      } else {
-        // Markdown预览
-        preview.innerHTML = marked.parse(content);
-      }
+      preview.innerHTML = marked.parse(content);
     }
     
-    function markModified() {
-      if (editor.value !== localStorage.getItem('editor_content_' + currentFile)) {
-        isModified = true;
-        statusModified.style.display = 'inline-flex';
-        statusSaved.style.display = 'none';
-      }
-    }
-    
-    async function loadFile(filePath) {
-      try {
-        const response = await fetch('/' + filePath);
-        if (!response.ok) throw new Error('文件不存在');
-        
-        let content = await response.text();
-        
-        // 提取body内容
-        const bodyMatch = content.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-        if (bodyMatch) {
-          let bodyContent = bodyMatch[1];
-          // 清理脚本和样式标签
-          bodyContent = bodyContent.replace(/<script[\s\S]*?<\/script>/gi, '');
-          bodyContent = bodyContent.replace(/<style[\s\S]*?<\/style>/gi, '');
-          // 清理logo等固定元素
-          bodyContent = bodyContent.replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '');
-          bodyContent = bodyContent.replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '');
-          content = bodyContent.trim();
-        }
-        
-        editor.value = content;
-        currentFile = filePath;
-        isModified = false;
-        
-        statusFile.textContent = '📄 ' + filePath.split('/').pop();
-        statusModified.style.display = 'none';
-        statusSaved.style.display = 'none';
-        
-        updatePreview();
-        showToast('文件已加载', 'success');
-      } catch (err) {
-        showToast('加载失败: ' + err.message, 'error');
-      }
-    }
-    
-    function loadFile() {
-      const path = prompt('请输入文件路径（如：public/index.html）：', currentFile || 'public/index.html');
-      if (!path) return;
-      fileSelect.value = path;
-      loadFile(path);
+    function updateStats() {
+      const content = editor.value;
+      statusChar.textContent = '📝 ' + content.length + ' 字符';
+      const words = content.trim() ? content.trim().split(/\s+/).length : 0;
+      statusWords.textContent = '📖 ' + words + ' 字词';
     }
     
     function saveFile() {
-      if (!currentFile) {
-        showToast('请先选择要保存的文件', 'error');
+      const content = editor.value;
+      if (!content) {
+        showToast('请先输入内容', 'error');
         return;
       }
       
-      localStorage.setItem('editor_content_' + currentFile, editor.value);
-      localStorage.setItem('editor_modified_' + currentFile, Date.now().toString());
+      localStorage.setItem('xiaoyu_blog_draft', content);
+      localStorage.setItem('xiaoyu_blog_draft_time', Date.now().toString());
       
-      isModified = false;
-      statusModified.style.display = 'none';
+      savedContent = content;
       statusSaved.style.display = 'inline-flex';
       
-      showToast('草稿已保存！告诉晓宇同步到网站', 'success');
+      showToast('草稿已保存！点击「复制内容」发给我', 'success');
+    }
+    
+    function copyContent() {
+      const content = editor.value;
+      if (!content) {
+        showToast('没有内容可复制', 'error');
+        return;
+      }
+      
+      // 如果还没保存，先保存
+      if (content !== savedContent) {
+        saveFile();
+      }
+      
+      navigator.clipboard.writeText(content).then(() => {
+        showToast('内容已复制！粘贴发给我帮你同步', 'success');
+      }).catch(() => {
+        // 降级方案
+        editor.select();
+        document.execCommand('copy');
+        showToast('内容已复制！粘贴发给我帮你同步', 'success');
+      });
     }
     
     function showToast(message, type) {
@@ -322,22 +264,24 @@
       setTimeout(() => toast.classList.remove('show'), 3000);
     }
     
-    // 检查是否有未同步的草稿
+    // 检查是否有未保存的草稿
     window.addEventListener('load', function() {
-      const savedFiles = Object.keys(localStorage).filter(k => k.startsWith('editor_modified_'));
-      if (savedFiles.length > 0 && confirm('发现未同步的草稿，是否恢复？')) {
-        const filePath = savedFiles[0].replace('editor_modified_', '');
-        const content = localStorage.getItem('editor_content_' + filePath);
-        if (content) {
-          fileSelect.value = filePath;
-          editor.value = content;
-          currentFile = filePath;
-          statusFile.textContent = '📄 ' + filePath.split('/').pop();
+      const savedDraft = localStorage.getItem('xiaoyu_blog_draft');
+      if (savedDraft) {
+        const savedTime = localStorage.getItem('xiaoyu_blog_draft_time');
+        const date = new Date(parseInt(savedTime));
+        if (confirm('发现 ' + date.toLocaleString() + ' 的草稿，是否恢复？')) {
+          editor.value = savedDraft;
+          savedContent = savedDraft;
           statusSaved.style.display = 'inline-flex';
           updatePreview();
+          updateStats();
         }
       }
     });
+    
+    // 初始统计
+    updateStats();
   </script>
 </body>
 </html>
