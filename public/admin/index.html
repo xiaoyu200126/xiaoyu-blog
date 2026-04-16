@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>博客管理后台</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
+      background: #f5f5f5;
+    }
+    /* 加载界面 */
+    .loading-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      z-index: 9999;
+    }
+    .loading-screen.hidden {
+      display: none;
+    }
+    .loading-logo {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 24px;
+    }
+    .loading-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .loading-text {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 16px;
+    }
+    .loading-spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid #e0e0e0;
+      border-top-color: #00d4aa;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    /* 登录界面 */
+    .login-screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      z-index: 9998;
+    }
+    .login-screen.hidden {
+      display: none;
+    }
+    .login-card {
+      background: #fff;
+      padding: 48px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+    .login-logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 24px;
+    }
+    .login-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .login-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .login-subtitle {
+      font-size: 14px;
+      color: #999;
+      margin-bottom: 32px;
+    }
+    .login-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #00d4aa;
+      color: #fff;
+      padding: 14px 32px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .login-btn:hover {
+      background: #00c49a;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,212,170,0.4);
+    }
+    .login-footer {
+      margin-top: 24px;
+      font-size: 12px;
+      color: #999;
+    }
+    .login-footer a {
+      color: #00d4aa;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <!-- 加载界面 -->
+  <div class="loading-screen" id="loading">
+    <div class="loading-logo">
+      <img src="/images/avatar.png" alt="Logo">
+    </div>
+    <div class="loading-text">正在加载管理后台...</div>
+    <div class="loading-spinner"></div>
+  </div>
+
+  <!-- 登录界面 -->
+  <div class="login-screen hidden" id="login">
+    <div class="login-card">
+      <div class="login-logo">
+        <img src="/images/avatar.png" alt="Logo">
+      </div>
+      <h1 class="login-title">XIAOYU的随笔</h1>
+      <p class="login-subtitle">博客管理后台</p>
+      <button class="login-btn" onclick="loginToCMS()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+        </svg>
+        使用 GitHub 登录
+      </button>
+      <p class="login-footer">
+        由 <a href="https://decapcms.org/" target="_blank">Decap CMS</a> 提供支持
+      </p>
+    </div>
+  </div>
+
+  <!-- Decap CMS -->
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  
+  <script>
+    // 隐藏加载界面
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('login').classList.remove('hidden');
+      }, 1000);
+    });
+    
+    // 登录按钮点击
+    function loginToCMS() {
+      document.getElementById('login').classList.add('hidden');
+    }
+  </script>
+</body>
+</html>

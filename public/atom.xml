@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>XIAOYU的随笔</title>
+  <icon>https://xiaoyu-blog.example.com/avatar.png</icon>
+  
+  <link href="https://xiaoyu-blog.example.com/atom.xml" rel="self"/>
+  
+  <link href="https://xiaoyu-blog.example.com/"/>
+  <updated>2026-04-15T06:04:48.694Z</updated>
+  <id>https://xiaoyu-blog.example.com/</id>
+  
+  <author>
+    <name>XIAOYU</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>实用主义者的效率工具清单</title>
+    <link href="https://xiaoyu-blog.example.com/2024/02/01/tools-recommendation/"/>
+    <id>https://xiaoyu-blog.example.com/2024/02/01/tools-recommendation/</id>
+    <published>2024-02-01T01:00:00.000Z</published>
+    <updated>2026-04-15T06:04:48.694Z</updated>
+    
+    
+    <summary type="html">作为一名实用主义者，我一直在寻找能够真正提升效率的工具。这是一份经过长期使用筛选后的工具清单，每一款都是精挑细选。</summary>
+    
+    
+    
+    <category term="生产力" scheme="https://xiaoyu-blog.example.com/categories/%E7%94%9F%E4%BA%A7%E5%8A%9B/"/>
+    
+    
+    <category term="效率" scheme="https://xiaoyu-blog.example.com/tags/%E6%95%88%E7%8E%87/"/>
+    
+    <category term="工具" scheme="https://xiaoyu-blog.example.com/tags/%E5%B7%A5%E5%85%B7/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>All IN AI - 我的AI学习之路</title>
+    <link href="https://xiaoyu-blog.example.com/2024/01/15/ai-journey/"/>
+    <id>https://xiaoyu-blog.example.com/2024/01/15/ai-journey/</id>
+    <published>2024-01-15T06:30:00.000Z</published>
+    <updated>2026-04-15T06:04:35.176Z</updated>
+    
+    
+    <summary type="html">2024年，我决定 All IN AI。从大语言模型到 AI Agent，从理论学习到实际应用，这是一段充满挑战但也收获满满的旅程。</summary>
+    
+    
+    
+    <category term="技术" scheme="https://xiaoyu-blog.example.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+    
+    <category term="AI" scheme="https://xiaoyu-blog.example.com/tags/AI/"/>
+    
+    <category term="学习" scheme="https://xiaoyu-blog.example.com/tags/%E5%AD%A6%E4%B9%A0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>你好，世界</title>
+    <link href="https://xiaoyu-blog.example.com/2024/01/01/hello-world/"/>
+    <id>https://xiaoyu-blog.example.com/2024/01/01/hello-world/</id>
+    <published>2024-01-01T02:00:00.000Z</published>
+    <updated>2026-04-15T06:04:20.100Z</updated>
+    
+    
+    <summary type="html">这是我的第一篇博客文章，标志着这个博客的正式上线。希望在未来的日子里，能与大家分享更多有趣的内容和思考。</summary>
+    
+    
+    
+    <category term="生活" scheme="https://xiaoyu-blog.example.com/categories/%E7%94%9F%E6%B4%BB/"/>
+    
+    
+    <category term="随笔" scheme="https://xiaoyu-blog.example.com/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
+  
+</feed>
