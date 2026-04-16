@@ -31,12 +31,17 @@
       letter-spacing: 0.1em;
     }
     
+    .toolbar {
+      display: flex;
+      gap: 8px;
+    }
+    
     .btn {
-      padding: 10px 20px;
+      padding: 8px 16px;
       border: none;
       border-radius: 4px;
       font-family: 'Mulish', sans-serif;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.2s;
       background: #333;
@@ -46,6 +51,10 @@
     .btn:hover { background: #444; }
     .btn-save { background: #2a2; }
     .btn-save:hover { background: #3b3; }
+    .btn-img { background: #2196F3; }
+    .btn-img:hover { background: #1976D2; }
+    .btn-sync { background: #9c27b0; }
+    .btn-sync:hover { background: #7b1fa2; }
     
     .editor-container {
       display: flex;
@@ -92,7 +101,7 @@
     .preview-pane pre { background: #f5f5f5; padding: 16px; border-radius: 6px; overflow-x: auto; }
     .preview-pane blockquote { border-left: 3px solid #333; padding-left: 16px; margin: 1em 0; color: #666; }
     .preview-pane ul, .preview-pane ol { margin: 1em 0; padding-left: 24px; }
-    .preview-pane img { max-width: 100%; border-radius: 6px; }
+    .preview-pane img { max-width: 100%; border-radius: 6px; margin: 1em 0; }
     
     .status-bar {
       display: flex;
@@ -103,7 +112,7 @@
       color: #888;
     }
     
-    .status-item { display: flex; align-items: center; gap: 6px; }
+    .status-item { display: flex; align-items: center; gap: 6px; margin-right: 20px; }
     .status-modified { color: #fa0; }
     .status-saved { color: #2a2; }
     
@@ -125,27 +134,88 @@
     .toast.show { opacity: 1; }
     .toast.success { background: #2a2; }
     .toast.error { background: #a22; }
-    
-    .btn-sync {
-      background: #2196F3;
-    }
-    .btn-sync:hover { background: #1976D2; }
+    .toast.info { background: #2196F3; }
     
     .instructions {
-      padding: 16px 24px;
+      padding: 12px 24px;
       background: #1a1a1a;
       border-bottom: 1px solid #333;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #888;
     }
     
     .instructions strong { color: #fff; }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal.show { display: flex; }
+    
+    .modal-content {
+      background: #1a1a1a;
+      padding: 24px;
+      border-radius: 8px;
+      max-width: 500px;
+      width: 90%;
+    }
+    
+    .modal-content h3 { margin-bottom: 16px; font-family: 'Josefin Sans', sans-serif; }
+    .modal-content input { display: none; }
+    .modal-content label {
+      display: block;
+      padding: 40px;
+      border: 2px dashed #444;
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .modal-content label:hover { border-color: #2196F3; background: #222; }
+    .modal-buttons { display: flex; gap: 12px; margin-top: 16px; }
+    
+    .upload-preview {
+      margin-top: 16px;
+      display: none;
+    }
+    .upload-preview.show { display: block; }
+    .upload-preview img { max-width: 100%; max-height: 200px; border-radius: 6px; }
+    
+    .uploaded-list {
+      margin-top: 16px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .uploaded-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px;
+      background: #222;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    
+    .uploaded-item img { width: 40px; height: 40px; object-fit: cover; border-radius: 4px; }
+    .uploaded-item span { flex: 1; margin-left: 12px; font-size: 0.85rem; }
+    .uploaded-item button { padding: 4px 8px; font-size: 0.75rem; }
   </style>
 </head>
 <body>
   <div class="header">
     <h1>XIAOYU's EDITOR</h1>
-    <div>
+    <div class="toolbar">
+      <button class="btn btn-img" onclick="openUploadModal()">🖼️ 插入图片</button>
       <button class="btn" onclick="saveFile()">💾 保存草稿</button>
       <button class="btn btn-sync" onclick="copyContent()">📋 复制内容</button>
     </div>
@@ -153,14 +223,14 @@
   
   <div class="instructions">
     <strong>使用说明：</strong> 
-    直接在左侧输入内容（支持 Markdown），右侧实时预览。
-    保存草稿后，复制内容告诉晓宇帮你同步到网站。
+    支持 Markdown 语法。点击「🖼️ 插入图片」上传图片，图片链接会自动插入到光标位置。
   </div>
   
   <div class="status-bar">
     <span class="status-item" id="statusChar">📝 0 字符</span>
     <span class="status-item" id="statusWords">📖 0 字词</span>
     <span class="status-item" id="statusSaved" style="display:none"> <span class="status-saved">✓</span> 已保存</span>
+    <span class="status-item" id="statusImg" style="display:none"> 🖼️ <span id="imgCount">0</span> 张图片</span>
     <span style="margin-left:auto;color:#666">编辑完成后告诉晓宇同步</span>
   </div>
   
@@ -168,15 +238,41 @@
     <div class="editor-pane">
       <textarea id="editor" placeholder="# 在这里输入内容...
 
-支持 Markdown 语法：
+## 支持的功能
 - **粗体** 和 *斜体*
-- 列表、链接、图片
+- 列表、链接
 - 代码块
+- 🖼️ 点击工具栏「插入图片」上传图片
 
 编辑后点击「💾 保存草稿」，然后点击「📋 复制内容」把内容发给我" spellcheck="false"></textarea>
     </div>
     <div class="preview-pane" id="preview">
       <p style="color:#888;text-align:center;margin-top:40%">在左侧输入内容后可预览</p>
+    </div>
+  </div>
+  
+  <!-- 上传弹窗 -->
+  <div class="modal" id="uploadModal">
+    <div class="modal-content">
+      <h3>插入图片</h3>
+      <input type="file" id="imageInput" accept="image/*" onchange="handleImageSelect(event)">
+      <label for="imageInput" id="dropZone">
+        <p style="font-size:2rem;margin-bottom:8px">📁</p>
+        <p>点击选择图片 或 拖拽图片到这里</p>
+        <p style="font-size:0.8rem;color:#888;margin-top:8px">支持 JPG, PNG, GIF, WebP (最大 5MB)</p>
+      </label>
+      <div class="upload-preview" id="uploadPreview">
+        <p style="font-size:0.85rem;margin-bottom:8px">图片预览：</p>
+        <img id="previewImg" src="" alt="预览">
+        <input type="text" id="imgAlt" placeholder="输入图片描述（必填）" style="width:100%;padding:8px;margin-top:8px;background:#333;color:#fff;border:1px solid #444;border-radius:4px;">
+        <div class="modal-buttons">
+          <button class="btn btn-save" onclick="insertImage()">✓ 插入</button>
+          <button class="btn" onclick="closeUploadModal()">取消</button>
+        </div>
+      </div>
+      <div class="uploaded-list" id="uploadedList">
+        <p style="font-size:0.85rem;color:#888;margin-bottom:8px">已上传的图片：</p>
+      </div>
     </div>
   </div>
   
@@ -191,9 +287,17 @@
     const statusChar = document.getElementById('statusChar');
     const statusWords = document.getElementById('statusWords');
     const statusSaved = document.getElementById('statusSaved');
+    const statusImg = document.getElementById('statusImg');
+    const imgCount = document.getElementById('imgCount');
     const toast = document.getElementById('toast');
+    const uploadModal = document.getElementById('uploadModal');
+    const uploadPreview = document.getElementById('uploadPreview');
+    const previewImg = document.getElementById('previewImg');
+    const uploadedList = document.getElementById('uploadedList');
     
     let savedContent = '';
+    let uploadedImages = JSON.parse(localStorage.getItem('xiaoyu_blog_images') || '[]');
+    let currentFile = null;
     
     marked.setOptions({ breaks: true, gfm: true });
     
@@ -209,7 +313,18 @@
         preview.innerHTML = '<p style="color:#888;text-align:center;margin-top:40%">在左侧输入内容后可预览</p>';
         return;
       }
-      preview.innerHTML = marked.parse(content);
+      
+      // 替换本地图片链接为完整链接
+      let processedContent = content;
+      uploadedImages.forEach(img => {
+        const filename = img.filename;
+        processedContent = processedContent.replace(
+          new RegExp('!\\[([^\\]]*)\\]\\(' + filename + '\\)', 'g'),
+          `![$1](${img.url})`
+        );
+      });
+      
+      preview.innerHTML = marked.parse(processedContent);
     }
     
     function updateStats() {
@@ -217,6 +332,124 @@
       statusChar.textContent = '📝 ' + content.length + ' 字符';
       const words = content.trim() ? content.trim().split(/\s+/).length : 0;
       statusWords.textContent = '📖 ' + words + ' 字词';
+      
+      // 统计图片数量
+      const imgMatches = content.match(/!\[/g) || [];
+      imgCount.textContent = imgMatches.length;
+      statusImg.style.display = imgMatches.length > 0 ? 'inline-flex' : 'none';
+    }
+    
+    function openUploadModal() {
+      uploadModal.classList.add('show');
+      renderUploadedList();
+    }
+    
+    function closeUploadModal() {
+      uploadModal.classList.remove('show');
+      uploadPreview.classList.remove('show');
+      document.getElementById('imageInput').value = '';
+      document.getElementById('imgAlt').value = '';
+    }
+    
+    function handleImageSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      if (file.size > 5 * 1024 * 1024) {
+        showToast('图片太大，请选择小于 5MB 的图片', 'error');
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        previewImg.src = e.target.result;
+        uploadPreview.classList.add('show');
+        currentFile = file;
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    function insertImage() {
+      const alt = document.getElementById('imgAlt').value.trim();
+      if (!alt) {
+        showToast('请输入图片描述', 'error');
+        return;
+      }
+      
+      if (!currentFile) {
+        showToast('请先选择图片', 'error');
+        return;
+      }
+      
+      // 生成文件名
+      const timestamp = Date.now();
+      const filename = `image-${timestamp}.${currentFile.name.split('.').pop().toLowerCase()}`;
+      
+      // 转换为 base64 并存储
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const imageData = {
+          filename: filename,
+          url: e.target.result, // base64
+          name: currentFile.name,
+          alt: alt,
+          time: timestamp
+        };
+        
+        uploadedImages.push(imageData);
+        localStorage.setItem('xiaoyu_blog_images', JSON.stringify(uploadedImages));
+        
+        // 插入到编辑器
+        const markdown = `![${alt}](${filename})`;
+        insertAtCursor(markdown);
+        
+        showToast('图片已插入！记得保存草稿', 'success');
+        closeUploadModal();
+        updateStats();
+      };
+      reader.readAsDataURL(currentFile);
+    }
+    
+    function insertAtCursor(text) {
+      const start = editor.selectionStart;
+      const end = editor.selectionEnd;
+      const before = editor.value.substring(0, start);
+      const after = editor.value.substring(end);
+      
+      editor.value = before + '\n' + text + '\n' + after;
+      editor.selectionStart = editor.selectionEnd = start + text.length + 2;
+      editor.focus();
+      
+      updatePreview();
+      updateStats();
+    }
+    
+    function renderUploadedList() {
+      if (uploadedImages.length === 0) {
+        uploadedList.innerHTML = '<p style="font-size:0.85rem;color:#666">暂无已上传的图片</p>';
+        return;
+      }
+      
+      uploadedList.innerHTML = '<p style="font-size:0.85rem;color:#888;margin-bottom:8px">已上传的图片：</p>';
+      
+      uploadedImages.slice().reverse().forEach((img, index) => {
+        const div = document.createElement('div');
+        div.className = 'uploaded-item';
+        div.innerHTML = `
+          <img src="${img.url}" alt="${img.alt}">
+          <span>${img.alt}</span>
+          <button class="btn" onclick="reinsertImage(${index})">插入</button>
+        `;
+        uploadedList.appendChild(div);
+      });
+    }
+    
+    function reinsertImage(index) {
+      const img = uploadedImages[uploadedImages.length - 1 - index];
+      const markdown = `![${img.alt}](${img.filename})`;
+      insertAtCursor(markdown);
+      closeUploadModal();
+      showToast('图片已重新插入', 'info');
     }
     
     function saveFile() {
@@ -232,7 +465,7 @@
       savedContent = content;
       statusSaved.style.display = 'inline-flex';
       
-      showToast('草稿已保存！点击「复制内容」发给我', 'success');
+      showToast('草稿已保存！记得复制内容让我同步', 'success');
     }
     
     function copyContent() {
@@ -247,13 +480,21 @@
         saveFile();
       }
       
-      navigator.clipboard.writeText(content).then(() => {
-        showToast('内容已复制！粘贴发给我帮你同步', 'success');
+      // 准备要复制的内容（包含图片数据）
+      let fullContent = content;
+      
+      // 如果有图片，附加图片信息供同步使用
+      if (uploadedImages.length > 0) {
+        const imgInfo = uploadedImages.map(img => `${img.filename}|${img.url}|${img.alt}`).join('\n');
+        fullContent += '\n\n<!-- IMAGES_START -->\n' + imgInfo + '\n<!-- IMAGES_END -->';
+      }
+      
+      navigator.clipboard.writeText(fullContent).then(() => {
+        showToast('内容已复制！发给我帮你同步', 'success');
       }).catch(() => {
-        // 降级方案
         editor.select();
         document.execCommand('copy');
-        showToast('内容已复制！粘贴发给我帮你同步', 'success');
+        showToast('内容已复制！发给我帮你同步', 'success');
       });
     }
     
@@ -282,6 +523,31 @@
     
     // 初始统计
     updateStats();
+    
+    // 拖拽上传
+    const dropZone = document.getElementById('dropZone');
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#2196F3';
+      dropZone.style.background = '#222';
+    });
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.style.borderColor = '#444';
+      dropZone.style.background = 'transparent';
+    });
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.style.borderColor = '#444';
+      dropZone.style.background = 'transparent';
+      
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        document.getElementById('imageInput').files = e.dataTransfer.files;
+        handleImageSelect({ target: { files: [file] } });
+      } else {
+        showToast('请拖拽图片文件', 'error');
+      }
+    });
   </script>
 </body>
 </html>
