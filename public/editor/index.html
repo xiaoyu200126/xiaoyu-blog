@@ -8,16 +8,10 @@
   <!-- Markdown Parser -->
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   
-  <!-- Editor Theme -->
   <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Mulish:wght@400;700&display=swap" rel="stylesheet">
   
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Mulish', sans-serif;
       background: #0f0f0f;
@@ -26,7 +20,6 @@
       overflow: hidden;
     }
     
-    /* Header */
     .header {
       display: flex;
       align-items: center;
@@ -43,11 +36,6 @@
       letter-spacing: 0.1em;
     }
     
-    .header-actions {
-      display: flex;
-      gap: 12px;
-    }
-    
     .btn {
       padding: 10px 20px;
       border: none;
@@ -56,36 +44,14 @@
       font-size: 0.9rem;
       cursor: pointer;
       transition: all 0.2s;
-    }
-    
-    .btn-primary {
-      background: #fff;
-      color: #0f0f0f;
-    }
-    
-    .btn-primary:hover {
-      background: #e0e0e0;
-    }
-    
-    .btn-secondary {
       background: #333;
       color: #fff;
     }
     
-    .btn-secondary:hover {
-      background: #444;
-    }
+    .btn:hover { background: #444; }
+    .btn-save { background: #2a2; }
+    .btn-save:hover { background: #3b3; }
     
-    .btn-save {
-      background: #2a2;
-      color: #fff;
-    }
-    
-    .btn-save:hover {
-      background: #3b3;
-    }
-    
-    /* File Selector */
     .file-selector {
       display: flex;
       align-items: center;
@@ -95,10 +61,7 @@
       border-bottom: 1px solid #333;
     }
     
-    .file-selector label {
-      font-size: 0.9rem;
-      color: #888;
-    }
+    .file-selector label { font-size: 0.9rem; color: #888; }
     
     .file-selector select {
       padding: 8px 16px;
@@ -111,41 +74,9 @@
       min-width: 300px;
     }
     
-    .file-selector select:focus {
-      outline: none;
-      border-color: #666;
-    }
-    
-    /* Status Bar */
-    .status-bar {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding: 8px 24px;
-      background: #222;
-      border-bottom: 1px solid #333;
-      font-size: 0.8rem;
-      color: #888;
-    }
-    
-    .status-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    
-    .status-modified {
-      color: #fa0;
-    }
-    
-    .status-saved {
-      color: #2a2;
-    }
-    
-    /* Editor Container */
     .editor-container {
       display: flex;
-      height: calc(100vh - 130px);
+      height: calc(100vh - 120px);
     }
     
     .editor-pane, .preview-pane {
@@ -154,9 +85,7 @@
       overflow-y: auto;
     }
     
-    .editor-pane {
-      border-right: 1px solid #333;
-    }
+    .editor-pane { border-right: 1px solid #333; }
     
     .editor-pane textarea {
       width: 100%;
@@ -171,9 +100,7 @@
       line-height: 1.6;
     }
     
-    .editor-pane textarea:focus {
-      outline: none;
-    }
+    .editor-pane textarea:focus { outline: none; }
     
     .preview-pane {
       padding: 24px 40px;
@@ -181,100 +108,32 @@
       color: #0f0f0f;
     }
     
-    /* Preview Styles */
-    .preview-pane h1, .preview-pane h2, .preview-pane h3, .preview-pane h4, .preview-pane h5, .preview-pane h6 {
+    .preview-pane h1, .preview-pane h2, .preview-pane h3 {
       font-family: 'Josefin Sans', sans-serif;
-      margin: 1.5em 0 0.5em;
-      line-height: 1.3;
+      margin: 1em 0 0.5em;
     }
     
-    .preview-pane h1 { font-size: 2rem; }
-    .preview-pane h2 { font-size: 1.6rem; }
-    .preview-pane h3 { font-size: 1.3rem; }
+    .preview-pane p { margin: 1em 0; line-height: 1.8; }
+    .preview-pane a { color: #333; text-decoration: underline; }
+    .preview-pane code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+    .preview-pane pre { background: #f5f5f5; padding: 16px; border-radius: 6px; overflow-x: auto; }
+    .preview-pane blockquote { border-left: 3px solid #333; padding-left: 16px; margin: 1em 0; color: #666; }
+    .preview-pane ul, .preview-pane ol { margin: 1em 0; padding-left: 24px; }
+    .preview-pane img { max-width: 100%; border-radius: 6px; }
     
-    .preview-pane p {
-      margin: 1em 0;
-      line-height: 1.8;
-    }
-    
-    .preview-pane a {
-      color: #333;
-      text-decoration: underline;
-    }
-    
-    .preview-pane code {
-      background: #f0f0f0;
-      padding: 2px 6px;
-      border-radius: 3px;
-      font-family: 'Consolas', monospace;
-      font-size: 0.9em;
-    }
-    
-    .preview-pane pre {
-      background: #f5f5f5;
-      padding: 16px;
-      border-radius: 6px;
-      overflow-x: auto;
-      margin: 1em 0;
-    }
-    
-    .preview-pane pre code {
-      background: none;
-      padding: 0;
-    }
-    
-    .preview-pane blockquote {
-      border-left: 3px solid #333;
-      padding-left: 16px;
-      margin: 1em 0;
-      color: #666;
-    }
-    
-    .preview-pane ul, .preview-pane ol {
-      margin: 1em 0;
-      padding-left: 24px;
-    }
-    
-    .preview-pane li {
-      margin: 0.5em 0;
-      line-height: 1.6;
-    }
-    
-    .preview-pane img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 6px;
-      margin: 1em 0;
-    }
-    
-    .preview-pane hr {
-      border: none;
-      border-top: 1px solid #ddd;
-      margin: 2em 0;
-    }
-    
-    /* Pane Labels */
-    .pane-label {
-      position: fixed;
-      top: 130px;
-      padding: 6px 12px;
-      background: rgba(0,0,0,0.8);
+    .status-bar {
+      display: flex;
+      align-items: center;
+      padding: 8px 24px;
+      background: #222;
+      font-size: 0.8rem;
       color: #888;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      z-index: 10;
     }
     
-    .editor-pane .pane-label {
-      left: 0;
-    }
+    .status-item { display: flex; align-items: center; gap: 6px; }
+    .status-modified { color: #fa0; }
+    .status-saved { color: #2a2; }
     
-    .preview-pane .pane-label {
-      right: 0;
-    }
-    
-    /* Toast Notification */
     .toast {
       position: fixed;
       bottom: 24px;
@@ -290,33 +149,23 @@
       z-index: 1000;
     }
     
-    .toast.show {
-      opacity: 1;
-    }
-    
-    .toast.success {
-      background: #2a2;
-    }
-    
-    .toast.error {
-      background: #a22;
-    }
+    .toast.show { opacity: 1; }
+    .toast.success { background: #2a2; }
+    .toast.error { background: #a22; }
   </style>
 </head>
 <body>
-  <!-- Header -->
   <div class="header">
     <h1>XIAOYU's EDITOR</h1>
-    <div class="header-actions">
-      <button class="btn btn-secondary" onclick="loadFile()">📂 读取</button>
+    <div>
+      <button class="btn" onclick="loadFile()">📂 读取</button>
       <button class="btn btn-save" onclick="saveFile()">💾 保存草稿</button>
     </div>
   </div>
   
-  <!-- File Selector -->
   <div class="file-selector">
     <label>选择文件：</label>
-    <select id="fileSelect" onchange="loadSelectedFile()">
+    <select id="fileSelect">
       <option value="">-- 选择要编辑的文件 --</option>
       <optgroup label="首页">
         <option value="public/index.html">index.html (首页)</option>
@@ -325,54 +174,30 @@
         <option value="public/2024/01/01/hello-world/index.html">你好，世界</option>
         <option value="public/2024/01/15/ai-journey/index.html">All IN AI - 我的AI学习之路</option>
         <option value="public/2024/02/01/tools-recommendation/index.html">实用主义者的效率工具清单</option>
-        <option value="public/life/2024-03-15-morning-coffee.html">清晨的第一杯咖啡</option>
-        <option value="public/pragmatism/2024-03-10-second-brain.html">第二大脑：我的数字知识管理</option>
-        <option value="public/connectivism/2024-03-05-connectivism-learning.html">关联主义学习理论</option>
-        <option value="public/brand/2024-03-01-ai-evolution.html">AI进化论</option>
       </optgroup>
       <optgroup label="页面">
         <option value="public/about/index.html">about.html (关于)</option>
         <option value="public/contact/index.html">contact.html (联系)</option>
-        <option value="public/friends/index.html">friends.html (朋友)</option>
-        <option value="public/moments/index.html">moments.html (瞬间)</option>
-        <option value="public/subscribe/index.html">subscribe.html (订阅)</option>
       </optgroup>
     </select>
   </div>
   
-  <!-- Status Bar -->
   <div class="status-bar">
-    <span class="status-item" id="statusFile">
-      <span>📄</span> 未选择文件
-    </span>
-    <span class="status-item" id="statusModified" style="display:none">
-      <span class="status-modified">●</span> 已修改
-    </span>
-    <span class="status-item" id="statusSaved" style="display:none">
-      <span class="status-saved">✓</span> 已保存
-    </span>
-    <span class="status-item" style="margin-left:auto">
-      编辑完成后告诉晓宇，同步到网站
-    </span>
+    <span class="status-item" id="statusFile">📄 未选择文件</span>
+    <span class="status-item" id="statusModified" style="display:none"> <span class="status-modified">●</span> 已修改</span>
+    <span class="status-item" id="statusSaved" style="display:none"> <span class="status-saved">✓</span> 已保存</span>
+    <span style="margin-left:auto;color:#666">编辑完成后告诉晓宇，同步到网站</span>
   </div>
   
-  <!-- Editor -->
   <div class="editor-container">
     <div class="editor-pane">
-      <span class="pane-label">MARKDOWN</span>
       <textarea id="editor" placeholder="选择文件后在此编辑..." spellcheck="false"></textarea>
     </div>
-    <div class="preview-pane">
-      <span class="pane-label">PREVIEW</span>
-      <div id="preview">
-        <p style="color:#888;text-align:center;margin-top:40%">
-          选择文件后可预览效果
-        </p>
-      </div>
+    <div class="preview-pane" id="preview">
+      <p style="color:#888;text-align:center;margin-top:40%">选择文件后可预览效果</p>
     </div>
   </div>
   
-  <!-- Toast -->
   <div class="toast" id="toast"></div>
   
   <script>
@@ -385,19 +210,27 @@
     const toast = document.getElementById('toast');
     
     let currentFile = null;
-    let originalContent = '';
     let isModified = false;
     
-    // Configure marked
-    marked.setOptions({
-      breaks: true,
-      gfm: true
-    });
+    marked.setOptions({ breaks: true, gfm: true });
     
-    // Live Preview
+    // 监听编辑器变化
     editor.addEventListener('input', function() {
       updatePreview();
       markModified();
+    });
+    
+    // 文件选择变化
+    fileSelect.addEventListener('change', function() {
+      const file = fileSelect.value;
+      if (!file) return;
+      
+      if (isModified && !confirm('当前有未保存的修改，确定要放弃吗？')) {
+        fileSelect.value = currentFile || '';
+        return;
+      }
+      
+      loadFile(file);
     });
     
     function updatePreview() {
@@ -407,67 +240,48 @@
         return;
       }
       
-      // Extract body content if it's HTML
-      if (content.includes('<body')) {
-        const bodyMatch = content.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-        if (bodyMatch) {
-          let html = bodyMatch[1];
-          // Remove scripts and styles tags content for preview
-          html = html.replace(/<script[\s\S]*?<\/script>/gi, '');
-          html = html.replace(/<style[\s\S]*?<\/style>/gi, '');
-          preview.innerHTML = html;
-        }
+      // HTML内容预览
+      if (content.includes('<')) {
+        preview.innerHTML = content;
       } else {
-        // Render as Markdown
+        // Markdown预览
         preview.innerHTML = marked.parse(content);
       }
     }
     
-    // Mark as modified
     function markModified() {
-      if (editor.value !== originalContent) {
+      if (editor.value !== localStorage.getItem('editor_content_' + currentFile)) {
         isModified = true;
         statusModified.style.display = 'inline-flex';
         statusSaved.style.display = 'none';
       }
     }
     
-    // Load selected file
-    async function loadSelectedFile() {
-      const file = fileSelect.value;
-      if (!file) return;
-      
-      // Check for unsaved changes
-      if (isModified && !confirm('当前有未保存的修改，确定要放弃吗？')) {
-        fileSelect.value = currentFile || '';
-        return;
-      }
-      
+    async function loadFile(filePath) {
       try {
-        const response = await fetch('/' + file);
-        const content = await response.text();
+        const response = await fetch('/' + filePath);
+        if (!response.ok) throw new Error('文件不存在');
         
-        // Extract body content if HTML
-        let editContent = content;
-        if (content.includes('<body')) {
-          const bodyMatch = content.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-          if (bodyMatch) {
-            let bodyContent = bodyMatch[1];
-            bodyContent = bodyContent.replace(/<script[\s\S]*?<\/script>/gi, '');
-            bodyContent = bodyContent.replace(/<style[\s\S]*?<\/style>/gi, '');
-            bodyContent = bodyContent.replace(/<div class="pane-label">[\s\S]*?<\/div>/gi, '');
-            editContent = bodyContent.trim();
-          }
+        let content = await response.text();
+        
+        // 提取body内容
+        const bodyMatch = content.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+        if (bodyMatch) {
+          let bodyContent = bodyMatch[1];
+          // 清理脚本和样式标签
+          bodyContent = bodyContent.replace(/<script[\s\S]*?<\/script>/gi, '');
+          bodyContent = bodyContent.replace(/<style[\s\S]*?<\/style>/gi, '');
+          // 清理logo等固定元素
+          bodyContent = bodyContent.replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '');
+          bodyContent = bodyContent.replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '');
+          content = bodyContent.trim();
         }
         
-        editor.value = editContent;
-        currentFile = file;
-        originalContent = content;
+        editor.value = content;
+        currentFile = filePath;
         isModified = false;
         
-        // Update status
-        const fileName = file.split('/').pop();
-        statusFile.innerHTML = '<span>📄</span> ' + fileName;
+        statusFile.textContent = '📄 ' + filePath.split('/').pop();
         statusModified.style.display = 'none';
         statusSaved.style.display = 'none';
         
@@ -478,16 +292,13 @@
       }
     }
     
-    // Load file via prompt
     function loadFile() {
       const path = prompt('请输入文件路径（如：public/index.html）：', currentFile || 'public/index.html');
       if (!path) return;
-      
       fileSelect.value = path;
-      loadSelectedFile();
+      loadFile(path);
     }
     
-    // Save file to localStorage
     function saveFile() {
       if (!currentFile) {
         showToast('请先选择要保存的文件', 'error');
@@ -498,30 +309,32 @@
       localStorage.setItem('editor_modified_' + currentFile, Date.now().toString());
       
       isModified = false;
-      originalContent = editor.value;
       statusModified.style.display = 'none';
       statusSaved.style.display = 'inline-flex';
       
       showToast('草稿已保存！告诉晓宇同步到网站', 'success');
     }
     
-    // Toast notification
-    function showToast(message, type = '') {
+    function showToast(message, type) {
       toast.textContent = message;
       toast.className = 'toast ' + type;
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 3000);
     }
     
-    // Check for saved drafts on load
+    // 检查是否有未同步的草稿
     window.addEventListener('load', function() {
       const savedFiles = Object.keys(localStorage).filter(k => k.startsWith('editor_modified_'));
-      if (savedFiles.length > 0) {
-        const fileName = savedFiles[0].replace('editor_modified_', '');
-        if (confirm('发现未同步的草稿: ' + fileName + '\n是否恢复？')) {
-          const filePath = fileName;
+      if (savedFiles.length > 0 && confirm('发现未同步的草稿，是否恢复？')) {
+        const filePath = savedFiles[0].replace('editor_modified_', '');
+        const content = localStorage.getItem('editor_content_' + filePath);
+        if (content) {
           fileSelect.value = filePath;
-          loadSelectedFile();
+          editor.value = content;
+          currentFile = filePath;
+          statusFile.textContent = '📄 ' + filePath.split('/').pop();
+          statusSaved.style.display = 'inline-flex';
+          updatePreview();
         }
       }
     });
