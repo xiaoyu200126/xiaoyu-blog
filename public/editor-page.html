@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>博客编辑器 - XIAOYU的随笔</title>
+  <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;600;700&family=Mulish:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Mulish', sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 24px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #333;
+    }
+    
+    .header h1 {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      font-family: 'Mulish', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #333;
+      color: #fff;
+    }
+    
+    .btn:hover { background: #444; }
+    .btn-save { background: #2a2; }
+    .btn-save:hover { background: #3b3; }
+    
+    .editor-container {
+      display: flex;
+      height: calc(100vh - 120px);
+    }
+    
+    .editor-pane, .preview-pane {
+      flex: 1;
+      height: 100%;
+      overflow-y: auto;
+    }
+    
+    .editor-pane { border-right: 1px solid #333; }
+    
+    .editor-pane textarea {
+      width: 100%;
+      height: 100%;
+      padding: 24px;
+      background: #0f0f0f;
+      color: #e0e0e0;
+      border: none;
+      resize: none;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    
+    .editor-pane textarea:focus { outline: none; }
+    
+    .preview-pane {
+      padding: 24px 40px;
+      background: #fff;
+      color: #0f0f0f;
+    }
+    
+    .preview-pane h1, .preview-pane h2, .preview-pane h3 {
+      font-family: 'Josefin Sans', sans-serif;
+      margin: 1em 0 0.5em;
+    }
+    
+    .preview-pane p { margin: 1em 0; line-height: 1.8; }
+    .preview-pane a { color: #333; text-decoration: underline; }
+    .preview-pane code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; }
+    .preview-pane pre { background: #f5f5f5; padding: 16px; border-radius: 6px; overflow-x: auto; }
+    .preview-pane blockquote { border-left: 3px solid #333; padding-left: 16px; margin: 1em 0; color: #666; }
+    .preview-pane ul, .preview-pane ol { margin: 1em 0; padding-left: 24px; }
+    .preview-pane img { max-width: 100%; border-radius: 6px; }
+    
+    .status-bar {
+      display: flex;
+      align-items: center;
+      padding: 8px 24px;
+      background: #222;
+      font-size: 0.8rem;
+      color: #888;
+    }
+    
+    .status-item { display: flex; align-items: center; gap: 6px; }
+    .status-modified { color: #fa0; }
+    .status-saved { color: #2a2; }
+    
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      background: #333;
+      color: #fff;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 1000;
+    }
+    
+    .toast.show { opacity: 1; }
+    .toast.success { background: #2a2; }
+    .toast.error { background: #a22; }
+    
+    .btn-sync {
+      background: #2196F3;
+    }
+    .btn-sync:hover { background: #1976D2; }
+    
+    .instructions {
+      padding: 16px 24px;
+      background: #1a1a1a;
+      border-bottom: 1px solid #333;
+      font-size: 0.85rem;
+      color: #888;
+    }
+    
+    .instructions strong { color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>XIAOYU's EDITOR</h1>
+    <div>
+      <button class="btn" onclick="saveFile()">💾 保存草稿</button>
+      <button class="btn btn-sync" onclick="copyContent()">📋 复制内容</button>
+    </div>
+  </div>
+  
+  <div class="instructions">
+    <strong>使用说明：</strong> 
+    直接在左侧输入内容（支持 Markdown），右侧实时预览。
+    保存草稿后，复制内容告诉晓宇帮你同步到网站。
+  </div>
+  
+  <div class="status-bar">
+    <span class="status-item" id="statusChar">📝 0 字符</span>
+    <span class="status-item" id="statusWords">📖 0 字词</span>
+    <span class="status-item" id="statusSaved" style="display:none"> <span class="status-saved">✓</span> 已保存</span>
+    <span style="margin-left:auto;color:#666">编辑完成后告诉晓宇同步</span>
+  </div>
+  
+  <div class="editor-container">
+    <div class="editor-pane">
+      <textarea id="editor" placeholder="# 在这里输入内容...
+
+支持 Markdown 语法：
+- **粗体** 和 *斜体*
+- 列表、链接、图片
+- 代码块
+
+编辑后点击「💾 保存草稿」，然后点击「📋 复制内容」把内容发给我" spellcheck="false"></textarea>
+    </div>
+    <div class="preview-pane" id="preview">
+      <p style="color:#888;text-align:center;margin-top:40%">在左侧输入内容后可预览</p>
+    </div>
+  </div>
+  
+  <div class="toast" id="toast"></div>
+  
+  <!-- Markdown Parser -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  
+  <script>
+    const editor = document.getElementById('editor');
+    const preview = document.getElementById('preview');
+    const statusChar = document.getElementById('statusChar');
+    const statusWords = document.getElementById('statusWords');
+    const statusSaved = document.getElementById('statusSaved');
+    const toast = document.getElementById('toast');
+    
+    let savedContent = '';
+    
+    marked.setOptions({ breaks: true, gfm: true });
+    
+    // 监听编辑器变化
+    editor.addEventListener('input', function() {
+      updatePreview();
+      updateStats();
+    });
+    
+    function updatePreview() {
+      const content = editor.value;
+      if (!content) {
+        preview.innerHTML = '<p style="color:#888;text-align:center;margin-top:40%">在左侧输入内容后可预览</p>';
+        return;
+      }
+      preview.innerHTML = marked.parse(content);
+    }
+    
+    function updateStats() {
+      const content = editor.value;
+      statusChar.textContent = '📝 ' + content.length + ' 字符';
+      const words = content.trim() ? content.trim().split(/\s+/).length : 0;
+      statusWords.textContent = '📖 ' + words + ' 字词';
+    }
+    
+    function saveFile() {
+      const content = editor.value;
+      if (!content) {
+        showToast('请先输入内容', 'error');
+        return;
+      }
+      
+      localStorage.setItem('xiaoyu_blog_draft', content);
+      localStorage.setItem('xiaoyu_blog_draft_time', Date.now().toString());
+      
+      savedContent = content;
+      statusSaved.style.display = 'inline-flex';
+      
+      showToast('草稿已保存！点击「复制内容」发给我', 'success');
+    }
+    
+    function copyContent() {
+      const content = editor.value;
+      if (!content) {
+        showToast('没有内容可复制', 'error');
+        return;
+      }
+      
+      // 如果还没保存，先保存
+      if (content !== savedContent) {
+        saveFile();
+      }
+      
+      navigator.clipboard.writeText(content).then(() => {
+        showToast('内容已复制！粘贴发给我帮你同步', 'success');
+      }).catch(() => {
+        // 降级方案
+        editor.select();
+        document.execCommand('copy');
+        showToast('内容已复制！粘贴发给我帮你同步', 'success');
+      });
+    }
+    
+    function showToast(message, type) {
+      toast.textContent = message;
+      toast.className = 'toast ' + type;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+    
+    // 检查是否有未保存的草稿
+    window.addEventListener('load', function() {
+      const savedDraft = localStorage.getItem('xiaoyu_blog_draft');
+      if (savedDraft) {
+        const savedTime = localStorage.getItem('xiaoyu_blog_draft_time');
+        const date = new Date(parseInt(savedTime));
+        if (confirm('发现 ' + date.toLocaleString() + ' 的草稿，是否恢复？')) {
+          editor.value = savedDraft;
+          savedContent = savedDraft;
+          statusSaved.style.display = 'inline-flex';
+          updatePreview();
+          updateStats();
+        }
+      }
+    });
+    
+    // 初始统计
+    updateStats();
+  </script>
+</body>
+</html>
