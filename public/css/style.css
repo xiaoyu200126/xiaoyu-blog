@@ -403,6 +403,23 @@ input::placeholder, textarea::placeholder {
   line-height: 1.15;
   margin-bottom: 25px;
   letter-spacing: -0.02em;
+  position: relative;
+  display: inline-block;
+}
+
+.slider-title::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background-color: #4A90E2;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slider-title:hover::after {
+  width: 100%;
 }
 
 .slider-title a {
@@ -547,6 +564,23 @@ input::placeholder, textarea::placeholder {
   line-height: 1.2;
   margin-bottom: 25px;
   letter-spacing: -0.02em;
+  position: relative;
+  display: inline-block;
+}
+
+.article-title::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background-color: #4A90E2;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.article-title:hover::after {
+  width: 100%;
 }
 
 .article-title a {
@@ -592,6 +626,30 @@ input::placeholder, textarea::placeholder {
 .article-content h4 {
   margin-top: 40px;
   margin-bottom: 20px;
+  position: relative;
+  display: inline-block;
+}
+
+.article-content h1::after,
+.article-content h2::after,
+.article-content h3::after,
+.article-content h4::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 0;
+  height: 4px;
+  background-color: #4A90E2;
+  transform: translateX(-50%);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.article-content h1:hover::after,
+.article-content h2:hover::after,
+.article-content h3:hover::after,
+.article-content h4:hover::after {
+  width: 100%;
 }
 
 .article-content h2 {
@@ -849,6 +907,23 @@ input::placeholder, textarea::placeholder {
   line-height: 1.3;
   margin-bottom: 15px;
   letter-spacing: -0.01em;
+  position: relative;
+  display: inline-block;
+}
+
+.loop-item-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background-color: #4A90E2;
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.loop-item-title:hover::after {
+  width: 100%;
 }
 
 .loop-item-title a {
