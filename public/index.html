@@ -33,7 +33,7 @@
   <link rel="stylesheet" href="https://unpkg.com/flickity@2.3.0/dist/flickity.min.css">
   
   <!-- Styles -->
-  <link rel="stylesheet" href="/css/style.css?v=1776506100">
+  <link rel="stylesheet" href="/css/style.css?v=1776506200">
   
   <!-- Favicon -->
   <link rel="icon" href="/images/logo-new.png" type="image/png">
@@ -534,6 +534,54 @@
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') closeMenu();
     });
+  </script>
+  <script>
+    // 标题下划线动画 - 计算文本实际宽度
+    function initTitleUnderline() {
+      const titles = document.querySelectorAll('.slider-title, .article-title, .loop-item-title');
+      
+      titles.forEach(title => {
+        const link = title.querySelector('a') || title;
+        const afterStyle = document.createElement('style');
+        
+        // 获取文本的实际宽度
+        const tempSpan = document.createElement('span');
+        tempSpan.style.cssText = `
+          position: absolute;
+          visibility: hidden;
+          white-space: nowrap;
+          font-family: ${getComputedStyle(link).fontFamily};
+          font-size: ${getComputedStyle(link).fontSize};
+          font-weight: ${getComputedStyle(link).fontWeight};
+        `;
+        tempSpan.textContent = link.textContent;
+        document.body.appendChild(tempSpan);
+        const textWidth = tempSpan.offsetWidth;
+        document.body.removeChild(tempSpan);
+        
+        // 动态添加样式
+        afterStyle.textContent = `
+          ${title.tagName.toLowerCase()}::after {
+            content: '';
+            position: absolute;
+            bottom: 2px;
+            left: 0;
+            width: ${textWidth}px;
+            height: 20px;
+            background-color: rgba(74, 144, 226, 0.6);
+            transform: scaleX(0);
+            transform-origin: left center;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          ${title.tagName.toLowerCase()}:hover::after {
+            transform: scaleX(1);
+          }
+        `;
+        document.head.appendChild(afterStyle);
+      });
+    }
+    
+    document.addEventListener('DOMContentLoaded', initTitleUnderline);
   </script>
 </body>
 </html>
