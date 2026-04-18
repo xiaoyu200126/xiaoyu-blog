@@ -74,13 +74,15 @@ h3 { font-size: 22px; }
 }
 
 a {
-  transition: all 0.15s ease;
+  transition: all 0.2s ease;
   text-decoration: none;
   color: var(--color-font-one);
+  border-bottom: 1px solid var(--color-font-one);
 }
 
 a:hover {
   opacity: 0.6;
+  border-bottom-color: transparent;
 }
 
 img {
@@ -602,6 +604,19 @@ input::placeholder, textarea::placeholder {
 
 .article-content p {
   margin-bottom: 20px;
+}
+
+.article-content a {
+  color: var(--color-font-one);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-font-one);
+  transition: all 0.2s ease;
+}
+
+.article-content a:hover {
+  opacity: 0.6;
+  border-bottom-color: transparent;
+}
 }
 
 .article-content ul,
