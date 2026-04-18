@@ -405,6 +405,7 @@ input::placeholder, textarea::placeholder {
   letter-spacing: -0.02em;
   position: relative;
   display: inline-block;
+  color: #000;
 }
 
 .slider-title::after {
@@ -414,7 +415,7 @@ input::placeholder, textarea::placeholder {
   left: 0;
   width: 0;
   height: 4px;
-  background-color: #4A90E2;
+  background-color: #000;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -424,6 +425,7 @@ input::placeholder, textarea::placeholder {
 
 .slider-title a {
   display: block;
+  color: #000;
 }
 
 .slider-excerpt {
@@ -566,6 +568,7 @@ input::placeholder, textarea::placeholder {
   letter-spacing: -0.02em;
   position: relative;
   display: inline-block;
+  color: #000;
 }
 
 .article-title::after {
@@ -575,7 +578,7 @@ input::placeholder, textarea::placeholder {
   left: 0;
   width: 0;
   height: 4px;
-  background-color: #4A90E2;
+  background-color: #000;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -584,7 +587,7 @@ input::placeholder, textarea::placeholder {
 }
 
 .article-title a {
-  color: var(--color-font-one);
+  color: #000;
 }
 
 .article-title a:hover {
@@ -628,6 +631,7 @@ input::placeholder, textarea::placeholder {
   margin-bottom: 20px;
   position: relative;
   display: inline-block;
+  color: #000;
 }
 
 .article-content h1::after,
@@ -640,7 +644,7 @@ input::placeholder, textarea::placeholder {
   left: 50%;
   width: 0;
   height: 4px;
-  background-color: #4A90E2;
+  background-color: #000;
   transform: translateX(-50%);
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -909,6 +913,7 @@ input::placeholder, textarea::placeholder {
   letter-spacing: -0.01em;
   position: relative;
   display: inline-block;
+  color: #000;
 }
 
 .loop-item-title::after {
@@ -918,7 +923,7 @@ input::placeholder, textarea::placeholder {
   left: 0;
   width: 0;
   height: 3px;
-  background-color: #4A90E2;
+  background-color: #000;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -928,6 +933,7 @@ input::placeholder, textarea::placeholder {
 
 .loop-item-title a {
   display: block;
+  color: #000;
 }
 
 .global-excerpt {
