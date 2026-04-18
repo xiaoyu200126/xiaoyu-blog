@@ -409,7 +409,7 @@ input::placeholder, textarea::placeholder {
 .slider-title::after {
   content: '';
   position: absolute;
-  bottom: -12px;
+  bottom: 2px;
   left: 0;
   width: 0;
   height: 20px;
@@ -573,7 +573,7 @@ input::placeholder, textarea::placeholder {
 .article-title::after {
   content: '';
   position: absolute;
-  bottom: -12px;
+  bottom: 2px;
   left: 0;
   width: 0;
   height: 20px;
@@ -640,7 +640,7 @@ input::placeholder, textarea::placeholder {
 .article-content h4::after {
   content: '';
   position: absolute;
-  bottom: -12px;
+  bottom: 2px;
   left: 0;
   width: 0;
   height: 20px;
@@ -917,7 +917,7 @@ input::placeholder, textarea::placeholder {
 .loop-item-title::after {
   content: '';
   position: absolute;
-  bottom: -12px;
+  bottom: 2px;
   left: 0;
   width: 0;
   height: 20px;
