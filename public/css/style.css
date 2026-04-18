@@ -411,10 +411,10 @@ input::placeholder, textarea::placeholder {
 .slider-title::after {
   content: '';
   position: absolute;
-  bottom: -4px;
+  bottom: -12px;
   left: 0;
   width: 0;
-  height: 4px;
+  height: 20px;
   background-color: #000;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -574,10 +574,10 @@ input::placeholder, textarea::placeholder {
 .article-title::after {
   content: '';
   position: absolute;
-  bottom: -4px;
+  bottom: -12px;
   left: 0;
   width: 0;
-  height: 4px;
+  height: 20px;
   background-color: #000;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -640,12 +640,12 @@ input::placeholder, textarea::placeholder {
 .article-content h4::after {
   content: '';
   position: absolute;
-  bottom: -4px;
-  left: 50%;
+  bottom: -12px;
+  left: 0;
   width: 0;
-  height: 4px;
+  height: 20px;
   background-color: #000;
-  transform: translateX(-50%);
+  transform: translateX(0);
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -919,10 +919,10 @@ input::placeholder, textarea::placeholder {
 .loop-item-title::after {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -12px;
   left: 0;
   width: 0;
-  height: 3px;
+  height: 20px;
   background-color: #000;
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
