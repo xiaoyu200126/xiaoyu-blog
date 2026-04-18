@@ -424,6 +424,7 @@ input::placeholder, textarea::placeholder {
 .slider-title a {
   display: block;
   color: #000;
+  text-decoration: none;
 }
 
 .slider-excerpt {
@@ -586,6 +587,7 @@ input::placeholder, textarea::placeholder {
 
 .article-title a {
   color: #000;
+  text-decoration: none;
 }
 
 .article-title a:hover {
@@ -930,6 +932,7 @@ input::placeholder, textarea::placeholder {
 .loop-item-title a {
   display: block;
   color: #000;
+  text-decoration: none;
 }
 
 .global-excerpt {
