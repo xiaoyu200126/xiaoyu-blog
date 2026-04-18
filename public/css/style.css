@@ -74,9 +74,25 @@ h3 { font-size: 22px; }
 }
 
 a {
+  position: relative;
   transition: all 0.2s ease;
   text-decoration: none;
   color: var(--color-font-one);
+}
+
+a::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 0;
+  width: 0;
+  height: 20px;
+  background-color: rgba(74, 144, 226, 0.6);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+a:hover::after {
+  width: 100%;
 }
 
 a:hover {
@@ -401,24 +417,7 @@ input::placeholder, textarea::placeholder {
   line-height: 1.15;
   margin-bottom: 25px;
   letter-spacing: -0.02em;
-  position: relative;
-  display: inline-block;
   color: #000;
-}
-
-.slider-title::after {
-  content: '';
-  position: absolute;
-  bottom: -12px;
-  left: 0;
-  width: 0;
-  height: 20px;
-  background-color: rgba(74, 144, 226, 0.6);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.slider-title:hover::after {
-  width: 100%;
 }
 
 .slider-title a {
@@ -564,24 +563,7 @@ input::placeholder, textarea::placeholder {
   line-height: 1.2;
   margin-bottom: 25px;
   letter-spacing: -0.02em;
-  position: relative;
-  display: inline-block;
   color: #000;
-}
-
-.article-title::after {
-  content: '';
-  position: absolute;
-  bottom: -12px;
-  left: 0;
-  width: 0;
-  height: 20px;
-  background-color: rgba(74, 144, 226, 0.6);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.article-title:hover::after {
-  width: 100%;
 }
 
 .article-title a {
@@ -627,31 +609,7 @@ input::placeholder, textarea::placeholder {
 .article-content h4 {
   margin-top: 40px;
   margin-bottom: 20px;
-  position: relative;
-  display: inline-block;
   color: #000;
-}
-
-.article-content h1::after,
-.article-content h2::after,
-.article-content h3::after,
-.article-content h4::after {
-  content: '';
-  position: absolute;
-  bottom: -12px;
-  left: 0;
-  width: 0;
-  height: 20px;
-  background-color: rgba(74, 144, 226, 0.6);
-  transform: translateX(0);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.article-content h1:hover::after,
-.article-content h2:hover::after,
-.article-content h3:hover::after,
-.article-content h4:hover::after {
-  width: 100%;
 }
 
 .article-content h2 {
@@ -907,24 +865,7 @@ input::placeholder, textarea::placeholder {
   line-height: 1.3;
   margin-bottom: 15px;
   letter-spacing: -0.01em;
-  position: relative;
-  display: inline-block;
   color: #000;
-}
-
-.loop-item-title::after {
-  content: '';
-  position: absolute;
-  bottom: -12px;
-  left: 0;
-  width: 0;
-  height: 20px;
-  background-color: rgba(74, 144, 226, 0.6);
-  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.loop-item-title:hover::after {
-  width: 100%;
 }
 
 .loop-item-title a {
