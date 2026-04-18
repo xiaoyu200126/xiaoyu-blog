@@ -18,7 +18,8 @@
   
   /* Fonts */
   --font-primary: 'Josefin Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-secondary: 'Mulish', -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-secondary: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
+  --font-body: 'Noto Serif SC', 'Source Han Serif SC', 'SimSun', serif;
   
   /* Font weights */
   --font-weight-primary-bold: 600;
@@ -40,10 +41,10 @@ html {
 }
 
 body {
-  font-family: var(--font-secondary);
-  font-size: 19px;
-  font-weight: var(--font-weight-secondary-regular);
-  line-height: 1.5;
+  font-family: var(--font-body);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.9;
   color: var(--color-font-one);
   background-color: var(--color-bg-body);
   -webkit-font-smoothing: antialiased;
