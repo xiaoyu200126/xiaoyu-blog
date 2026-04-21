@@ -76,19 +76,19 @@ export default function ArticlePage() {
     updateMeta('og:author', article.author)
 
     // WeChat specific
-    updateMeta('og:site_name', '落笔阁 LuoBiGe')
+    updateMeta('og:site_name', 'XIAOYU的随笔')
     updateMeta('og:locale', 'zh_CN')
 
-    document.title = `${article.title} — 落笔阁`
+    document.title = `${article.title} — XIAOYU的随笔`
 
     return () => {
-      document.title = '落笔阁 LuoBiGe'
+      document.title = 'XIAOYU的随笔'
     }
   }, [article])
 
   const handleShare = async () => {
     const shareData = {
-      title: article?.title || '落笔阁',
+      title: article?.title || 'XIAOYU的随笔',
       text: article?.excerpt || '',
       url: window.location.href,
     }

@@ -153,7 +153,7 @@ export default function HeroSection() {
             letterSpacing: '0.05em',
           }}
         >
-          落笔阁
+          XIAOYU的随笔
         </h1>
         <p
           className="font-display"

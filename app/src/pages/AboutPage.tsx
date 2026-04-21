@@ -58,7 +58,7 @@ export default function AboutPage() {
             letterSpacing: '0.02em',
           }}
         >
-          落笔阁 · 序章 · 缘起由来
+          XIAOYU的随笔 · 序章 · 缘起由来
         </h1>
 
         <div
@@ -109,7 +109,7 @@ export default function AboutPage() {
             · 尾
           </p>
           <p>
-            {'\u201c落笔阁\u201d记录着发生过的事、遇见过的人、去过的地方。'}
+            {'"XIAOYU的随笔"记录着发生过的事、遇见过的人、去过的地方。'}
           </p>
         </div>
       </div>
