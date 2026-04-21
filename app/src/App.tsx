@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Lenis from 'lenis'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -13,6 +13,7 @@ import LifePage from './pages/LifePage'
 import PragmatismPage from './pages/PragmatismPage'
 import BrandAIPage from './pages/BrandAIPage'
 import FriendsPage from './pages/FriendsPage'
+import ArticlePage from './pages/ArticlePage'
 import Footer from './sections/Footer'
 import { useState } from 'react'
 
@@ -21,6 +22,7 @@ gsap.registerPlugin(ScrollTrigger)
 function App() {
   const lenisRef = useRef<Lenis | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const location = useLocation()
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -42,6 +44,11 @@ function App() {
     }
   }, [])
 
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
+
   return (
     <>
       <MagneticCursor />
@@ -56,6 +63,7 @@ function App() {
           <Route path="/pragmatism" element={<PragmatismPage />} />
           <Route path="/brand-ai" element={<BrandAIPage />} />
           <Route path="/friends" element={<FriendsPage />} />
+          <Route path="/article/:id" element={<ArticlePage />} />
         </Routes>
       </main>
       <Footer />

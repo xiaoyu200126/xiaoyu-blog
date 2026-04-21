@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Link } from 'react-router-dom'
+import { articles } from '../data/articles'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -21,7 +22,7 @@ function getCurrentMonthYear(): { month: string; year: string } {
 /* ===== HERO SLIDES ===== */
 const heroSlides = [
   {
-    id: 1,
+    id: 'tools-recommendation',
     author: 'XIAOYU',
     title: '实用主义者的效率工具清单',
     subtitle: '作为一名实用主义者，我一直在寻找能够真正提升效率的工具。这是一份经过长期使用筛选后的工具清单，每一款都是精挑细选。',
@@ -29,7 +30,7 @@ const heroSlides = [
     image: '/images/hero-tools.jpg',
   },
   {
-    id: 2,
+    id: 'ai-journey',
     author: 'XIAOYU',
     title: 'All IN AI \u2014 我的AI学习之路',
     subtitle: '从大语言模型到 AI Agent，从理论到落地。这条路走得不快，但每一步都留下了脚印。',
@@ -37,7 +38,7 @@ const heroSlides = [
     image: '/images/featured-1.jpg',
   },
   {
-    id: 3,
+    id: 'hello-world',
     author: 'XIAOYU',
     title: '你好，世界',
     subtitle: '每一个博客的第一篇文章，都是一次郑重的自我介绍。这里会记录技术、工具，以及一些无关紧要的思考。',
@@ -47,52 +48,28 @@ const heroSlides = [
 ]
 
 /* ===== ARTICLE CARDS (initial visible) ===== */
-const initialArticles = [
-  {
-    id: 1,
-    image: '/images/featured-1.jpg',
-    date: '3 hours ago',
-    author: 'XIAOYU',
-    title: '车里那袋样品放了小半年，装的不是打样，是一段\u201c没来往了\u201d的关系',
-    excerpt: '\u2014\u2014从\u201c我为人人，人人为我\u201d搬到了我的小王国。人不是慢慢看清一个人的，是在某一天，突然发现自己早就知道了答案。',
-    tags: ['文章'],
-    readTime: '12 min read',
-  },
-  {
-    id: 2,
-    image: '/images/polaroid-1.jpg',
-    date: '1 day ago',
-    author: 'XIAOYU',
-    title: '凌晨和AI聊了一夜，聊的不是代码，是心安',
-    excerpt: '缘起。人不是慢慢看清一件事的，是在某一个瞬间，突然发现自己早就知道答案了。',
-    tags: ['随笔'],
-    readTime: '14 min read',
-  },
-]
+const initialArticles = articles.slice(0, 2).map(a => ({
+  id: a.id,
+  image: a.image,
+  date: a.date,
+  author: a.author,
+  title: a.title,
+  excerpt: a.excerpt,
+  tags: a.tags,
+  readTime: a.readTime,
+}))
 
 /* ===== MORE ARTICLES (hidden behind LOAD MORE) ===== */
-const moreArticles = [
-  {
-    id: 3,
-    image: '/images/polaroid-2.jpg',
-    date: '3 days ago',
-    author: 'XIAOYU',
-    title: '雨后的城市倒影，像一场没做完的梦',
-    excerpt: '霓虹灯在水面上碎成一片片色彩，人站在桥上发呆。城市的夜晚总是这样，让人想留下又急着离开。',
-    tags: ['摄影', '城市'],
-    readTime: '8 min read',
-  },
-  {
-    id: 4,
-    image: '/images/featured-2.jpg',
-    date: '1 week ago',
-    author: 'XIAOYU',
-    title: '从 Notion 到 Obsidian，我的知识管理五年',
-    excerpt: '五年间换了六款笔记工具，最终发现工具不重要，重要的是持续记录的习惯。',
-    tags: ['效率', '工具'],
-    readTime: '15 min read',
-  },
-]
+const moreArticles = articles.slice(2).map(a => ({
+  id: a.id,
+  image: a.image,
+  date: a.date,
+  author: a.author,
+  title: a.title,
+  excerpt: a.excerpt,
+  tags: a.tags,
+  readTime: a.readTime,
+}))
 
 /* ===== TAG SYSTEM ===== */
 const allTags = ['效率', '工具', 'AI', '学习', '随笔', '摄影', '城市', '关联主义', 'BRAND']
@@ -357,7 +334,9 @@ export default function HomePage() {
                 maxWidth: '480px',
               }}
             >
-              {slide.title}
+              <Link to={`/article/${slide.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                {slide.title}
+              </Link>
             </h1>
 
             {/* Subtitle */}
@@ -496,11 +475,13 @@ export default function HomePage() {
                 overflow: 'hidden',
               }}
             >
-              <img
-                src={card.image}
-                alt={card.title}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', minHeight: '400px' }}
-              />
+              <Link to={`/article/${card.id}`} style={{ display: 'block', width: '100%', height: '100%' }}>
+                <img
+                  src={card.image}
+                  alt={card.title}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', minHeight: '400px' }}
+                />
+              </Link>
             </div>
 
             {/* Text */}
@@ -540,7 +521,9 @@ export default function HomePage() {
                 onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-cmyk-red)' }}
                 onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-ink)' }}
               >
-                {card.title}
+                <Link to={`/article/${card.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                  {card.title}
+                </Link>
               </h2>
 
               {/* Excerpt */}
