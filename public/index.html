@@ -94,9 +94,8 @@ articles.forEach(a=>{
 document.addEventListener('DOMContentLoaded', function() {
   var titles = document.querySelectorAll('.slider-title, .article-title, .loop-item-title');
   
-  titles.forEach(function(title) {
+  titles.forEach(function(title, index) {
     var link = title.querySelector('a') || title;
-    var afterStyle = document.createElement('style');
     
     // 获取文本的实际宽度
     var tempSpan = document.createElement('span');
@@ -106,9 +105,14 @@ document.addEventListener('DOMContentLoaded', function() {
     var textWidth = tempSpan.offsetWidth;
     document.body.removeChild(tempSpan);
     
-    // 动态添加样式
-    afterStyle.textContent = title.tagName.toLowerCase() + '::after{width:' + textWidth + 'px}';
-    document.head.appendChild(afterStyle);
+    // 为每个标题添加唯一类名
+    var uniqueClass = 'title-underline-' + index;
+    title.classList.add(uniqueClass);
+    
+    // 创建style元素设置宽度
+    var style = document.createElement('style');
+    style.textContent = '.' + uniqueClass + '::after{width:' + textWidth + 'px!important}';
+    document.head.appendChild(style);
   });
 });
 </script>
