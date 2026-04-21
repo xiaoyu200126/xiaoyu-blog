@@ -22,6 +22,14 @@ function getCurrentMonthYear(): { month: string; year: string } {
 /* ===== HERO SLIDES ===== */
 const heroSlides = [
   {
+    id: 'all-in-ai-transition',
+    author: 'XIAOYU',
+    title: 'ALL IN AI是智力相关行业转型的必然',
+    subtitle: '这篇文章记录了我从2026年2月至今的AI实践，以及实践中形成的一些个人观点。从认知外包到认知卸载，从建构主义到关联主义，AI时代的学习正在发生范式转移。',
+    tags: ['AI', '认知', '学习'],
+    image: '/images/blog_cover_ALL_IN_AI.jpg',
+  },
+  {
     id: 'tools-recommendation',
     author: 'XIAOYU',
     title: '实用主义者的效率工具清单',
@@ -72,7 +80,7 @@ const moreArticles = articles.slice(2).map(a => ({
 }))
 
 /* ===== TAG SYSTEM ===== */
-const allTags = ['效率', '工具', 'AI', '学习', '随笔', '摄影', '城市', '关联主义', 'BRAND']
+const allTags = ['效率', '工具', 'AI', '认知', '学习', '随笔', '摄影', '城市', '关联主义', 'BRAND']
 
 /* ===== SIDE NAV ===== */
 const sideNavItems = [
