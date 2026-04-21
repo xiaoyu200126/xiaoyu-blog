@@ -419,7 +419,7 @@ input::placeholder, textarea::placeholder {
 
 .slider-title a {
   display: block;
-  color: #000;
+  color: #2c5282;
   text-decoration: none;
 }
 
@@ -578,7 +578,7 @@ input::placeholder, textarea::placeholder {
 }
 
 .article-title a {
-  color: #000;
+  color: #2c5282;
   text-decoration: none;
 }
 
@@ -890,16 +890,10 @@ input::placeholder, textarea::placeholder {
   background-color: rgba(74, 144, 226, 0.3);
   z-index: -1;
 }
-  z-index: -1;
-}
-
-.loop-item-title:hover::after {
-  transform: scaleX(1);
-}
 
 .loop-item-title a {
   display: block;
-  color: #000;
+  color: #2c5282;
   text-decoration: none;
 }
 
