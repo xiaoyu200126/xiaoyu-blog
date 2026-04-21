@@ -9,87 +9,349 @@
 <link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin>
 <link href="https://fonts.googleapis.cn/css2?family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--c1:#1a1a1a;--c2:#666;--c3:#999;--b1:#eee;--bg:#fff;--mw:720px;--underline:#4A90E2;--fs:-apple-system,"PingFang SC","Noto Sans SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;--fp:"Noto Serif SC",Georgia,"Songti SC",serif}
-body{font-family:var(--fs);background:var(--bg);color:var(--c1);line-height:1.8;-webkit-font-smoothing:antialiased;font-size:15px}
-header{text-align:center;padding:80px 24px 60px}
-.brand{font-family:var(--fp);font-style:italic;font-weight:300;font-size:40px;letter-spacing:.12em;line-height:1.2}
-.brand-sub{font-family:var(--fp);font-style:italic;font-size:13px;letter-spacing:.25em;color:var(--c3);margin-top:10px;text-transform:uppercase}
-main{max-width:var(--mw);margin:0 auto;padding:0 24px 100px}
-article{padding:44px 0;border-bottom:1px solid var(--b1);cursor:pointer;transition:opacity .25s}
-article:first-child{padding-top:10px}
-article:hover{opacity:.65}
-h2{font-size:21px;font-weight:700;line-height:1.45;letter-spacing:-.01em;margin-bottom:14px;color:var(--c1);position:relative;display:inline-block}
-h2::after{content:'';position:absolute;bottom:2px;left:0;width:0;height:18px;background:rgba(74,144,226,.6);transform-origin:left center;transition:width .35s cubic-bezier(.4,0,.2,1);z-index:-1}
-article:hover h2::after{width:100%}
-.meta-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;font-size:12px;color:var(--c3);letter-spacing:.03em}
-.author::before{content:"by "}
-.excerpt{font-size:15px;color:var(--c2);line-height:1.75;margin-bottom:18px}
-.meta-bottom{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--c3);letter-spacing:.02em;flex-wrap:wrap}
+*{margin:0;padding:0;box-sizing:border-box;cursor:default}
+:root{
+  --c-base:#F4F4F2;
+  --c-dark:#1A1A1A;
+  --c-ink:#2C2C2C;
+  --c-ink-light:#888;
+  --c-underline:rgba(74,144,226,.6);
+  --c-bg:#fff;
+  --fp:"Noto Serif SC",Georgia,serif;
+  --fs:-apple-system,"PingFang SC","Noto Sans SC",sans-serif;
+  --fi:"Inter",sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--fs);background:var(--c-bg);color:var(--c-ink);line-height:1.8;-webkit-font-smoothing:antialiased;font-size:15px}
+
+/* Header - 固定顶部 */
+.header{
+  position:fixed;top:0;left:0;width:100%;z-index:100;
+  padding:24px 40px;
+  display:flex;justify-content:space-between;align-items:center;
+  background:transparent;
+  transition:background .4s ease;
+}
+.header.scrolled{
+  background:rgba(244,244,242,.9);
+  backdrop-filter:blur(8px);
+}
+.logo{
+  font-family:var(--fp);font-style:italic;font-weight:300;
+  font-size:1.1rem;letter-spacing:.15em;color:var(--c-ink);
+  text-decoration:none;
+}
+.logo svg{height:28px;width:auto;vertical-align:middle}
+
+/* 汉堡菜单 */
+.hamburger{
+  background:none;border:none;
+  display:flex;flex-direction:column;gap:5px;
+  padding:8px;cursor:pointer;
+}
+.hamburger span{display:block;width:28px;height:1.5px;background:var(--c-ink);transition:transform .3s}
+.hamburger span:last-child{width:20px}
+.hamburger:hover span:first-child{transform:translateX(4px)}
+.hamburger:hover span:last-child{transform:translateX(-4px)}
+
+/* 移动端菜单覆盖层 */
+.menu-overlay{
+  position:fixed;top:0;left:0;width:100vw;height:100vh;
+  background:var(--c-dark);z-index:200;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;gap:40px;
+  opacity:0;visibility:hidden;transition:opacity .4s,visibility .4s;
+}
+.menu-overlay.open{opacity:1;visibility:visible}
+.menu-overlay .close-btn{
+  position:absolute;top:24px;right:40px;
+  background:none;border:none;color:#fff;font-size:1.5rem;font-family:var(--fi);cursor:pointer;
+}
+.menu-overlay a{
+  color:#fff;font-family:var(--fp);font-size:clamp(2rem,5vw,3.5rem);
+  letter-spacing:.1em;text-decoration:none;opacity:0;transform:translateY(40px);
+  transition:color .3s;
+}
+.menu-overlay a:hover{color:var(--c-underline)}
+.menu-overlay.open a{animation:menuReveal .5s forwards}
+.menu-overlay.open a:nth-child(2){animation-delay:.1s}
+.menu-overlay.open a:nth-child(3){animation-delay:.2s}
+@keyframes menuReveal{to{opacity:1;transform:translateY(0)}}
+
+/* Hero 区域 */
+.hero{
+  min-height:100vh;padding:120px 40px 80px;
+  background:var(--c-base);text-align:center;
+  display:flex;flex-direction:column;justify-content:center;align-items:center;
+}
+.hero-brand{
+  font-family:var(--fp);font-style:italic;font-weight:300;
+  font-size:clamp(3rem,10vw,6rem);letter-spacing:.2em;line-height:1.1;
+  margin-bottom:20px;
+}
+.hero-sub{
+  font-family:var(--fp);font-style:italic;
+  font-size:clamp(.8rem,2vw,1rem);letter-spacing:.3em;
+  color:var(--c-ink-light);text-transform:uppercase;
+}
+
+/* 主内容区域 */
+.main-content{
+  max-width:1200px;margin:0 auto;padding:0 40px;
+}
+.section-label{
+  font-family:var(--fi);font-size:.7rem;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--c-ink-light);margin-bottom:16px;
+}
+.section-title{
+  font-family:var(--fp);font-size:clamp(1.8rem,4vw,3rem);
+  font-weight:400;letter-spacing:.05em;color:var(--c-ink);margin-bottom:clamp(60px,8vw,100px);
+}
+
+/* 滚动文章卡片 */
+.article-card{
+  display:grid;
+  grid-template-columns:1fr 1.2fr;
+  gap:clamp(40px,6vw,80px);align-items:center;
+  margin-bottom:clamp(80px,12vw,140px);cursor:pointer;
+}
+.article-card:nth-child(even){grid-template-columns:1.2fr 1fr}
+.article-card:nth-child(even) .article-text{order:2}
+.article-card:nth-child(even) .article-image{order:1}
+.article-card:hover{opacity:.85}
+.article-card:hover .article-title::after{width:100%}
+
+.article-number{
+  font-family:var(--fp);font-size:clamp(4rem,8vw,7rem);font-weight:400;
+  line-height:1;color:var(--c-ink-light);opacity:.25;display:block;margin-bottom:20px;
+}
+.article-meta{
+  font-family:var(--fi);font-size:.65rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--c-ink-light);display:block;margin-bottom:12px;
+}
+.article-title{
+  font-family:var(--fp);font-size:clamp(1.4rem,2.5vw,2rem);
+  font-weight:700;line-height:1.4;margin-bottom:20px;color:var(--c-ink);
+  position:relative;display:inline-block;
+}
+.article-title::after{
+  content:'';position:absolute;bottom:2px;left:0;
+  width:0;height:18px;background:var(--c-underline);
+  transform-origin:left center;transition:width .35s cubic-bezier(.4,0,.2,1);z-index:-1;
+}
+.article-excerpt{
+  font-size:.9rem;line-height:1.8;color:var(--c-ink-light);
+  max-width:420px;display:-webkit-box;-webkit-line-clamp:3;
+  -webkit-box-orient:vertical;overflow:hidden;margin-bottom:28px;
+}
+.read-more{
+  font-family:var(--fi);font-size:.75rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--c-ink);text-decoration:none;
+  border-bottom:1px solid var(--c-ink);padding-bottom:4px;
+  transition:color .3s,border-color .3s;
+}
+.read-more:hover{color:var(--c-underline);border-color:var(--c-underline)}
+
+.article-image{overflow:hidden}
+.article-image-inner{width:100%;padding-bottom:65%;position:relative;overflow:hidden}
+.article-image img{
+  position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;
+  filter:saturate(.85);transition:transform .5s;
+}
+.article-card:hover .article-image img{transform:scale(1.03)}
+
+/* 文章列表 */
+.articles-section{padding:clamp(80px,12vw,160px) 0;background:var(--c-bg)}
+.articles-list{max-width:720px;margin:0 auto;padding:0 24px}
+.article-item{padding:44px 0;border-bottom:1px solid #eee;cursor:pointer;transition:opacity .25s}
+.article-item:first-child{padding-top:10px}
+.article-item:hover{opacity:.65}
+.article-item:hover h2::after{width:100%}
+.article-item h2{
+  font-size:21px;font-weight:700;line-height:1.45;letter-spacing:-.01em;
+  margin-bottom:14px;color:var(--c-ink);position:relative;display:inline-block;
+}
+.article-item h2::after{
+  content:'';position:absolute;bottom:2px;left:0;
+  width:0;height:18px;background:var(--c-underline);
+  transform-origin:left center;transition:width .35s cubic-bezier(.4,0,.2,1);z-index:-1;
+}
+.article-meta-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;font-size:12px;color:var(--c-ink-light);letter-spacing:.03em}
+.article-excerpt-simple{font-size:15px;color:var(--c-ink-light);line-height:1.75;margin-bottom:18px}
+.tags{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--c-ink-light);flex-wrap:wrap}
 .tag::after{content:" ·"}
 .tag:last-child::after{content:""}
-footer{text-align:center;padding:100px 24px 80px;opacity:.2}
-.f-logo{font-family:var(--fp);font-style:italic;font-weight:300;font-size:30px;letter-spacing:.18em;line-height:1.3}
-.f-sub{font-family:var(--fp);font-style:italic;font-size:11px;letter-spacing:.2em;margin-top:4px;text-transform:uppercase}
-::selection{background:var(--c1);color:var(--bg)}
-@media(max-width:640px){header{padding:60px 20px 40px}.brand{font-size:30px}h2{font-size:19px}article{padding:32px 0}.f-logo{font-size:22px}}
+
+/* Footer */
+.footer{text-align:center;padding:100px 40px 80px;opacity:.2}
+.footer-logo{font-family:var(--fp);font-style:italic;font-weight:300;font-size:30px;letter-spacing:.18em;line-height:1.3}
+.footer-sub{font-family:var(--fp);font-style:italic;font-size:11px;letter-spacing:.2em;margin-top:4px;text-transform:uppercase}
+
+/* Selection */
+::selection{background:var(--c-ink);color:var(--c-bg)}
+a{color:inherit;text-decoration:none}
+
+/* Responsive */
+@media(max-width:768px){
+  .header{padding:20px 24px}
+  .hamburger span{width:24px}
+  .hamburger span:last-child{width:16px}
+  .hero{padding:100px 24px 60px}
+  .main-content{padding:0 24px}
+  .article-card,.article-card:nth-child(even){grid-template-columns:1fr}
+  .article-card:nth-child(even) .article-text,.article-card:nth-child(even) .article-image{order:unset}
+  .article-image{margin-top:20px}
+  .footer{padding:60px 24px 40px}
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="brand">XIAOYU</div>
-  <div class="brand-sub">随笔 & 思考</div>
+<!-- Header -->
+<header class="header" id="header">
+  <a href="/" class="logo">
+    <svg viewBox="0 0 120 28" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <text x="0" y="22" font-family="Noto Serif SC, Georgia, serif" font-size="20" font-style="italic" font-weight="300" letter-spacing="3">XIAOYU</text>
+    </svg>
+  </a>
+  <button class="hamburger" id="hamburger" aria-label="打开菜单">
+    <span></span>
+    <span></span>
+  </button>
 </header>
 
-<main id="list"></main>
+<!-- Mobile Menu Overlay -->
+<div class="menu-overlay" id="menuOverlay">
+  <button class="close-btn" id="closeMenu">Close</button>
+  <a href="/">首页</a>
+  <a href="/archives">文章卷宗</a>
+  <a href="/about">著者名录</a>
+</div>
 
-<footer>
-  <div class="f-logo">XIAOYU</div>
-  <div class="f-sub">THOUGHTS & NOTES</div>
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-brand">XIAOYU</div>
+  <div class="hero-sub">随笔 & 思考</div>
+</section>
+
+<!-- Featured Archive Section -->
+<section class="articles-section">
+  <div class="main-content">
+    <div class="section-label">Featured Archive</div>
+    <h2 class="section-title">墨香长廊</h2>
+    
+    <div class="article-card" onclick="window.location.href='/2024/02/01/tools-recommendation'">
+      <div class="article-text">
+        <span class="article-number">01</span>
+        <span class="article-meta">2024.02 · 效率工具</span>
+        <h3 class="article-title">实用主义者的效率工具清单</h3>
+        <p class="article-excerpt">工具不在于多，而在于能否真正嵌入工作流。这份清单里的每一款，都经过至少一年的实战检验。</p>
+        <a href="/2024/02/01/tools-recommendation" class="read-more" onclick="event.stopPropagation()">阅读全文</a>
+      </div>
+      <div class="article-image">
+        <div class="article-image-inner">
+          <img src="/images/posts/ai-journey.jpg" alt="效率工具" loading="lazy">
+        </div>
+      </div>
+    </div>
+
+    <div class="article-card" onclick="window.location.href='/2024/01/15/ai-journey'">
+      <div class="article-text">
+        <span class="article-number">02</span>
+        <span class="article-meta">2024.01 · AI学习</span>
+        <h3 class="article-title">All IN AI — 我的AI学习之路</h3>
+        <p class="article-excerpt">从大语言模型到 AI Agent，从理论到落地。这条路走得不快，但每一步都留下了脚印。</p>
+        <a href="/2024/01/15/ai-journey" class="read-more" onclick="event.stopPropagation()">阅读全文</a>
+      </div>
+      <div class="article-image">
+        <div class="article-image-inner">
+          <img src="/images/posts/ai-journey.jpg" alt="AI学习" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Articles List Section -->
+<section class="articles-section" style="background:var(--c-base)">
+  <div class="articles-list">
+    <div class="section-label">Recent Posts</div>
+    <h2 class="section-title">最近更新</h2>
+    
+    <div id="articlesList"></div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-logo">XIAOYU</div>
+  <div class="footer-sub">THOUGHTS & NOTES</div>
 </footer>
 
 <script>
+// Header scroll effect
+const header=document.getElementById('header');
+window.addEventListener('scroll',()=>{
+  header.classList.toggle('scrolled',window.scrollY>100);
+},{passive:true});
+
+// Menu toggle
+const hamburger=document.getElementById('hamburger');
+const menuOverlay=document.getElementById('menuOverlay');
+const closeMenu=document.getElementById('closeMenu');
+
+hamburger.addEventListener('click',()=>{
+  menuOverlay.classList.add('open');
+  document.body.style.overflow='hidden';
+});
+
+closeMenu.addEventListener('click',()=>{
+  menuOverlay.classList.remove('open');
+  document.body.style.overflow='');
+});
+
+menuOverlay.querySelectorAll('a').forEach(link=>{
+  link.addEventListener('click',()=>{
+    menuOverlay.classList.remove('open');
+    document.body.style.overflow='';
+  });
+});
+
+// Articles data
 const articles=[
-{title:"实用主义者的效率工具清单",excerpt:"工具不在于多，而在于能否真正嵌入工作流。这份清单里的每一款，都经过至少一年的实战检验。",tags:["效率","工具"],date:"2024-02-01",author:"XIAOYU",len:1250,slug:"tools-recommendation"},
-{title:"All IN AI — 我的AI学习之路",excerpt:"从大语言模型到 AI Agent，从理论到落地。这条路走得不快，但每一步都留下了脚印。",tags:["AI","学习"],date:"2024-01-15",author:"XIAOYU",len:2850,slug:"ai-journey"},
-{title:"你好，世界",excerpt:"每一个博客的第一篇文章，都是一次郑重的自我介绍。这里会记录技术、工具，以及一些无关紧要的思考。",tags:["随笔","开篇"],date:"2024-01-01",author:"XIAOYU",len:580,slug:"hello-world"}
+  {title:"实用主义者的效率工具清单",excerpt:"工具不在于多，而在于能否真正嵌入工作流。这份清单里的每一款，都经过至少一年的实战检验。",tags:["效率","工具"],date:"2024-02-01",slug:"2024/02/01/tools-recommendation",len:1250},
+  {title:"All IN AI — 我的AI学习之路",excerpt:"从大语言模型到 AI Agent，从理论到落地。这条路走得不快，但每一步都留下了脚印。",tags:["AI","学习"],date:"2024-01-15",slug:"2024/01/15/ai-journey",len:2850},
+  {title:"你好，世界",excerpt:"每一个博客的第一篇文章，都是一次郑重的自我介绍。这里会记录技术、工具，以及一些无关紧要的思考。",tags:["随笔","开篇"],date:"2024-01-01",slug:"2024/01/01/hello-world",len:580}
 ];
 
-// 格式化日期为中文格式
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  const year = d.getFullYear();
-  const month = d.getMonth() + 1;
-  const day = d.getDate();
-  return `${year}年${month}月${day}日`;
+function formatDate(dateStr){
+  const d=new Date(dateStr);
+  return`${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
 }
 
-// 计算相对时间
 function rel(d){
   const n=new Date(),t=new Date(d),diff=Math.floor((n-t)/864e5);
   return diff<1?"今天":diff<2?"昨天":diff<7?diff+" 天前":diff<30?Math.floor(diff/7)+" 周前":formatDate(d);
 }
 
-// 计算阅读时间
 function rt(l){return Math.ceil(l/300)+"min read"}
 
-const list=document.getElementById('list');
+const list=document.getElementById('articlesList');
 articles.forEach(a=>{
-  const el=document.createElement('article');
+  const el=document.createElement('div');
+  el.className='article-item';
   el.innerHTML=`
-    <div class="meta-top">
-      <span class="author">${a.author}</span>
+    <div class="article-meta-row">
+      <span>by XIAOYU</span>
       <span>${rel(a.date)}</span>
     </div>
     <h2>${a.title}</h2>
-    <div class="excerpt">${a.excerpt}</div>
-    <div class="meta-bottom">
+    <p class="article-excerpt-simple">${a.excerpt}</p>
+    <div class="tags">
       ${a.tags.map(t=>`<span class="tag">${t}</span>`).join('')}
       <span>${rt(a.len)}</span>
     </div>`;
   el.onclick=()=>window.location.href='/'+a.slug;
-  list.appendChild(el)
+  list.appendChild(el);
 });
 </script>
 
