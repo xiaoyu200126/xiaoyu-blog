@@ -5,9 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>落笔阁 LuoBiGe</title>
     <meta name="description" content="一间生活，旅拍摄影。落笔阁记录发生过的事、遇见过的人、去过的地方。" />
+    
+    <!-- Open Graph / WeChat Share -->
+    <meta property="og:title" content="落笔阁 LuoBiGe" />
+    <meta property="og:description" content="一间生活，旅拍摄影。落笔阁记录发生过的事、遇见过的人、去过的地方。" />
+    <meta property="og:image" content="https://xiaoyu-blog.cn/images/featured-1.jpg" />
+    <meta property="og:url" content="https://xiaoyu-blog.cn" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="落笔阁 LuoBiGe" />
+    <meta property="og:locale" content="zh_CN" />
+    
+    <!-- WeChat specific -->
+    <meta itemprop="name" content="落笔阁 LuoBiGe" />
+    <meta itemprop="description" content="一间生活，旅拍摄影。落笔阁记录发生过的事、遇见过的人、去过的地方。" />
+    <meta itemprop="image" content="https://xiaoyu-blog.cn/images/featured-1.jpg" />
+    
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+    
+    <!-- SPA redirect for GitHub Pages -->
+    <script type="text/javascript">
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        }
+      }(window.location))
+    </script>
   </head>
   <body>
     <div id="root"></div>
