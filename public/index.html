@@ -88,30 +88,18 @@ articles.forEach(a=>{
   el.onclick=()=>window.location.href='/'+a.slug;
   list.appendChild(el)
 });
-</script>
-<script>
-// 标题下划线动画 - 计算文本实际宽度
-document.addEventListener('DOMContentLoaded', function() {
-  var titles = document.querySelectorAll('.slider-title, .article-title, .loop-item-title');
-  
-  titles.forEach(function(title, index) {
-    var link = title.querySelector('a') || title;
-    
-    // 获取文本的实际宽度
-    var tempSpan = document.createElement('span');
-    tempSpan.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-family:' + getComputedStyle(link).fontFamily + ';font-size:' + getComputedStyle(link).fontSize + ';font-weight:' + getComputedStyle(link).fontWeight;
-    tempSpan.textContent = link.textContent;
-    document.body.appendChild(tempSpan);
-    var textWidth = tempSpan.offsetWidth;
-    document.body.removeChild(tempSpan);
-    
-    // 为每个标题添加唯一类名
-    var uniqueClass = 'title-underline-' + index;
-    title.classList.add(uniqueClass);
-    
-    // 创建style元素设置宽度
+
+// 标题下划线动画 - 动态计算文本宽度
+window.addEventListener('load', function() {
+  var h2s = document.querySelectorAll('h2');
+  h2s.forEach(function(h2, i) {
     var style = document.createElement('style');
-    style.textContent = '.' + uniqueClass + '::after{width:' + textWidth + 'px!important}';
+    var temp = document.createElement('span');
+    temp.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font-family:' + getComputedStyle(h2).fontFamily + ';font-size:' + getComputedStyle(h2).fontSize + ';font-weight:' + getComputedStyle(h2).fontWeight;
+    temp.textContent = h2.textContent;
+    document.body.appendChild(temp);
+    style.textContent = 'article:nth-child(' + (i+1) + ') h2::after{width:' + temp.offsetWidth + 'px}';
+    document.body.removeChild(temp);
     document.head.appendChild(style);
   });
 });
