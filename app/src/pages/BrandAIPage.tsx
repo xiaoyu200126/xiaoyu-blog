@@ -1,13 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
+import { Link } from 'react-router-dom'
+import { getArticlesByCategory } from '../data/articles'
 
-const articles = [
-  { id: 1, title: 'ALL IN AI：我的转型之路', date: '2024年11月1日', excerpt: '从传统设计师到 AI 驱动创作者，这个过程比想象中更艰难，也比想象中更 rewarding。' },
-  { id: 2, title: '品牌设计中的 AI 工作流', date: '2024年10月15日', excerpt: 'Midjourney 出概念、Figma 做精修、AI 文案助手写 slogan。我的人机协作流程已经跑通。' },
-  { id: 3, title: '为什么品牌需要拥抱 AI', date: '2024年9月28日', excerpt: 'AI 不是品牌的威胁，而是放大器。懂得使用 AI 的品牌，将在内容生产的效率和创意维度上获得指数级优势。' },
-  { id: 4, title: 'AI 时代的设计师角色重构', date: '2024年9月10日', excerpt: '当 AI 能画出精美的插图，设计师的价值转向哪里？答案是：策略、叙事和人机协作的编排能力。' },
-  { id: 5, title: 'BRAND 笔记：从 0 到 1 打造个人品牌', date: '2024年8月22日', excerpt: '个人品牌不是包装出来的，而是做出来的时候顺便被看到的。先做事，再讲故事。' },
-]
+const brandPosts = getArticlesByCategory('关联主义学习')
 
 export default function BrandAIPage() {
   const contentRef = useRef<HTMLDivElement>(null)
@@ -33,13 +29,20 @@ export default function BrandAIPage() {
           品牌与 AI 实践
         </h1>
         <div>
-          {articles.map((article, i) => (
+          {brandPosts.length === 0 && (
+            <p style={{ fontFamily: "'Noto Sans SC', sans-serif", fontSize: '0.95rem', color: 'var(--color-muted)', textAlign: 'center', padding: '60px 0' }}>
+              暂无文章，敬请期待...
+            </p>
+          )}
+          {brandPosts.map((article, i) => (
             <div key={article.id} ref={(el) => { if (el) itemRefs.current[i] = el }} style={{ borderBottom: '1px solid var(--color-border)', padding: '32px 0' }}>
               <span style={{ fontFamily: "'Inter', sans-serif", fontSize: '0.75rem', fontWeight: 400, color: 'var(--color-muted)', letterSpacing: '0.1em', display: 'block', marginBottom: '12px' }}>
                 {article.date}
               </span>
               <h2 className="font-serif cursor-hover" style={{ fontSize: 'clamp(1.15rem, 2vw, 1.4rem)', fontWeight: 700, lineHeight: 1.4, marginBottom: '12px', color: 'var(--color-ink)', transition: 'color 0.2s ease' }} onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-cmyk-red)' }} onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-ink)' }}>
-                {article.title}
+                <Link to={`/article/${article.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
+                  {article.title}
+                </Link>
               </h2>
               <p style={{ fontFamily: "'Noto Sans SC', sans-serif", fontSize: '0.9rem', fontWeight: 400, lineHeight: 1.8, color: 'var(--color-ink-light)' }}>
                 {article.excerpt}
