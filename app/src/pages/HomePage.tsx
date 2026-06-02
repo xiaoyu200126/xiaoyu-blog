@@ -3,6 +3,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Link } from 'react-router-dom'
 import { articles } from '../data/articles'
+import { useIsMobile } from '../hooks/use-mobile'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -91,13 +92,13 @@ const sideNavItems = [
 ]
 
 export default function HomePage() {
+  const isMobile = useIsMobile()
   const [currentSlide, setCurrentSlide] = useState(0)
   const [showMore, setShowMore] = useState(false)
   const heroRef = useRef<HTMLDivElement>(null)
   const cardRefs = useRef<HTMLDivElement[]>([])
   const moreCardRefs = useRef<HTMLDivElement[]>([])
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const tagLineRef = useRef<HTMLDivElement>(null)
 
   const monthYear = getCurrentMonthYear()
 
@@ -166,104 +167,151 @@ export default function HomePage() {
 
   const slide = heroSlides[currentSlide]
 
+  // Image aspect ratio for responsive containers
+  const IMAGE_ASPECT_RATIO = 56.25 // 16:9
+
   return (
     <div style={{ backgroundColor: '#fff' }}>
       {/* ============================================================ */}
-      {/* HERO SECTION — 50/50 split                                */}
+      {/* HERO SECTION                                                   */}
       {/* ============================================================ */}
       <section
         ref={heroRef}
         style={{
           position: 'relative',
           width: '100%',
-          height: '100vh',
+          minHeight: isMobile ? 'auto' : '100vh',
+          height: isMobile ? 'auto' : '100vh',
           display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
+          gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
           overflow: 'hidden',
           backgroundColor: '#fff',
         }}
       >
         {/* ===== LEFT PANEL ===== */}
         <div style={{ position: 'relative', display: 'flex', flexDirection: 'column' }}>
-          {/* Fixed Logo — XIAOYU + THOUGHT & NOTES */}
-          <div
-            className="hero-fixed"
-            style={{
-              position: 'absolute',
-              top: '36px',
-              left: '60px',
-              zIndex: 10,
-            }}
-          >
+          {/* Fixed Logo — desktop only */}
+          {!isMobile && (
             <div
+              className="hero-fixed"
               style={{
-                fontFamily: "'Inter', -apple-system, 'PingFang SC', sans-serif",
-                fontSize: 'clamp(1.3rem, 1.8vw, 1.6rem)',
-                fontWeight: 700,
-                letterSpacing: '0.08em',
-                color: '#1a1a1a',
-                lineHeight: 1,
+                position: 'absolute',
+                top: '36px',
+                left: '60px',
+                zIndex: 10,
               }}
             >
-              XIAOYU
+              <div
+                style={{
+                  fontFamily: "'Inter', -apple-system, 'PingFang SC', sans-serif",
+                  fontSize: 'clamp(1.3rem, 1.8vw, 1.6rem)',
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  color: '#1a1a1a',
+                  lineHeight: 1,
+                }}
+              >
+                XIAOYU
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: 'clamp(0.6rem, 0.85vw, 0.72rem)',
+                  fontWeight: 400,
+                  letterSpacing: '0.2em',
+                  color: 'var(--color-muted)',
+                  marginTop: '6px',
+                  textTransform: 'uppercase',
+                }}
+              >
+                THOUGHT &amp; NOTES
+              </div>
             </div>
-            <div
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: 'clamp(0.6rem, 0.85vw, 0.72rem)',
-                fontWeight: 400,
-                letterSpacing: '0.2em',
-                color: 'var(--color-muted)',
-                marginTop: '6px',
-                textTransform: 'uppercase',
-              }}
-            >
-              THOUGHT &amp; NOTES
-            </div>
-          </div>
+          )}
 
-          {/* Vertical side nav — far left */}
-          <div
-            className="hero-fixed"
-            style={{
-              position: 'absolute',
-              left: '16px',
-              top: '50%',
-              transform: 'translateY(-50%) rotate(180deg)',
-              writingMode: 'vertical-rl',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0',
-              zIndex: 10,
-            }}
-          >
-            {sideNavItems.map((item, i) => (
-              <span key={i} style={{ display: 'flex', alignItems: 'center' }}>
-                <Link
-                  to={item.path}
-                  className="cursor-hover"
-                  style={{
-                    fontFamily: "'Noto Sans SC', sans-serif",
-                    fontSize: '0.7rem',
-                    fontWeight: 400,
-                    color: 'var(--color-muted)',
-                    letterSpacing: '0.1em',
-                    textDecoration: 'none',
-                    transition: 'color 0.2s ease',
-                    padding: '6px 0',
-                    whiteSpace: 'nowrap',
-                  }}
-                  onMouseEnter={(e) => { e.currentTarget.style.color = '#1a1a1a' }}
-                  onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-muted)' }}
-                >
-                  {item.label}
-                </Link>
-                {i < sideNavItems.length - 1 && (
-                  <span style={{ color: '#ddd', padding: '10px 0', fontSize: '0.6rem', display: 'inline-block' }}>|</span>
-                )}
-              </span>
-            ))}
-          </div>
+          {/* Mobile logo bar */}
+          {isMobile && (
+            <div
+              className="hero-fixed"
+              style={{
+                display: 'flex',
+                alignItems: 'baseline',
+                gap: '12px',
+                padding: '20px 24px',
+                zIndex: 10,
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "'Inter', -apple-system, 'PingFang SC', sans-serif",
+                  fontSize: '1.1rem',
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  color: '#1a1a1a',
+                  lineHeight: 1,
+                }}
+              >
+                XIAOYU
+              </div>
+              <div
+                style={{
+                  fontFamily: "'Inter', sans-serif",
+                  fontSize: '0.55rem',
+                  fontWeight: 400,
+                  letterSpacing: '0.15em',
+                  color: 'var(--color-muted)',
+                  textTransform: 'uppercase',
+                }}
+              >
+                THOUGHT & NOTES
+              </div>
+            </div>
+          )}
+
+          {/* Vertical side nav — desktop only */}
+          {!isMobile && (
+            <div
+              className="hero-fixed"
+              style={{
+                position: 'absolute',
+                left: '16px',
+                top: '50%',
+                transform: 'translateY(-50%) rotate(180deg)',
+                writingMode: 'vertical-rl',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0',
+                zIndex: 10,
+              }}
+            >
+              {sideNavItems.map((item, i) => (
+                <span key={i} style={{ display: 'flex', alignItems: 'center' }}>
+                  <Link
+                    to={item.path}
+                    className="cursor-hover"
+                    style={{
+                      fontFamily: "'Noto Sans SC', sans-serif",
+                      fontSize: '0.7rem',
+                      fontWeight: 400,
+                      color: 'var(--color-muted)',
+                      letterSpacing: '0.1em',
+                      textDecoration: 'none',
+                      transition: 'color 0.2s ease',
+                      padding: '6px 0',
+                      whiteSpace: 'nowrap',
+                    }}
+                    onMouseEnter={(e) => { e.currentTarget.style.color = '#1a1a1a' }}
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-muted)' }}
+                  >
+                    {item.label}
+                  </Link>
+                  {i < sideNavItems.length - 1 && (
+                    <span style={{ color: '#ddd', padding: '10px 0', fontSize: '0.6rem', display: 'inline-block' }}>|</span>
+                  )}
+                </span>
+              ))}
+            </div>
+          )}
 
           {/* Main content area */}
           <div
@@ -271,27 +319,28 @@ export default function HomePage() {
               flex: 1,
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'center',
-              paddingLeft: 'clamp(80px, 10vw, 150px)',
-              paddingRight: '60px',
-              paddingTop: '100px',
+              justifyContent: isMobile ? 'flex-start' : 'center',
+              paddingLeft: isMobile ? '24px' : 'clamp(80px, 10vw, 150px)',
+              paddingRight: isMobile ? '24px' : '60px',
+              paddingTop: isMobile ? '20px' : '100px',
+              paddingBottom: isMobile ? '32px' : '0px',
             }}
           >
-            {/* THE STORY tag with system time */}
-            <div className="slide-anim" style={{ marginBottom: '28px' }}>
+            {/* THE STORY tag */}
+            <div className="slide-anim" style={{ marginBottom: '20px' }}>
               <div
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   border: '1px solid #c8c8c8',
-                  padding: '10px 18px',
-                  gap: '14px',
+                  padding: isMobile ? '8px 14px' : '10px 18px',
+                  gap: isMobile ? '10px' : '14px',
                 }}
               >
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: '0.65rem',
+                    fontSize: isMobile ? '0.6rem' : '0.65rem',
                     fontWeight: 600,
                     letterSpacing: '0.12em',
                     textTransform: 'uppercase',
@@ -300,11 +349,11 @@ export default function HomePage() {
                 >
                   THE STORY OF THE MONTH
                 </span>
-                <span style={{ width: '1px', height: '20px', backgroundColor: '#c8c8c8' }} />
+                <span style={{ width: '1px', height: '16px', backgroundColor: '#c8c8c8' }} />
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: '0.6rem',
+                    fontSize: isMobile ? '0.55rem' : '0.6rem',
                     fontWeight: 500,
                     letterSpacing: '0.15em',
                     textTransform: 'uppercase',
@@ -321,10 +370,10 @@ export default function HomePage() {
               className="slide-anim"
               style={{
                 fontFamily: "'Noto Sans SC', sans-serif",
-                fontSize: '0.85rem',
+                fontSize: isMobile ? '0.75rem' : '0.85rem',
                 fontWeight: 400,
                 color: 'var(--color-ink)',
-                marginBottom: '20px',
+                marginBottom: '16px',
               }}
             >
               by <span style={{ fontWeight: 600 }}>{slide.author}</span>
@@ -334,12 +383,12 @@ export default function HomePage() {
             <h1
               className="slide-anim font-serif"
               style={{
-                fontSize: 'clamp(2.4rem, 4.5vw, 3.8rem)',
+                fontSize: isMobile ? 'clamp(1.6rem, 5.5vw, 2rem)' : 'clamp(2.4rem, 4.5vw, 3.8rem)',
                 fontWeight: 700,
-                lineHeight: 1.2,
+                lineHeight: 1.25,
                 color: 'var(--color-ink)',
-                marginBottom: '24px',
-                maxWidth: '480px',
+                marginBottom: isMobile ? '16px' : '24px',
+                maxWidth: isMobile ? 'none' : '480px',
               }}
             >
               <Link to={`/article/${slide.id}`} style={{ color: 'inherit', textDecoration: 'none' }}>
@@ -352,12 +401,12 @@ export default function HomePage() {
               className="slide-anim"
               style={{
                 fontFamily: "'Noto Sans SC', sans-serif",
-                fontSize: 'clamp(0.9rem, 1.2vw, 1.05rem)',
+                fontSize: isMobile ? 'clamp(0.8rem, 3.5vw, 0.9rem)' : 'clamp(0.9rem, 1.2vw, 1.05rem)',
                 fontWeight: 400,
-                lineHeight: 1.8,
+                lineHeight: 1.7,
                 color: 'var(--color-ink-light)',
-                maxWidth: '400px',
-                marginBottom: '32px',
+                maxWidth: isMobile ? 'none' : '400px',
+                marginBottom: isMobile ? '24px' : '32px',
               }}
             >
               {slide.subtitle}
@@ -365,9 +414,8 @@ export default function HomePage() {
 
             {/* Tags */}
             <div
-              ref={tagLineRef}
               className="slide-anim"
-              style={{ display: 'flex', gap: '24px', alignItems: 'center', flexWrap: 'nowrap' }}
+              style={{ display: 'flex', gap: isMobile ? '16px' : '24px', alignItems: 'center', flexWrap: 'nowrap' }}
             >
               {slide.tags.map((tag, i) => (
                 <Link
@@ -376,7 +424,7 @@ export default function HomePage() {
                   className="cursor-hover"
                   style={{
                     fontFamily: "'Noto Sans SC', sans-serif",
-                    fontSize: 'clamp(0.85rem, 1.1vw, 0.95rem)',
+                    fontSize: isMobile ? 'clamp(0.75rem, 3vw, 0.85rem)' : 'clamp(0.85rem, 1.1vw, 0.95rem)',
                     fontWeight: 400,
                     color: 'var(--color-ink)',
                     textDecoration: 'none',
@@ -393,68 +441,136 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* ===== RIGHT PANEL — IMAGE ===== */}
+        {/* ===== RIGHT PANEL — IMAGE (fixed aspect ratio) ===== */}
         <div style={{ position: 'relative', overflow: 'hidden', backgroundColor: '#f0f0f0' }}>
-          <img
-            src={slide.image}
-            alt={slide.title}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          />
-
-          {/* Horizontal dot indicator + counter */}
-          <div
-            className="hero-fixed"
-            style={{
-              position: 'absolute',
-              bottom: '40px',
-              right: '40px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '10px',
-              zIndex: 10,
-            }}
-          >
-            <span
-              style={{
-                fontFamily: "'Inter', sans-serif",
-                fontSize: '0.85rem',
-                fontWeight: 500,
-                color: 'var(--color-ink)',
-                letterSpacing: '0.1em',
-              }}
-            >
-              {currentSlide + 1}&nbsp;&mdash;&nbsp;{heroSlides.length}
-            </span>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              {heroSlides.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => {
-                    setCurrentSlide(i)
-                    startTimer()
-                  }}
-                  className="cursor-hover"
+          {isMobile ? (
+            /* Mobile: fixed 16:9 aspect ratio */
+            <div style={{ width: '100%', paddingBottom: `${IMAGE_ASPECT_RATIO}%`, position: 'relative', overflow: 'hidden' }}>
+              <img
+                src={slide.image}
+                alt={slide.title}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+              {/* Dots on image for mobile */}
+              <div
+                className="hero-fixed"
+                style={{
+                  position: 'absolute',
+                  bottom: '16px',
+                  right: '20px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '6px',
+                  zIndex: 10,
+                }}
+              >
+                <span
                   style={{
-                    width: i === currentSlide ? '8px' : '6px',
-                    height: i === currentSlide ? '8px' : '6px',
-                    borderRadius: '50%',
-                    backgroundColor: i === currentSlide ? 'var(--color-ink)' : 'rgba(0,0,0,0.25)',
-                    border: 'none',
-                    padding: 0,
-                    transition: 'all 0.3s ease',
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '0.75rem',
+                    fontWeight: 500,
+                    color: '#fff',
+                    letterSpacing: '0.1em',
+                    textShadow: '0 1px 3px rgba(0,0,0,0.5)',
                   }}
-                />
-              ))}
+                >
+                  {currentSlide + 1}/{heroSlides.length}
+                </span>
+                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                  {heroSlides.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setCurrentSlide(i)
+                        startTimer()
+                      }}
+                      className="cursor-hover"
+                      style={{
+                        width: i === currentSlide ? '7px' : '5px',
+                        height: i === currentSlide ? '7px' : '5px',
+                        borderRadius: '50%',
+                        backgroundColor: i === currentSlide ? '#fff' : 'rgba(255,255,255,0.5)',
+                        border: 'none',
+                        padding: 0,
+                        transition: 'all 0.3s ease',
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          ) : (
+            /* Desktop: fills the full right panel */
+            <>
+              <img
+                src={slide.image}
+                alt={slide.title}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+              {/* Dots */}
+              <div
+                className="hero-fixed"
+                style={{
+                  position: 'absolute',
+                  bottom: '40px',
+                  right: '40px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '10px',
+                  zIndex: 10,
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "'Inter', sans-serif",
+                    fontSize: '0.85rem',
+                    fontWeight: 500,
+                    color: 'var(--color-ink)',
+                    letterSpacing: '0.1em',
+                  }}
+                >
+                  {currentSlide + 1}&nbsp;&mdash;&nbsp;{heroSlides.length}
+                </span>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  {heroSlides.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => {
+                        setCurrentSlide(i)
+                        startTimer()
+                      }}
+                      className="cursor-hover"
+                      style={{
+                        width: i === currentSlide ? '8px' : '6px',
+                        height: i === currentSlide ? '8px' : '6px',
+                        borderRadius: '50%',
+                        backgroundColor: i === currentSlide ? 'var(--color-ink)' : 'rgba(0,0,0,0.25)',
+                        border: 'none',
+                        padding: 0,
+                        transition: 'all 0.3s ease',
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
       {/* ============================================================ */}
-      {/* ARTICLE CARDS — staggered with smooth scroll animation      */}
+      {/* ARTICLE CARDS                                                  */}
       {/* ============================================================ */}
-      <section style={{ backgroundColor: '#fff', padding: '100px 0 60px' }}>
+      <section style={{ backgroundColor: '#fff', padding: isMobile ? '60px 0 40px' : '100px 0 60px' }}>
         {[...initialArticles, ...(showMore ? moreArticles : [])].map((card, index) => (
           <div
             key={card.id}
@@ -469,34 +585,50 @@ export default function HomePage() {
             }}
             style={{
               display: 'grid',
-              gridTemplateColumns: index % 2 === 0 ? '1.2fr 1fr' : '1fr 1.2fr',
+              gridTemplateColumns: isMobile ? '1fr' : (index % 2 === 0 ? '1.2fr 1fr' : '1fr 1.2fr'),
               maxWidth: '1200px',
               margin: '0 auto',
-              marginBottom: '0',
+              marginBottom: isMobile ? '40px' : '0',
               alignItems: 'stretch',
             }}
           >
-            {/* Image */}
+            {/* Image — fixed aspect ratio container */}
             <div
               style={{
-                order: index % 2 === 0 ? 1 : 2,
+                order: isMobile ? 0 : (index % 2 === 0 ? 1 : 2),
                 overflow: 'hidden',
               }}
             >
-              <Link to={`/article/${card.id}`} style={{ display: 'block', width: '100%', height: '100%' }}>
-                <img
-                  src={card.image}
-                  alt={card.title}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', minHeight: '400px' }}
-                />
+              <Link to={`/article/${card.id}`} style={{ display: 'block', width: '100%' }}>
+                <div
+                  style={{
+                    width: '100%',
+                    paddingBottom: `${IMAGE_ASPECT_RATIO}%`,
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                    }}
+                  />
+                </div>
               </Link>
             </div>
 
             {/* Text */}
             <div
               style={{
-                order: index % 2 === 0 ? 2 : 1,
-                padding: 'clamp(40px, 5vw, 80px)',
+                order: isMobile ? 0 : (index % 2 === 0 ? 2 : 1),
+                padding: isMobile ? '24px 24px 0' : 'clamp(40px, 5vw, 80px)',
                 display: 'flex',
                 flexDirection: 'column',
                 justifyContent: 'center',
@@ -506,10 +638,10 @@ export default function HomePage() {
               <div
                 style={{
                   fontFamily: "'Inter', sans-serif",
-                  fontSize: '0.8rem',
+                  fontSize: isMobile ? '0.7rem' : '0.8rem',
                   fontWeight: 400,
                   color: 'var(--color-muted)',
-                  marginBottom: '16px',
+                  marginBottom: '12px',
                 }}
               >
                 {card.date} by <span style={{ fontWeight: 600 }}>{card.author}</span>
@@ -519,11 +651,11 @@ export default function HomePage() {
               <h2
                 className="font-serif cursor-hover"
                 style={{
-                  fontSize: 'clamp(1.6rem, 2.8vw, 2.4rem)',
+                  fontSize: isMobile ? 'clamp(1.2rem, 5vw, 1.5rem)' : 'clamp(1.6rem, 2.8vw, 2.4rem)',
                   fontWeight: 700,
                   lineHeight: 1.3,
                   color: 'var(--color-ink)',
-                  marginBottom: '16px',
+                  marginBottom: '12px',
                   transition: 'color 0.2s ease',
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-cmyk-red)' }}
@@ -538,18 +670,18 @@ export default function HomePage() {
               <p
                 style={{
                   fontFamily: "'Noto Sans SC', sans-serif",
-                  fontSize: 'clamp(0.85rem, 1.1vw, 0.95rem)',
+                  fontSize: isMobile ? 'clamp(0.75rem, 3.5vw, 0.85rem)' : 'clamp(0.85rem, 1.1vw, 0.95rem)',
                   fontWeight: 400,
-                  lineHeight: 1.8,
+                  lineHeight: 1.7,
                   color: 'var(--color-ink-light)',
-                  marginBottom: '28px',
+                  marginBottom: '20px',
                 }}
               >
                 {card.excerpt}
               </p>
 
               {/* Tags & read time */}
-              <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
                 {card.tags.map((tag, i) => (
                   <span key={i}>
                     <Link
@@ -557,7 +689,7 @@ export default function HomePage() {
                       className="cursor-hover"
                       style={{
                         fontFamily: "'Noto Sans SC', sans-serif",
-                        fontSize: '0.8rem',
+                        fontSize: isMobile ? '0.7rem' : '0.8rem',
                         fontWeight: 400,
                         color: 'var(--color-ink)',
                         textDecoration: 'none',
@@ -569,7 +701,7 @@ export default function HomePage() {
                       {tag}
                     </Link>
                     {i < card.tags.length - 1 && (
-                      <span style={{ color: '#ddd', marginLeft: '10px' }}>·</span>
+                      <span style={{ color: '#ddd', marginLeft: '8px' }}>·</span>
                     )}
                   </span>
                 ))}
@@ -577,7 +709,7 @@ export default function HomePage() {
                 <span
                   style={{
                     fontFamily: "'Inter', sans-serif",
-                    fontSize: '0.7rem',
+                    fontSize: isMobile ? '0.65rem' : '0.7rem',
                     fontWeight: 500,
                     letterSpacing: '0.05em',
                     color: 'var(--color-muted)',
@@ -596,7 +728,7 @@ export default function HomePage() {
             style={{
               display: 'flex',
               justifyContent: 'center',
-              padding: '60px 0',
+              padding: isMobile ? '40px 0' : '60px 0',
             }}
           >
             <button
@@ -605,7 +737,7 @@ export default function HomePage() {
               style={{
                 border: '2px solid var(--color-ink)',
                 backgroundColor: '#fff',
-                padding: '20px 48px',
+                padding: isMobile ? '16px 40px' : '20px 48px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -657,11 +789,11 @@ export default function HomePage() {
         style={{
           maxWidth: '800px',
           margin: '0 auto',
-          padding: '40px 40px 60px',
+          padding: isMobile ? '30px 24px 40px' : '40px 40px 60px',
           borderTop: '1px solid var(--color-border)',
         }}
       >
-        <div style={{ display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: isMobile ? '12px' : '16px', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
           {allTags.map((tag, i) => (
             <span key={i}>
               <Link
@@ -669,7 +801,7 @@ export default function HomePage() {
                 className="cursor-hover"
                 style={{
                   fontFamily: "'Noto Sans SC', sans-serif",
-                  fontSize: '0.8rem',
+                  fontSize: isMobile ? '0.75rem' : '0.8rem',
                   fontWeight: 400,
                   color: 'var(--color-muted)',
                   textDecoration: 'none',
@@ -682,7 +814,7 @@ export default function HomePage() {
                 {tag}
               </Link>
               {i < allTags.length - 1 && (
-                <span style={{ color: '#ddd', marginLeft: '16px' }}>|</span>
+                <span style={{ color: '#ddd', marginLeft: isMobile ? '12px' : '16px' }}>|</span>
               )}
             </span>
           ))}

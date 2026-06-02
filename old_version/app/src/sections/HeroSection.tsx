@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 import Flickity from 'flickity'
 import { getArticles } from '../data/articles'
 import type { Article } from '../data/articles'
+import { useIsMobile } from '../hooks/use-mobile'
 import 'flickity/css/flickity.css'
 
 export default function HeroSection() {
+  const isMobile = useIsMobile()
   const flktyRef = useRef<Flickity | null>(null)
   const carouselRef = useRef<HTMLDivElement>(null)
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -29,7 +31,7 @@ export default function HeroSection() {
         autoPlay: 6000,
         pauseAutoPlayOnHover: true,
         wrapAround: featuredArticles.length > 1,
-        adaptiveHeight: false,
+        adaptiveHeight: isMobile,
         setGallerySize: true,
       })
 
@@ -47,7 +49,7 @@ export default function HeroSection() {
         flktyRef.current = null
       }
     }
-  }, [featuredArticles.length])
+  }, [featuredArticles.length, isMobile])
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
@@ -97,11 +99,21 @@ export default function HeroSection() {
     )
   }
 
+  // ===== RESPONSIVE STYLES =====
+  const heroHeight = isMobile ? 'auto' : '100vh'
+  const slideGrid = isMobile ? '1fr' : '1fr 1fr'
+  const slideHeight = isMobile ? 'auto' : '100vh'
+  const textPadding = isMobile ? '48px 24px 24px' : '0 16px 0 40px'
+  const titleSize = isMobile ? 'clamp(24px, 6vw, 32px)' : 'clamp(28px, 4vw, 48px)'
+  const excerptSize = isMobile ? 'clamp(14px, 3.5vw, 15px)' : 'clamp(14px, 1.4vw, 16px)'
+  const imageHeight = isMobile ? 'auto' : '100vh'
+  const imagePadding = isMobile ? '0' : '24px 84px 24px 0'
+
   return (
     <section
       className="hero-section"
       style={{
-        height: '100vh',
+        height: heroHeight,
         backgroundColor: 'var(--color-bg)',
         position: 'relative',
         overflow: 'hidden',
@@ -123,9 +135,9 @@ export default function HeroSection() {
             key={article.id}
             style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
+              gridTemplateColumns: slideGrid,
               width: '100%',
-              height: '100vh',
+              height: slideHeight,
             }}
           >
             {/* Left: Text */}
@@ -133,7 +145,7 @@ export default function HeroSection() {
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
-              padding: '0 16px 0 40px',
+              padding: textPadding,
             }}>
               <div style={{ maxWidth: '580px' }}>
                 {/* Badge */}
@@ -150,7 +162,6 @@ export default function HeroSection() {
                 }}>
                   XIAOYU THOUGHT &amp; NOTES
                 </span>
-
                 {/* Date */}
                 <div style={{
                   fontFamily: 'var(--font-display)',
@@ -161,35 +172,27 @@ export default function HeroSection() {
                 }}>
                   {formatDate(article.date)}
                 </div>
-
                 {/* Title */}
                 <h1 style={{
                   fontFamily: 'var(--font-display)',
-                  fontSize: 'clamp(28px, 4vw, 48px)',
+                  fontSize: titleSize,
                   fontWeight: 700,
                   lineHeight: 1.2,
                   color: 'var(--color-text)',
                   margin: '0 0 20px',
                   letterSpacing: '0.04em',
                 }}>
-                  <Link
-                    to={`/article/${article.id}`}
-                    style={{
-                      color: 'inherit',
-                      textDecoration: 'none',
-                      transition: 'color 0.3s ease',
-                    }}
+                  <Link to={`/article/${article.id}`}
+                    style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.3s ease' }}
                     onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)' }}
-                    onMouseLeave={(e) => { e.currentTarget.style.color = 'inherit' }}
-                  >
+                    onMouseLeave={(e) => { e.currentTarget.style.color = 'inherit' }}>
                     {article.title}
                   </Link>
                 </h1>
-
                 {/* Excerpt */}
                 <p style={{
                   fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
-                  fontSize: 'clamp(14px, 1.4vw, 16px)',
+                  fontSize: excerptSize,
                   lineHeight: 1.8,
                   color: 'var(--color-text-secondary)',
                   margin: '0 0 32px',
@@ -197,33 +200,18 @@ export default function HeroSection() {
                 }}>
                   {article.excerpt}
                 </p>
-
                 {/* Tags */}
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   {article.tags.map((tag: string) => (
-                    <Link
-                      key={tag}
-                      to={`/archives`}
+                    <Link key={tag} to={`/archives`}
                       style={{
-                        fontFamily: 'var(--font-sans)',
-                        fontSize: '10px',
-                        letterSpacing: '0.14em',
-                        textTransform: 'uppercase',
-                        color: 'var(--color-text-muted)',
-                        padding: '4px 10px',
-                        border: '1px solid var(--color-border)',
-                        textDecoration: 'none',
-                        transition: 'all 0.3s ease',
+                        fontFamily: 'var(--font-sans)', fontSize: '10px', letterSpacing: '0.14em',
+                        textTransform: 'uppercase', color: 'var(--color-text-muted)',
+                        padding: '4px 10px', border: '1px solid var(--color-border)',
+                        textDecoration: 'none', transition: 'all 0.3s ease',
                       }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = 'var(--color-accent)'
-                        e.currentTarget.style.color = 'var(--color-accent)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = 'var(--color-border)'
-                        e.currentTarget.style.color = 'var(--color-text-muted)'
-                      }}
-                    >
+                      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-accent)'; e.currentTarget.style.color = 'var(--color-accent)' }}
+                      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)'; e.currentTarget.style.color = 'var(--color-text-muted)' }}>
                       {tag}
                     </Link>
                   ))}
@@ -233,109 +221,71 @@ export default function HeroSection() {
 
             {/* Right: Image */}
             <div style={{
-              position: 'relative',
-              overflow: 'hidden',
-              height: '100vh',
-              padding: '24px 84px 24px 0',
+              position: 'relative', overflow: 'hidden',
+              height: imageHeight, padding: imagePadding,
             }}>
-              <img
-                src={article.image}
-                alt={article.title}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  filter: 'saturate(0.9)',
-                }}
-              />
+              {isMobile ? (
+                <div style={{ width: '100%', paddingBottom: '56.25%', position: 'relative', overflow: 'hidden' }}>
+                  <img src={article.image} alt={article.title}
+                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', objectFit: 'cover', filter: 'saturate(0.9)' }} />
+                </div>
+              ) : (
+                <img src={article.image} alt={article.title}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'saturate(0.9)' }} />
+              )}
             </div>
           </div>
         ))}
       </div>
 
       {/* Bottom gradient fade */}
-      <div style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: '140px',
-        background: 'linear-gradient(to bottom, transparent 0%, var(--color-bg) 100%)',
-        zIndex: 5,
-        pointerEvents: 'none',
-      }} />
+      {!isMobile && (
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: '140px',
+          background: 'linear-gradient(to bottom, transparent 0%, var(--color-bg) 100%)',
+          zIndex: 5, pointerEvents: 'none',
+        }} />
+      )}
 
       {/* Slide indicators */}
       <div style={{
-        position: 'absolute',
-        bottom: '80px',
-        left: '0',
-        right: '0',
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '10px',
-        zIndex: 20,
+        position: 'absolute', bottom: isMobile ? 'auto' : '80px', top: isMobile ? '16px' : 'auto',
+        left: '0', right: '0', display: 'flex', justifyContent: 'center', gap: '10px', zIndex: 20,
       }}>
         {featuredArticles.map((_, i) => (
-          <span
-            key={i}
-            style={{
-              width: i === currentSlide ? '24px' : '6px',
-              height: '6px',
-              borderRadius: '3px',
-              background: i === currentSlide ? 'var(--color-accent)' : 'var(--color-border)',
-              transition: 'all 0.3s ease',
-            }}
-          />
+          <span key={i} style={{
+            width: i === currentSlide ? '24px' : '6px', height: '6px', borderRadius: '3px',
+            background: i === currentSlide ? 'var(--color-accent)' : 'var(--color-border)',
+            transition: 'all 0.3s ease',
+          }} />
         ))}
       </div>
 
       {/* Scroll-down indicator */}
-      <div style={{
-        position: 'absolute',
-        bottom: '32px',
-        left: '0',
-        right: '0',
-        display: 'flex',
-        justifyContent: 'center',
-        zIndex: 20,
-      }}>
-        <button
-          onClick={handleScrollDown}
-          aria-label="向下滚动"
-          style={{
-            background: 'none',
-            border: 'none',
-            padding: 0,
-            cursor: 'pointer',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '8px',
-            fontFamily: 'var(--font-sans)',
-            fontSize: '10px',
-            letterSpacing: '0.24em',
-            textTransform: 'uppercase',
-            color: 'var(--color-text-muted)',
-            transition: 'color 0.3s ease',
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)' }}
-          onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-muted)' }}
-        >
-          <span>Scroll</span>
-          <svg
-            width="14"
-            height="20"
-            viewBox="0 0 14 20"
-            fill="none"
-            style={{ animation: 'hero-scroll-bounce 2s ease-in-out infinite' }}
-          >
-            <rect x="1" y="1" width="12" height="18" rx="6" stroke="currentColor" strokeWidth="1.5" />
-            <rect x="6" y="5" width="2" height="4" rx="1" fill="currentColor"
-              style={{ animation: 'hero-scroll-dot 2s ease-in-out infinite' }} />
-          </svg>
-        </button>
-      </div>
+      {!isMobile && (
+        <div style={{
+          position: 'absolute', bottom: '32px', left: '0', right: '0',
+          display: 'flex', justifyContent: 'center', zIndex: 20,
+        }}>
+          <button onClick={handleScrollDown} aria-label="向下滚动"
+            style={{
+              background: 'none', border: 'none', padding: 0, cursor: 'pointer',
+              display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+              fontFamily: 'var(--font-sans)', fontSize: '10px', letterSpacing: '0.24em',
+              textTransform: 'uppercase', color: 'var(--color-text-muted)', transition: 'color 0.3s ease',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-muted)' }}>
+            <span>Scroll</span>
+            <svg width="14" height="20" viewBox="0 0 14 20" fill="none"
+              style={{ animation: 'hero-scroll-bounce 2s ease-in-out infinite' }}>
+              <rect x="1" y="1" width="12" height="18" rx="6" stroke="currentColor" strokeWidth="1.5" />
+              <rect x="6" y="5" width="2" height="4" rx="1" fill="currentColor"
+                style={{ animation: 'hero-scroll-dot 2s ease-in-out infinite' }} />
+            </svg>
+          </button>
+        </div>
+      )}
 
       <style>{`
         @keyframes hero-scroll-bounce {
@@ -348,6 +298,11 @@ export default function HeroSection() {
         }
         .main-carousel .flickity-viewport {
           height: 100vh !important;
+        }
+        @media (max-width: 767px) {
+          .main-carousel .flickity-viewport {
+            height: auto !important;
+          }
         }
       `}</style>
     </section>

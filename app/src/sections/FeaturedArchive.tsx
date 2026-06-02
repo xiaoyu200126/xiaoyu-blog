@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { Link } from 'react-router-dom'
+import { useIsMobile } from '../hooks/use-mobile'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -36,6 +37,7 @@ const articles = [
 ]
 
 export default function FeaturedArchive() {
+  const isMobile = useIsMobile()
   const sectionRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<HTMLDivElement[]>([])
 
@@ -98,7 +100,7 @@ export default function FeaturedArchive() {
       ref={sectionRef}
       style={{
         position: 'relative',
-        padding: 'clamp(80px, 12vw, 160px) 0',
+        padding: isMobile ? '60px 0' : 'clamp(80px, 12vw, 160px) 0',
         backgroundColor: 'var(--color-base)',
       }}
     >
@@ -107,8 +109,8 @@ export default function FeaturedArchive() {
         style={{
           maxWidth: '1200px',
           margin: '0 auto',
-          padding: '0 40px',
-          marginBottom: 'clamp(60px, 8vw, 100px)',
+          padding: isMobile ? '0 24px' : '0 40px',
+          marginBottom: isMobile ? '40px' : 'clamp(60px, 8vw, 100px)',
         }}
       >
         <span
@@ -137,7 +139,7 @@ export default function FeaturedArchive() {
       </div>
 
       {/* Articles */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: isMobile ? '0 24px' : '0 40px' }}>
         {articles.map((article, index) => (
           <div
             key={article.id}
@@ -146,17 +148,17 @@ export default function FeaturedArchive() {
             }}
             style={{
               display: 'grid',
-              gridTemplateColumns: index % 2 === 0 ? '1fr 1.2fr' : '1.2fr 1fr',
-              gap: 'clamp(40px, 6vw, 80px)',
+              gridTemplateColumns: isMobile ? '1fr' : (index % 2 === 0 ? '1fr 1.2fr' : '1.2fr 1fr'),
+              gap: isMobile ? '24px' : 'clamp(40px, 6vw, 80px)',
               alignItems: 'center',
-              marginBottom: index < articles.length - 1 ? 'clamp(80px, 12vw, 140px)' : 0,
+              marginBottom: index < articles.length - 1 ? (isMobile ? '60px' : 'clamp(80px, 12vw, 140px)') : 0,
             }}
           >
             {/* Text column */}
             <div
               className="text-col"
               style={{
-                order: index % 2 === 0 ? 1 : 2,
+                order: isMobile ? 0 : (index % 2 === 0 ? 1 : 2),
               }}
             >
               <span
@@ -244,7 +246,7 @@ export default function FeaturedArchive() {
             <div
               className="img-col"
               style={{
-                order: index % 2 === 0 ? 2 : 1,
+                order: isMobile ? 0 : (index % 2 === 0 ? 2 : 1),
                 overflow: 'hidden',
               }}
             >
