@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-base: #FFFFFF;
+    --color-dark: #1A1A1A;
+    --color-ink: #1A1A1A;
+    --color-ink-light: #666666;
+    --color-paper-white: #FFFFFF;
+    --color-cmyk-red: #FF0033;
+    --color-border: #E8E8E8;
+    --color-muted: #999999;
+
+    --font-display: 'Inter', -apple-system, 'PingFang SC', sans-serif;
+    --font-serif: 'Noto Serif SC', 'Source Han Serif SC', serif;
+    --font-sans: 'Noto Sans SC', 'PingFang SC', sans-serif;
+    --font-inter: 'Inter', -apple-system, sans-serif;
+  }
+
+  * {
+    cursor: none !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background-color: var(--color-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    font-weight: 400;
+  }
+
+  ::selection {
+    background-color: var(--color-dark);
+    color: var(--color-paper-white);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+
+  .font-sans {
+    font-family: var(--font-sans);
+  }
+
+  .font-inter {
+    font-family: var(--font-inter);
+  }
+}
