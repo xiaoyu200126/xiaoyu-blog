@@ -1,0 +1,28 @@
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# Hexo 临时文件
+db.json
+*.log
+.deploy*/
+.idea/
+.vscode/
+*.iml
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+pnpm-lock.yaml
+*.tgz
+.cache/
+
+# 敏感文件（绝不上传）
+/secrets/
+*.key
+*.pem
+.env
+.env.*
+credentials.json
+token*
+*secret*
