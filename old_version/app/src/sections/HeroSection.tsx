@@ -65,15 +65,16 @@ export default function HeroSection() {
 
   // Intercept wheel scroll on hero → smooth scroll to LoopSection
   useEffect(() => {
-    const hero = document.querySelector('.hero-section')
+    const hero = document.querySelector<HTMLElement>('.hero-section')
     if (!hero) return
     let ticking = false
-    const handler = (e: WheelEvent) => {
-      if (e.deltaY <= 0) return
+    const handler = (e: Event) => {
+      const we = e as WheelEvent
+      if (we.deltaY <= 0) return
       if (ticking) { e.preventDefault(); return }
       ticking = true
       e.preventDefault()
-      const nextSection = document.querySelector('.loop-section')
+      const nextSection = document.querySelector<HTMLElement>('.loop-section')
       if (nextSection) {
         nextSection.scrollIntoView({ behavior: 'smooth' })
       }
