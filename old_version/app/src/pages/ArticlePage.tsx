@@ -293,7 +293,7 @@ export default function ArticlePage() {
             {article.tags.map((tag) => (
               <Link
                 key={tag}
-                to={`/?tag=${tag}`}
+                to={`/archives?tag=${tag}`}
                 style={{
                   fontSize: '11px',
                   fontFamily: 'var(--font-display)',

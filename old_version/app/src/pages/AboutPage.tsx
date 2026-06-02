@@ -39,7 +39,7 @@ export default function AboutPage() {
             marginBottom: '24px',
           }}
         >
-          About
+          About XIAOYU
         </span>
 
         <h1
@@ -53,7 +53,7 @@ export default function AboutPage() {
             letterSpacing: '-0.02em',
           }}
         >
-          XIAOYU的随笔 · 序章
+          XIAOYU的随笔
         </h1>
 
         <div

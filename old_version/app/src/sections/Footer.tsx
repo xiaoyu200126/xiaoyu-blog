@@ -1,13 +1,22 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
 
+  useEffect(() => {
+    const saved = localStorage.getItem('xiaoyu_blog_subscribed')
+    if (saved === 'true') {
+      setSubscribed(true)
+    }
+  }, [])
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (email.trim()) {
+      localStorage.setItem('xiaoyu_blog_subscribed', 'true')
+      localStorage.setItem('xiaoyu_blog_subscriber_email', email.trim())
       setSubscribed(true)
       setEmail('')
     }
@@ -43,7 +52,7 @@ export default function Footer() {
             fontWeight: 700,
             marginBottom: '12px',
             color: 'var(--color-text)',
-            letterSpacing: '0.02em',
+            letterSpacing: '0.05em',
           }}
         >
           让我们成为追求智慧路上的伙伴
@@ -124,8 +133,7 @@ export default function Footer() {
       >
         {[
           { label: '生活碎碎念', path: '/life' },
-          { label: '实用主义研究', path: '/pragmatism' },
-          { label: '关联主义学习', path: '/archives' },
+          { label: '实用主义&关联主义', path: '/pragmatism-connectivism' },
           { label: 'BRAND & AI', path: '/brand-ai' },
           { label: '关于晓宇', path: '/about' },
         ].map((item, index, arr) => (
@@ -135,7 +143,7 @@ export default function Footer() {
               style={{
                 fontFamily: 'var(--font-sans)',
                 fontSize: '12px',
-                letterSpacing: '0.1em',
+                letterSpacing: '0.14em',
                 textTransform: 'uppercase',
                 color: 'var(--color-text-muted)',
                 textDecoration: 'none',

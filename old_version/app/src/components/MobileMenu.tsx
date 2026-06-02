@@ -9,8 +9,12 @@ interface MobileMenuProps {
 
 const menuLinks = [
   { label: '首页', path: '/' },
-  { label: '文章卷宗', path: '/archives' },
-  { label: '著者名录', path: '/about' },
+  { label: '生活碎碎念', path: '/life' },
+  { label: '实用主义&关联主义', path: '/pragmatism-connectivism' },
+  { label: 'BRAND & AI', path: '/brand-ai' },
+  { label: '精选文章', path: '/archives' },
+  { label: '晓宇友人账', path: '/friends' },
+  { label: '关于XIAOYU', path: '/about' },
 ]
 
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
@@ -31,7 +35,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
     tl.fromTo(
       linksRef.current,
       { y: 40, opacity: 0 },
-      { y: 0, opacity: 1, duration: 0.5, stagger: 0.1, ease: 'power3.out' },
+      { y: 0, opacity: 1, duration: 0.5, stagger: 0.08, ease: 'power3.out' },
       '-=0.2'
     )
     tlRef.current = tl
@@ -64,7 +68,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         left: 0,
         width: '100vw',
         height: '100vh',
-        backgroundColor: 'var(--color-dark)',
+        backgroundColor: 'var(--color-text)',
         zIndex: 200,
         opacity: 0,
         visibility: 'hidden',
@@ -72,22 +76,25 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: '40px',
+        gap: '32px',
       }}
     >
       <button
         onClick={onClose}
-        className="cursor-hover"
         aria-label="关闭菜单"
         style={{
           position: 'absolute',
-          top: '24px',
+          top: '28px',
           right: '40px',
           background: 'none',
           border: 'none',
-          color: 'var(--color-paper-white)',
-          fontSize: '1.5rem',
-          fontFamily: 'var(--font-inter)',
+          color: 'var(--color-bg)',
+          fontSize: '14px',
+          fontFamily: 'var(--font-sans)',
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+          cursor: 'pointer',
+          padding: '8px 12px',
         }}
       >
         Close
@@ -101,12 +108,12 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
             if (el) linksRef.current[i] = el
           }}
           onClick={handleLinkClick}
-          className="cursor-hover font-serif"
           style={{
-            color: 'var(--color-paper-white)',
-            fontSize: 'clamp(2rem, 5vw, 3.5rem)',
-            fontWeight: 400,
-            letterSpacing: '0.1em',
+            color: 'var(--color-bg)',
+            fontSize: 'clamp(1.5rem, 4vw, 2.8rem)',
+            fontWeight: 300,
+            fontFamily: 'var(--font-display)',
+            letterSpacing: '0.08em',
             textDecoration: 'none',
             opacity: 0,
           }}

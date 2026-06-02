@@ -8,9 +8,10 @@ import AboutPage from './pages/AboutPage'
 import ArchivesPage from './pages/ArchivesPage'
 import ArticlePage from './pages/ArticlePage'
 import LifePage from './pages/LifePage'
-import PragmatismPage from './pages/PragmatismPage'
+import PragmatismConnectivismPage from './pages/PragmatismConnectivismPage'
 import BrandAIPage from './pages/BrandAIPage'
 import FriendsPage from './pages/FriendsPage'
+import NotFoundPage from './pages/NotFoundPage'
 import Footer from './sections/Footer'
 import { useState } from 'react'
 
@@ -18,7 +19,6 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(false)
   const location = useLocation()
 
-  // Scroll to top on route change
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [location.pathname])
@@ -35,9 +35,10 @@ function App() {
           <Route path="/archives" element={<ArchivesPage />} />
           <Route path="/article/:id" element={<ArticlePage />} />
           <Route path="/life" element={<LifePage />} />
-          <Route path="/pragmatism" element={<PragmatismPage />} />
+          <Route path="/pragmatism-connectivism" element={<PragmatismConnectivismPage />} />
           <Route path="/brand-ai" element={<BrandAIPage />} />
           <Route path="/friends" element={<FriendsPage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       <Footer />

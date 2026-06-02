@@ -26,7 +26,7 @@ export default function MagneticCursor() {
         cursor.style.transform = `translate(${pos.x - offset}px, ${pos.y - offset}px)`
         cursor.style.width = `${size}px`
         cursor.style.height = `${size}px`
-        cursor.style.backgroundColor = isHoveringRef.current ? 'transparent' : 'var(--color-ink)'
+        cursor.style.backgroundColor = isHoveringRef.current ? 'transparent' : '#fff'
         cursor.style.border = isHoveringRef.current ? '1px solid var(--color-ink)' : 'none'
       }
 
@@ -67,7 +67,7 @@ export default function MagneticCursor() {
         width: '8px',
         height: '8px',
         borderRadius: '50%',
-        backgroundColor: 'var(--color-ink)',
+        backgroundColor: '#fff',
         pointerEvents: 'none',
         zIndex: 9999,
         transition: 'width 0.3s ease, height 0.3s ease, background-color 0.3s ease, border 0.3s ease',
