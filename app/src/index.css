@@ -266,7 +266,7 @@
   }
 
   .loop-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-4px) !important;
     box-shadow: 0 12px 40px rgba(44, 36, 24, 0.08);
   }
 }

@@ -112,7 +112,7 @@ export default function LoopSection() {
             {/* Content — on mobile below image */}
             <div style={{
               order: isMobile ? 0 : (index % 2 === 0 ? 2 : 1),
-              padding: isMobile ? '20px 16px' : 'clamp(40px, 6vw, 64px) clamp(32px, 5vw, 56px)',
+              padding: isMobile ? '20px 20px' : 'clamp(40px, 6vw, 64px) clamp(32px, 5vw, 56px)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',

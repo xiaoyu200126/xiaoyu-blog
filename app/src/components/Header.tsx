@@ -17,7 +17,7 @@ export default function Header({ onMenuClick, menuOpen }: HeaderProps) {
         left: 0,
         width: '100%',
         zIndex: 100,
-        padding: isMobile ? '28px 20px' : '28px clamp(20px, 3.5vw, 60px)',
+        padding: isMobile ? '28px 20px' : '28px clamp(32px, 3.5vw, 60px)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',

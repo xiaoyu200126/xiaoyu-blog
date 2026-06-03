@@ -85,7 +85,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         style={{
           position: 'absolute',
           top: '28px',
-          right: '40px',
+          right: '20px',
           background: 'none',
           border: 'none',
           color: 'var(--color-bg)',

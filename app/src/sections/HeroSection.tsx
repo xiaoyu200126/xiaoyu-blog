@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import Flickity from 'flickity'
 import { getArticles } from '../data/articles'
@@ -12,13 +12,33 @@ export default function HeroSection() {
   const carouselRef = useRef<HTMLDivElement>(null)
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isReady, setIsReady] = useState(false)
+  const touchRef = useRef({ startX: 0, startY: 0, dragging: false })
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const featuredArticles = getArticles()
     .sort((a: Article, b: Article) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 3)
 
+  const totalSlides = featuredArticles.length
+
+  const goToSlide = useCallback((index: number) => {
+    setCurrentSlide(index)
+  }, [])
+
+  const nextSlide = useCallback(() => {
+    if (totalSlides <= 1) return
+    setCurrentSlide((prev) => (prev + 1) % totalSlides)
+  }, [totalSlides])
+
+  const prevSlide = useCallback(() => {
+    if (totalSlides <= 1) return
+    setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides)
+  }, [totalSlides])
+
+  // ---- Desktop: Flickity ----
   useEffect(() => {
-    if (!carouselRef.current || featuredArticles.length === 0 || isMobile) return
+    if (isMobile) return
+    if (!carouselRef.current || featuredArticles.length === 0) return
 
     const timer = setTimeout(() => {
       if (!carouselRef.current) return
@@ -28,7 +48,7 @@ export default function HeroSection() {
         contain: true,
         prevNextButtons: false,
         pageDots: false,
-        autoPlay: isMobile ? 3000 : 6000,
+        autoPlay: 6000,
         pauseAutoPlayOnHover: true,
         wrapAround: featuredArticles.length > 1,
         adaptiveHeight: false,
@@ -51,15 +71,63 @@ export default function HeroSection() {
     }
   }, [featuredArticles.length, isMobile])
 
-  // Mobile-only: auto-advance via setInterval (no Flickity needed)
+  // ---- Mobile: auto-advance + touch swipe ----
   useEffect(() => {
-    if (!isMobile || featuredArticles.length <= 1) return
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % featuredArticles.length)
+    if (!isMobile || totalSlides <= 1) return
+
+    // Auto-advance every 3s
+    intervalRef.current = setInterval(() => {
+      nextSlide()
     }, 3000)
     setIsReady(true)
-    return () => clearInterval(interval)
-  }, [isMobile, featuredArticles.length])
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+  }, [isMobile, totalSlides, nextSlide])
+
+  // Mobile touch handlers — use native addEventListener with { passive: false }
+  const touchTrackRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!isMobile || !touchTrackRef.current) return
+    const el = touchTrackRef.current
+
+    const handleStart = (e: TouchEvent) => {
+      touchRef.current = { startX: e.touches[0].clientX, startY: e.touches[0].clientY, dragging: true }
+    }
+    const handleMove = (e: TouchEvent) => {
+      if (!touchRef.current.dragging) return
+      const dx = Math.abs(e.touches[0].clientX - touchRef.current.startX)
+      const dy = Math.abs(e.touches[0].clientY - touchRef.current.startY)
+      if (dx > dy && dx > 10) {
+        e.preventDefault()
+      }
+    }
+    const handleEnd = (e: TouchEvent) => {
+      if (!touchRef.current.dragging) return
+      touchRef.current.dragging = false
+      const diff = e.changedTouches[0].clientX - touchRef.current.startX
+      if (Math.abs(diff) < 40) return
+      if (diff > 0) {
+        prevSlide()
+      } else {
+        nextSlide()
+      }
+      if (intervalRef.current) clearInterval(intervalRef.current)
+      intervalRef.current = setInterval(() => nextSlide(), 3000)
+    }
+
+    el.addEventListener('touchstart', handleStart, { passive: true })
+    el.addEventListener('touchmove', handleMove, { passive: false })
+    el.addEventListener('touchend', handleEnd, { passive: true })
+
+    return () => {
+      el.removeEventListener('touchstart', handleStart)
+      el.removeEventListener('touchmove', handleMove)
+      el.removeEventListener('touchend', handleEnd)
+    }
+  }, [isMobile, prevSlide, nextSlide])
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
@@ -110,15 +178,17 @@ export default function HeroSection() {
     )
   }
 
-  /* ---- MOBILE LAYOUT: custom card carousel ---- */
+  /* ---- MOBILE LAYOUT: card carousel with touch swipe ---- */
   if (isMobile) {
     return (
       <section
         className="hero-section"
         style={{ backgroundColor: 'var(--color-bg)', padding: '90px 0 0' }}
       >
-        {/* Carousel wrapper with overflow hidden + scroll snap */}
-        <div style={{ width: '100%', overflow: 'hidden', position: 'relative' }}>
+        <div
+          ref={touchTrackRef}
+          style={{ width: '100%', overflow: 'hidden', position: 'relative' }}
+        >
           <div
             ref={carouselRef}
             className="hero-mobile-track"
@@ -131,13 +201,11 @@ export default function HeroSection() {
           >
             {featuredArticles.map((article: Article) => (
               <div key={article.id} style={{ width: '100%', flexShrink: 0 }}>
-                {/* Card — consistent layout */}
                 <div style={{
                   backgroundColor: 'var(--color-bg-secondary)',
                   overflow: 'hidden',
                   margin: '0 20px',
                 }}>
-                  {/* Image 16:9 — fix height */}
                   <div style={{
                     width: '100%',
                     paddingBottom: '56.25%',
@@ -154,8 +222,6 @@ export default function HeroSection() {
                       }}
                     />
                   </div>
-
-                  {/* Text — fixed min-height for consistency */}
                   <div style={{ padding: '22px 20px 30px', minHeight: '220px' }}>
                     <span style={{
                       display: 'inline-block',
@@ -222,19 +288,23 @@ export default function HeroSection() {
           padding: '18px 0 20px',
         }}>
           {featuredArticles.map((_, i) => (
-            <span key={i} style={{
-              width: i === currentSlide ? '20px' : '6px', height: '6px',
-              borderRadius: '3px',
-              background: i === currentSlide ? 'var(--color-accent)' : 'var(--color-border)',
-              transition: 'all 0.3s ease',
-            }} />
+            <button
+              key={i}
+              onClick={() => goToSlide(i)}
+              style={{
+                width: i === currentSlide ? '20px' : '6px', height: '6px',
+                borderRadius: '3px', border: 'none', padding: 0, cursor: 'pointer',
+                background: i === currentSlide ? 'var(--color-accent)' : 'var(--color-border)',
+                transition: 'all 0.3s ease',
+              }}
+            />
           ))}
         </div>
       </section>
     )
   }
 
-  /* ---- DESKTOP LAYOUT: 1fr 1fr grid ---- */
+  /* ---- DESKTOP LAYOUT: Flickity 1fr 1fr grid ---- */
   return (
     <section
       className="hero-section"
@@ -245,7 +315,6 @@ export default function HeroSection() {
         overflow: 'hidden',
       }}
     >
-      {/* Carousel */}
       <div
         ref={carouselRef}
         className="main-carousel"
@@ -263,7 +332,7 @@ export default function HeroSection() {
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
               width: '100%',
-              height: '100%',
+              height: '100vh',
             }}
           >
             {/* Left: Text */}
@@ -274,7 +343,6 @@ export default function HeroSection() {
               padding: '0 clamp(12px, 2vw, 32px) 0 clamp(24px, 4vw, 64px)',
             }}>
               <div style={{ maxWidth: 'clamp(320px, 42vw, 580px)' }}>
-                {/* Badge */}
                 <span style={{
                   display: 'inline-block',
                   fontFamily: 'var(--font-sans)',
@@ -288,8 +356,6 @@ export default function HeroSection() {
                 }}>
                   XIAOYU THOUGHT &amp; NOTES
                 </span>
-
-                {/* Date */}
                 <div style={{
                   fontFamily: 'var(--font-display)',
                   fontSize: '12px',
@@ -299,8 +365,6 @@ export default function HeroSection() {
                 }}>
                   {formatDate(article.date)}
                 </div>
-
-                {/* Title */}
                 <h1 style={{
                   fontFamily: 'var(--font-display)',
                   fontSize: 'clamp(28px, 4vw, 48px)',
@@ -323,8 +387,6 @@ export default function HeroSection() {
                     {article.title}
                   </Link>
                 </h1>
-
-                {/* Excerpt */}
                 <p style={{
                   fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
                   fontSize: 'clamp(14px, 1.4vw, 16px)',
@@ -335,8 +397,6 @@ export default function HeroSection() {
                 }}>
                   {article.excerpt}
                 </p>
-
-                {/* Tags */}
                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                   {article.tags.map((tag: string) => (
                     <Link
@@ -373,7 +433,7 @@ export default function HeroSection() {
             <div style={{
               position: 'relative',
               overflow: 'hidden',
-              height: '100%',
+              height: '100vh',
               padding: '0 clamp(32px, 6vw, 96px) 24px 0',
             }}>
               <img
@@ -415,13 +475,20 @@ export default function HeroSection() {
         zIndex: 20,
       }}>
         {featuredArticles.map((_, i) => (
-          <span
+          <button
             key={i}
+            onClick={() => {
+              goToSlide(i)
+              if (flktyRef.current) flktyRef.current.select(i)
+            }}
             style={{
               width: i === currentSlide ? '24px' : '6px',
               height: '6px',
               borderRadius: '3px',
               background: i === currentSlide ? 'var(--color-accent)' : 'var(--color-border)',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
               transition: 'all 0.3s ease',
             }}
           />
@@ -485,7 +552,7 @@ export default function HeroSection() {
           50% { opacity: 1; transform: translateY(3px); }
         }
         .main-carousel .flickity-viewport {
-          height: 100% !important;
+          height: 100vh !important;
         }
       `}</style>
     </section>
