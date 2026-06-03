@@ -12,6 +12,7 @@ import PragmatismConnectivismPage from './pages/PragmatismConnectivismPage'
 import BrandAIPage from './pages/BrandAIPage'
 import FriendsPage from './pages/FriendsPage'
 import NotFoundPage from './pages/NotFoundPage'
+import AdminPage from './pages/AdminPage'
 import Footer from './sections/Footer'
 import { useState } from 'react'
 
@@ -39,6 +40,7 @@ function App() {
           <Route path="/brand-ai" element={<BrandAIPage />} />
           <Route path="/friends" element={<FriendsPage />} />
           <Route path="*" element={<NotFoundPage />} />
+          <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </main>
       <Footer />
