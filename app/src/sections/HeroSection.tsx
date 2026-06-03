@@ -3,9 +3,11 @@ import { Link } from 'react-router-dom'
 import Flickity from 'flickity'
 import { getArticles } from '../data/articles'
 import type { Article } from '../data/articles'
+import { useIsMobile } from '../hooks/use-mobile'
 import 'flickity/css/flickity.css'
 
 export default function HeroSection() {
+  const isMobile = useIsMobile()
   const flktyRef = useRef<Flickity | null>(null)
   const carouselRef = useRef<HTMLDivElement>(null)
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -63,8 +65,9 @@ export default function HeroSection() {
     }
   }
 
-  // Intercept wheel scroll on hero → smooth scroll to LoopSection
+  // Intercept wheel scroll on hero → smooth scroll to LoopSection (desktop only)
   useEffect(() => {
+    if (isMobile) return
     const hero = document.querySelector<HTMLElement>('.hero-section')
     if (!hero) return
     let ticking = false
@@ -82,7 +85,7 @@ export default function HeroSection() {
     }
     hero.addEventListener('wheel', handler, { passive: false })
     return () => hero.removeEventListener('wheel', handler)
-  }, [])
+  }, [isMobile])
 
   if (featuredArticles.length === 0) {
     return (
@@ -97,6 +100,121 @@ export default function HeroSection() {
     )
   }
 
+  /* ---- MOBILE LAYOUT: single column ---- */
+  if (isMobile) {
+    return (
+      <section
+        className="hero-section"
+        style={{ backgroundColor: 'var(--color-bg)', paddingBottom: '20px' }}
+      >
+        {/* Carousel — 16:9 images */}
+        <div
+          ref={carouselRef}
+          className="main-carousel"
+          style={{ width: '100%', opacity: isReady ? 1 : 0, transition: 'opacity 0.6s ease' }}
+        >
+          {featuredArticles.map((article: Article) => (
+            <div key={article.id} style={{ width: '100%', marginRight: '12px' }}>
+              {/* Image — 16:9 */}
+              <div style={{
+                width: '100%', paddingBottom: '56.25%', position: 'relative',
+                overflow: 'hidden', backgroundColor: 'var(--color-bg-secondary)',
+              }}>
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  style={{
+                    position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
+                    objectFit: 'cover', filter: 'saturate(0.9)',
+                  }}
+                />
+                {/* Slide indicators on image */}
+                <div style={{
+                  position: 'absolute', bottom: '14px', left: '0', right: '0',
+                  display: 'flex', justifyContent: 'center', gap: '8px', zIndex: 10,
+                }}>
+                  {featuredArticles.map((_, i) => (
+                    <span key={i} style={{
+                      width: i === currentSlide ? '20px' : '6px', height: '6px',
+                      borderRadius: '3px',
+                      background: i === currentSlide ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.4)',
+                      boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
+                      transition: 'all 0.3s ease',
+                    }} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Text below image */}
+              <div style={{ padding: '22px 16px 0' }}>
+                <span style={{
+                  display: 'inline-block', fontFamily: 'var(--font-sans)',
+                  fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase',
+                  color: 'var(--color-text-muted)', border: '1px solid var(--color-border)',
+                  padding: '4px 10px', marginBottom: '12px',
+                }}>
+                  XIAOYU THOUGHT &amp; NOTES
+                </span>
+
+                <div style={{
+                  fontFamily: 'var(--font-display)', fontSize: '12px', fontStyle: 'italic',
+                  color: 'var(--color-accent)', marginBottom: '12px',
+                }}>
+                  {formatDate(article.date)}
+                </div>
+
+                <h1 style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(20px, 5vw, 28px)',
+                  fontWeight: 700, lineHeight: 1.3,
+                  color: 'var(--color-text)', margin: '0 0 12px',
+                  letterSpacing: '0.04em',
+                }}>
+                  <Link to={`/article/${article.id}`}
+                    style={{ color: 'inherit', textDecoration: 'none' }}>
+                    {article.title}
+                  </Link>
+                </h1>
+
+                <p style={{
+                  fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
+                  fontSize: '14px', lineHeight: 1.7,
+                  color: 'var(--color-text-secondary)', margin: '0 0 16px',
+                  fontWeight: 300,
+                  display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                }}>
+                  {article.excerpt}
+                </p>
+
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {article.tags.map((tag: string) => (
+                    <Link key={tag} to="/archives" style={{
+                      fontFamily: 'var(--font-sans)', fontSize: '10px',
+                      letterSpacing: '0.14em', textTransform: 'uppercase',
+                      color: 'var(--color-text-muted)', padding: '4px 10px',
+                      border: '1px solid var(--color-border)',
+                      textDecoration: 'none', transition: 'all 0.3s ease',
+                    }}>
+                      {tag}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <style>{`
+          .hero-section .main-carousel .flickity-viewport {
+            min-height: auto !important;
+          }
+        `}</style>
+      </section>
+    )
+  }
+
+  /* ---- DESKTOP LAYOUT: 1fr 1fr grid ---- */
   return (
     <section
       className="hero-section"
