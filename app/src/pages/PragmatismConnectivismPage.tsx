@@ -1,9 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { getArticlesByCategory } from '../data/articles'
 
-const posts = [
+const allPosts = [
   ...getArticlesByCategory('实用主义研究'),
   ...getArticlesByCategory('关联主义学习'),
 ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -11,6 +11,9 @@ const posts = [
 export default function PragmatismConnectivismPage() {
   const contentRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<HTMLDivElement[]>([])
+  const [searchParams] = useSearchParams()
+  const tagFilter = searchParams.get('tag')
+  const posts = tagFilter ? allPosts.filter(p => p.tags.includes(tagFilter)) : allPosts
 
   useEffect(() => {
     const content = contentRef.current
@@ -28,9 +31,15 @@ export default function PragmatismConnectivismPage() {
         <span className="badge-month" style={{ display: 'block', marginBottom: '24px' }}>
           Pragmatism &amp; Connectivism
         </span>
-        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 300, lineHeight: 1.3, marginBottom: '60px', color: 'var(--color-text)', letterSpacing: '0.04em' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 300, lineHeight: 1.3, marginBottom: tagFilter ? '16px' : '60px', color: 'var(--color-text)', letterSpacing: '0.04em' }}>
           实用主义&关联主义
         </h1>
+        {tagFilter && (
+          <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>筛选：{tagFilter}</span>
+            <Link to="/pragmatism-connectivism" style={{ fontSize: '12px', color: 'var(--color-accent)', textDecoration: 'underline' }}>清除</Link>
+          </div>
+        )}
         <div>
           {posts.length === 0 && (
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-muted)', textAlign: 'center', padding: '60px 0' }}>

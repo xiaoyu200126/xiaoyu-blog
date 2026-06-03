@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { getArticlesByCategory } from '../data/articles'
 
 const lifePosts = getArticlesByCategory('生活碎碎念')
@@ -8,6 +8,9 @@ const lifePosts = getArticlesByCategory('生活碎碎念')
 export default function LifePage() {
   const contentRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<HTMLDivElement[]>([])
+  const [searchParams] = useSearchParams()
+  const tagFilter = searchParams.get('tag')
+  const posts = tagFilter ? lifePosts.filter(p => p.tags.includes(tagFilter)) : lifePosts
 
   useEffect(() => {
     const content = contentRef.current
@@ -28,17 +31,24 @@ export default function LifePage() {
           Life Musings
         </span>
 
-        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 300, lineHeight: 1.3, marginBottom: '60px', color: 'var(--color-text)', letterSpacing: '-0.02em' }}>
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 300, lineHeight: 1.3, marginBottom: tagFilter ? '16px' : '60px', color: 'var(--color-text)', letterSpacing: '-0.02em' }}>
           生活碎碎念
         </h1>
 
+        {tagFilter && (
+          <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <span style={{ fontSize: '13px', color: 'var(--color-text-muted)' }}>筛选：{tagFilter}</span>
+            <Link to="/life" style={{ fontSize: '12px', color: 'var(--color-accent)', textDecoration: 'underline' }}>清除</Link>
+          </div>
+        )}
+
         <div>
-          {lifePosts.length === 0 && (
+          {posts.length === 0 && (
             <p style={{ fontFamily: 'var(--font-body)', fontSize: '15px', color: 'var(--color-text-muted)', textAlign: 'center', padding: '60px 0' }}>
               暂无文章，敬请期待...
             </p>
           )}
-          {lifePosts.map((post, i) => (
+          {posts.map((post, i) => (
             <div key={post.id} ref={(el) => { if (el) itemRefs.current[i] = el }} style={{ borderBottom: '1px solid var(--color-border)', padding: '32px 0' }}>
               <span style={{ fontFamily: 'var(--font-display)', fontSize: '12px', fontWeight: 400, color: 'var(--color-text-muted)', letterSpacing: '0.1em', display: 'block', marginBottom: '12px' }}>
                 {post.date}

@@ -66,7 +66,7 @@ export default function Footer() {
             lineHeight: 1.6,
           }}
         >
-          输入电子邮箱，接收每期更新
+          输入邮箱以订阅更新提醒（仅本地记录）
         </p>
 
         <form

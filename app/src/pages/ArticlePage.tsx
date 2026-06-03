@@ -16,6 +16,17 @@ export default function ArticlePage() {
   const contentRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
 
+  // Dynamic read time
+  const dynamicReadTime = article
+    ? `${Math.max(1, Math.ceil(article.content.length / 400))} min read`
+    : ''
+
+  // Prev / Next article
+  const sortedArticles = [...articles].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  const currentIndex = sortedArticles.findIndex(a => a.id === id)
+  const prevArticle = currentIndex > 0 ? sortedArticles[currentIndex - 1] : null
+  const nextArticle = currentIndex < sortedArticles.length - 1 ? sortedArticles[currentIndex + 1] : null
+
   useEffect(() => {
     if (!article) return
 
@@ -175,8 +186,9 @@ export default function ArticlePage() {
         >
           <div className="hero-animate" style={{ display: 'flex', gap: '8px', marginBottom: '16px', flexWrap: 'wrap' }}>
             {article.tags.map((tag) => (
-              <span
+              <Link
                 key={tag}
+                to={`/archives?tag=${encodeURIComponent(tag)}`}
                 style={{
                   fontSize: '11px',
                   fontFamily: 'var(--font-display)',
@@ -185,10 +197,20 @@ export default function ArticlePage() {
                   color: 'var(--color-accent)',
                   border: '1px solid var(--color-accent)',
                   padding: '4px 10px',
+                  textDecoration: 'none',
+                  transition: 'all 0.3s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-accent)'
+                  e.currentTarget.style.color = 'var(--color-bg)'
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent'
+                  e.currentTarget.style.color = 'var(--color-accent)'
                 }}
               >
                 {tag}
-              </span>
+              </Link>
             ))}
           </div>
           <h1
@@ -214,7 +236,7 @@ export default function ArticlePage() {
             </span>
             <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <Clock size={14} />
-              {article.readTime}
+              {dynamicReadTime}
             </span>
             <span style={{ color: 'var(--color-accent)' }}>by {article.author}</span>
           </div>
@@ -235,7 +257,7 @@ export default function ArticlePage() {
           }}
         >
           <button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate('/')}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -319,6 +341,53 @@ export default function ArticlePage() {
             ))}
           </div>
         </div>
+
+        {/* Prev / Next Navigation */}
+        {(prevArticle || nextArticle) && (
+          <div style={{
+            marginTop: '48px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            gap: '16px',
+            borderTop: '1px solid var(--color-border)',
+            paddingTop: '32px',
+          }}>
+            {prevArticle ? (
+              <Link
+                to={`/article/${prevArticle.id}`}
+                style={{
+                  flex: 1,
+                  textDecoration: 'none',
+                  color: 'var(--color-text-muted)',
+                  transition: 'color 0.3s ease',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-muted)' }}
+              >
+                <span style={{ fontSize: '11px', letterSpacing: '0.1em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>← 上一篇</span>
+                <span style={{ fontSize: '14px', fontFamily: 'var(--font-display)' }}>{prevArticle.title}</span>
+              </Link>
+            ) : <div style={{ flex: 1 }} />}
+            {nextArticle ? (
+              <Link
+                to={`/article/${nextArticle.id}`}
+                style={{
+                  flex: 1,
+                  textAlign: 'right',
+                  textDecoration: 'none',
+                  color: 'var(--color-text-muted)',
+                  transition: 'color 0.3s ease',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)' }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-muted)' }}
+              >
+                <span style={{ fontSize: '11px', letterSpacing: '0.1em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>下一篇 →</span>
+                <span style={{ fontSize: '14px', fontFamily: 'var(--font-display)' }}>{nextArticle.title}</span>
+              </Link>
+            ) : <div style={{ flex: 1 }} />}
+          </div>
+        )}
 
         {/* Related Articles */}
         {relatedArticles.length > 0 && (
