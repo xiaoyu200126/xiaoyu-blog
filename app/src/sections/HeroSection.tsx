@@ -183,7 +183,7 @@ export default function HeroSection() {
     return (
       <section
         className="hero-section"
-        style={{ backgroundColor: 'var(--color-bg)', padding: '90px 0 0' }}
+        style={{ backgroundColor: 'var(--color-bg)', padding: '80px 0 0' }}
       >
         <div
           ref={touchTrackRef}
@@ -206,6 +206,7 @@ export default function HeroSection() {
                   overflow: 'hidden',
                   margin: '0 20px',
                 }}>
+                  {/* Image 16:9 */}
                   <div style={{
                     width: '100%',
                     paddingBottom: '56.25%',
@@ -222,29 +223,43 @@ export default function HeroSection() {
                       }}
                     />
                   </div>
-                  <div style={{ padding: '22px 20px 30px', minHeight: '220px' }}>
+                  {/* Text — uniform layout, flow naturally */}
+                  <div style={{
+                    padding: '18px 20px 22px',
+                    minHeight: '210px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}>
                     <span style={{
                       display: 'inline-block',
-                      fontFamily: 'var(--font-sans)', fontSize: '10px',
+                      fontFamily: 'var(--font-sans)',
+                      fontSize: '2.6vw',
                       letterSpacing: '0.22em', textTransform: 'uppercase',
                       color: 'var(--color-text-muted)',
                       border: '1px solid var(--color-border)',
-                      padding: '4px 10px', marginBottom: '12px',
+                      padding: '1vw 2.4vw',
+                      marginBottom: '2.5vw',
+                      flexShrink: 0,
                     }}>
                       XIAOYU THOUGHT &amp; NOTES
                     </span>
                     <div style={{
-                      fontFamily: 'var(--font-display)', fontSize: '12px',
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '3.2vw',
                       fontStyle: 'italic', color: 'var(--color-accent)',
-                      marginBottom: '10px',
+                      marginBottom: '2.2vw',
+                      flexShrink: 0,
                     }}>
                       {formatDate(article.date)}
                     </div>
                     <h1 style={{
-                      fontFamily: 'var(--font-display)', fontSize: '19px',
+                      fontFamily: 'var(--font-display)',
+                      fontSize: '4.8vw',
                       fontWeight: 700, lineHeight: 1.35,
                       color: 'var(--color-text)',
-                      margin: '0 0 10px', letterSpacing: '0.04em',
+                      margin: '0 0 2.2vw',
+                      letterSpacing: '0.04em',
+                      flexShrink: 0,
                     }}>
                       <Link to={`/article/${article.id}`}
                         style={{ color: 'inherit', textDecoration: 'none' }}>
@@ -253,21 +268,25 @@ export default function HeroSection() {
                     </h1>
                     <p style={{
                       fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
-                      fontSize: '13px', lineHeight: 1.65,
+                      fontSize: '3.6vw',
+                      lineHeight: 1.65,
                       color: 'var(--color-text-secondary)',
-                      margin: '0 0 14px', fontWeight: 300,
+                      margin: '0 0 3vw',
+                      fontWeight: 300,
                       display: '-webkit-box', WebkitLineClamp: 3,
                       WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                      flexShrink: 0,
                     }}>
                       {article.excerpt}
                     </p>
-                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: '2vw', flexWrap: 'wrap', flexShrink: 0 }}>
                       {article.tags.map((tag: string) => (
                         <Link key={tag} to="/archives" style={{
-                          fontFamily: 'var(--font-sans)', fontSize: '10px',
+                          fontFamily: 'var(--font-sans)',
+                          fontSize: '2.6vw',
                           letterSpacing: '0.14em', textTransform: 'uppercase',
                           color: 'var(--color-text-muted)',
-                          padding: '4px 10px',
+                          padding: '1vw 2.4vw',
                           border: '1px solid var(--color-border)',
                           textDecoration: 'none',
                         }}>
@@ -434,7 +453,7 @@ export default function HeroSection() {
               position: 'relative',
               overflow: 'hidden',
               height: '100vh',
-              padding: '0 clamp(32px, 6vw, 96px) 24px 0',
+              padding: '0 clamp(32px, 6vw, 96px) 0 0',
             }}>
               <img
                 src={article.image}
