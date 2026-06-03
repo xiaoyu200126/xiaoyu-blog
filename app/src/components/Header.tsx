@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useIsMobile } from '../hooks/use-mobile'
 
 interface HeaderProps {
   onMenuClick: () => void
@@ -6,6 +7,8 @@ interface HeaderProps {
 }
 
 export default function Header({ onMenuClick, menuOpen }: HeaderProps) {
+  const isMobile = useIsMobile()
+
   return (
     <header
       style={{
@@ -14,7 +17,7 @@ export default function Header({ onMenuClick, menuOpen }: HeaderProps) {
         left: 0,
         width: '100%',
         zIndex: 100,
-        padding: '28px 40px',
+        padding: isMobile ? '28px 20px' : '28px clamp(20px, 3.5vw, 60px)',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',

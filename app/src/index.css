@@ -35,8 +35,11 @@
     --color-muted: #8a7d6b;
   }
 
-  * {
-    cursor: none !important;
+  /* Only hide cursor on desktop — allow native cursor on touch devices */
+  @media (min-width: 768px) {
+    * {
+      cursor: none !important;
+    }
   }
 
   html {

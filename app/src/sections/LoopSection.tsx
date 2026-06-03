@@ -2,8 +2,10 @@ import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { getArticles } from '../data/articles'
 import type { Article } from '../data/articles'
+import { useIsMobile } from '../hooks/use-mobile'
 
 export default function LoopSection() {
+  const isMobile = useIsMobile()
   const cardsRef = useRef<(HTMLElement | null)[]>([])
   const articles = getArticles()
     .sort((a: Article, b: Article) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -43,15 +45,20 @@ export default function LoopSection() {
   return (
     <section className="loop-section" style={{
       backgroundColor: 'var(--color-bg)',
-      padding: '20px 0 100px',
+      padding: isMobile ? '0 0 60px' : '20px 0 100px',
     }}>
       {/* Section Header */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 32px', marginBottom: '60px' }}>
+      <div style={{
+        maxWidth: '1400px', margin: '0 auto',
+        padding: isMobile ? '0 20px' : '0 32px',
+        marginBottom: isMobile ? '28px' : '60px',
+      }}>
         <span className="badge-month" style={{ display: 'inline-block', marginBottom: '16px' }}>
           Loop
         </span>
         <h2 style={{
-          fontFamily: 'var(--font-display)', fontSize: 'clamp(26px, 3.5vw, 38px)',
+          fontFamily: 'var(--font-display)',
+          fontSize: isMobile ? 'clamp(22px, 5vw, 28px)' : 'clamp(26px, 3.5vw, 38px)',
           fontWeight: 700, color: 'var(--color-text)', margin: 0,
           letterSpacing: '0.04em', lineHeight: 1.4,
         }}>
@@ -60,7 +67,10 @@ export default function LoopSection() {
       </div>
 
       {/* Loop Cards Grid */}
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px' }}>
+      <div style={{
+        maxWidth: '1400px', margin: '0 auto',
+        padding: isMobile ? '0 20px' : '0 24px',
+      }}>
         {articles.map((article: Article, index: number) => (
           <article
             key={article.id}
@@ -71,16 +81,18 @@ export default function LoopSection() {
               transform: 'translateY(60px)',
               transition: 'opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '0px', marginBottom: '0px', alignItems: 'center',
+              gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+              gap: '0px',
+              marginBottom: isMobile ? '40px' : '0px',
+              alignItems: 'center',
             }}
           >
-            {/* Image */}
+            {/* Image — on mobile always on top */}
             <div style={{
-              order: index % 2 === 0 ? 1 : 2,
+              order: isMobile ? -1 : (index % 2 === 0 ? 1 : 2),
               position: 'relative',
               overflow: 'hidden',
-              aspectRatio: '4/3',
+              aspectRatio: isMobile ? '16/9' : '4/3',
             }}>
               <Link to={`/article/${article.id}`} style={{ display: 'block', width: '100%', height: '100%' }}>
                 <img
@@ -97,10 +109,10 @@ export default function LoopSection() {
               </Link>
             </div>
 
-            {/* Content */}
+            {/* Content — on mobile below image */}
             <div style={{
-              order: index % 2 === 0 ? 2 : 1,
-              padding: 'clamp(40px, 6vw, 64px) clamp(32px, 5vw, 56px)',
+              order: isMobile ? 0 : (index % 2 === 0 ? 2 : 1),
+              padding: isMobile ? '20px 16px' : 'clamp(40px, 6vw, 64px) clamp(32px, 5vw, 56px)',
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
@@ -109,7 +121,7 @@ export default function LoopSection() {
               {/* Meta line */}
               <div style={{
                 display: 'flex', alignItems: 'center', gap: '12px',
-                marginBottom: '24px',
+                marginBottom: isMobile ? '16px' : '24px',
               }}>
                 <span style={{
                   fontFamily: 'var(--font-display)', fontSize: '11px',
@@ -133,7 +145,7 @@ export default function LoopSection() {
               {/* Title */}
               <h3 style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(22px, 3vw, 32px)',
+                fontSize: isMobile ? 'clamp(18px, 4.5vw, 24px)' : 'clamp(22px, 3vw, 32px)',
                 fontWeight: 700, lineHeight: 1.3,
                 margin: '0 0 20px', letterSpacing: '0.05em',
               }}>
@@ -153,7 +165,8 @@ export default function LoopSection() {
               {/* Excerpt */}
               <p style={{
                 fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
-                fontSize: '16px', lineHeight: 1.85,
+                fontSize: isMobile ? '14px' : '16px',
+                lineHeight: isMobile ? 1.7 : 1.85,
                 color: 'var(--color-text-secondary)',
                 margin: '0 0 28px', fontWeight: 300,
               }}>

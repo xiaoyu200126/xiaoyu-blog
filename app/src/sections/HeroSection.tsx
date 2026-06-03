@@ -18,7 +18,7 @@ export default function HeroSection() {
     .slice(0, 3)
 
   useEffect(() => {
-    if (!carouselRef.current || featuredArticles.length === 0) return
+    if (!carouselRef.current || featuredArticles.length === 0 || isMobile) return
 
     const timer = setTimeout(() => {
       if (!carouselRef.current) return
@@ -28,7 +28,7 @@ export default function HeroSection() {
         contain: true,
         prevNextButtons: false,
         pageDots: false,
-        autoPlay: 6000,
+        autoPlay: isMobile ? 3000 : 6000,
         pauseAutoPlayOnHover: true,
         wrapAround: featuredArticles.length > 1,
         adaptiveHeight: false,
@@ -49,7 +49,17 @@ export default function HeroSection() {
         flktyRef.current = null
       }
     }
-  }, [featuredArticles.length])
+  }, [featuredArticles.length, isMobile])
+
+  // Mobile-only: auto-advance via setInterval (no Flickity needed)
+  useEffect(() => {
+    if (!isMobile || featuredArticles.length <= 1) return
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % featuredArticles.length)
+    }, 3000)
+    setIsReady(true)
+    return () => clearInterval(interval)
+  }, [isMobile, featuredArticles.length])
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
@@ -100,116 +110,126 @@ export default function HeroSection() {
     )
   }
 
-  /* ---- MOBILE LAYOUT: single column ---- */
+  /* ---- MOBILE LAYOUT: custom card carousel ---- */
   if (isMobile) {
     return (
       <section
         className="hero-section"
-        style={{ backgroundColor: 'var(--color-bg)', paddingBottom: '20px' }}
+        style={{ backgroundColor: 'var(--color-bg)', padding: '90px 0 0' }}
       >
-        {/* Carousel — 16:9 images */}
-        <div
-          ref={carouselRef}
-          className="main-carousel"
-          style={{ width: '100%', opacity: isReady ? 1 : 0, transition: 'opacity 0.6s ease' }}
-        >
-          {featuredArticles.map((article: Article) => (
-            <div key={article.id} style={{ width: '100%', marginRight: '12px' }}>
-              {/* Image — 16:9 */}
-              <div style={{
-                width: '100%', paddingBottom: '56.25%', position: 'relative',
-                overflow: 'hidden', backgroundColor: 'var(--color-bg-secondary)',
-              }}>
-                <img
-                  src={article.image}
-                  alt={article.title}
-                  style={{
-                    position: 'absolute', top: 0, left: 0, width: '100%', height: '100%',
-                    objectFit: 'cover', filter: 'saturate(0.9)',
-                  }}
-                />
-                {/* Slide indicators on image */}
+        {/* Carousel wrapper with overflow hidden + scroll snap */}
+        <div style={{ width: '100%', overflow: 'hidden', position: 'relative' }}>
+          <div
+            ref={carouselRef}
+            className="hero-mobile-track"
+            style={{
+              display: 'flex',
+              transition: 'transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+              transform: `translateX(-${currentSlide * 100}%)`,
+              opacity: isReady ? 1 : 0,
+            }}
+          >
+            {featuredArticles.map((article: Article) => (
+              <div key={article.id} style={{ width: '100%', flexShrink: 0 }}>
+                {/* Card — consistent layout */}
                 <div style={{
-                  position: 'absolute', bottom: '14px', left: '0', right: '0',
-                  display: 'flex', justifyContent: 'center', gap: '8px', zIndex: 10,
-                }}>
-                  {featuredArticles.map((_, i) => (
-                    <span key={i} style={{
-                      width: i === currentSlide ? '20px' : '6px', height: '6px',
-                      borderRadius: '3px',
-                      background: i === currentSlide ? 'rgba(255,255,255,0.95)' : 'rgba(255,255,255,0.4)',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
-                      transition: 'all 0.3s ease',
-                    }} />
-                  ))}
-                </div>
-              </div>
-
-              {/* Text below image */}
-              <div style={{ padding: '22px 16px 0' }}>
-                <span style={{
-                  display: 'inline-block', fontFamily: 'var(--font-sans)',
-                  fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase',
-                  color: 'var(--color-text-muted)', border: '1px solid var(--color-border)',
-                  padding: '4px 10px', marginBottom: '12px',
-                }}>
-                  XIAOYU THOUGHT &amp; NOTES
-                </span>
-
-                <div style={{
-                  fontFamily: 'var(--font-display)', fontSize: '12px', fontStyle: 'italic',
-                  color: 'var(--color-accent)', marginBottom: '12px',
-                }}>
-                  {formatDate(article.date)}
-                </div>
-
-                <h1 style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'clamp(20px, 5vw, 28px)',
-                  fontWeight: 700, lineHeight: 1.3,
-                  color: 'var(--color-text)', margin: '0 0 12px',
-                  letterSpacing: '0.04em',
-                }}>
-                  <Link to={`/article/${article.id}`}
-                    style={{ color: 'inherit', textDecoration: 'none' }}>
-                    {article.title}
-                  </Link>
-                </h1>
-
-                <p style={{
-                  fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
-                  fontSize: '14px', lineHeight: 1.7,
-                  color: 'var(--color-text-secondary)', margin: '0 0 16px',
-                  fontWeight: 300,
-                  display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical',
+                  backgroundColor: 'var(--color-bg-secondary)',
                   overflow: 'hidden',
+                  margin: '0 20px',
                 }}>
-                  {article.excerpt}
-                </p>
+                  {/* Image 16:9 — fix height */}
+                  <div style={{
+                    width: '100%',
+                    paddingBottom: '56.25%',
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}>
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      style={{
+                        position: 'absolute', top: 0, left: 0,
+                        width: '100%', height: '100%',
+                        objectFit: 'cover',
+                      }}
+                    />
+                  </div>
 
-                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                  {article.tags.map((tag: string) => (
-                    <Link key={tag} to="/archives" style={{
+                  {/* Text — fixed min-height for consistency */}
+                  <div style={{ padding: '22px 20px 30px', minHeight: '220px' }}>
+                    <span style={{
+                      display: 'inline-block',
                       fontFamily: 'var(--font-sans)', fontSize: '10px',
-                      letterSpacing: '0.14em', textTransform: 'uppercase',
-                      color: 'var(--color-text-muted)', padding: '4px 10px',
+                      letterSpacing: '0.22em', textTransform: 'uppercase',
+                      color: 'var(--color-text-muted)',
                       border: '1px solid var(--color-border)',
-                      textDecoration: 'none', transition: 'all 0.3s ease',
+                      padding: '4px 10px', marginBottom: '12px',
                     }}>
-                      {tag}
-                    </Link>
-                  ))}
+                      XIAOYU THOUGHT &amp; NOTES
+                    </span>
+                    <div style={{
+                      fontFamily: 'var(--font-display)', fontSize: '12px',
+                      fontStyle: 'italic', color: 'var(--color-accent)',
+                      marginBottom: '10px',
+                    }}>
+                      {formatDate(article.date)}
+                    </div>
+                    <h1 style={{
+                      fontFamily: 'var(--font-display)', fontSize: '19px',
+                      fontWeight: 700, lineHeight: 1.35,
+                      color: 'var(--color-text)',
+                      margin: '0 0 10px', letterSpacing: '0.04em',
+                    }}>
+                      <Link to={`/article/${article.id}`}
+                        style={{ color: 'inherit', textDecoration: 'none' }}>
+                        {article.title}
+                      </Link>
+                    </h1>
+                    <p style={{
+                      fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
+                      fontSize: '13px', lineHeight: 1.65,
+                      color: 'var(--color-text-secondary)',
+                      margin: '0 0 14px', fontWeight: 300,
+                      display: '-webkit-box', WebkitLineClamp: 3,
+                      WebkitBoxOrient: 'vertical', overflow: 'hidden',
+                    }}>
+                      {article.excerpt}
+                    </p>
+                    <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                      {article.tags.map((tag: string) => (
+                        <Link key={tag} to="/archives" style={{
+                          fontFamily: 'var(--font-sans)', fontSize: '10px',
+                          letterSpacing: '0.14em', textTransform: 'uppercase',
+                          color: 'var(--color-text-muted)',
+                          padding: '4px 10px',
+                          border: '1px solid var(--color-border)',
+                          textDecoration: 'none',
+                        }}>
+                          {tag}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        <style>{`
-          .hero-section .main-carousel .flickity-viewport {
-            min-height: auto !important;
-          }
-        `}</style>
+        {/* Dots below carousel */}
+        <div style={{
+          display: 'flex', justifyContent: 'center', gap: '8px',
+          padding: '18px 0 20px',
+        }}>
+          {featuredArticles.map((_, i) => (
+            <span key={i} style={{
+              width: i === currentSlide ? '20px' : '6px', height: '6px',
+              borderRadius: '3px',
+              background: i === currentSlide ? 'var(--color-accent)' : 'var(--color-border)',
+              transition: 'all 0.3s ease',
+            }} />
+          ))}
+        </div>
       </section>
     )
   }
@@ -243,7 +263,7 @@ export default function HeroSection() {
               display: 'grid',
               gridTemplateColumns: '1fr 1fr',
               width: '100%',
-              height: '100vh',
+              height: '100%',
             }}
           >
             {/* Left: Text */}
@@ -251,9 +271,9 @@ export default function HeroSection() {
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'center',
-              padding: '0 16px 0 40px',
+              padding: '0 clamp(12px, 2vw, 32px) 0 clamp(24px, 4vw, 64px)',
             }}>
-              <div style={{ maxWidth: '580px' }}>
+              <div style={{ maxWidth: 'clamp(320px, 42vw, 580px)' }}>
                 {/* Badge */}
                 <span style={{
                   display: 'inline-block',
@@ -353,8 +373,8 @@ export default function HeroSection() {
             <div style={{
               position: 'relative',
               overflow: 'hidden',
-              height: '100vh',
-              padding: '24px 84px 24px 0',
+              height: '100%',
+              padding: '0 clamp(32px, 6vw, 96px) 24px 0',
             }}>
               <img
                 src={article.image}
@@ -465,7 +485,7 @@ export default function HeroSection() {
           50% { opacity: 1; transform: translateY(3px); }
         }
         .main-carousel .flickity-viewport {
-          height: 100vh !important;
+          height: 100% !important;
         }
       `}</style>
     </section>

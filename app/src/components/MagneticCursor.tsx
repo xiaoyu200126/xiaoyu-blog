@@ -7,8 +7,15 @@ export default function MagneticCursor() {
   const rafRef = useRef<number>(0)
 
   useEffect(() => {
+    // Skip on mobile / touch — let native cursor handle
+    const isMobile = window.matchMedia('(max-width: 767px)').matches
+    const isTouch = 'ontouchstart' in window
+    if (isMobile || isTouch) return
+
     const cursor = cursorRef.current
     if (!cursor) return
+
+    cursor.style.display = 'block'
 
     const handleMouseMove = (e: MouseEvent) => {
       posRef.current.targetX = e.clientX
@@ -70,7 +77,7 @@ export default function MagneticCursor() {
         backgroundColor: '#fff',
         pointerEvents: 'none',
         zIndex: 9999,
-        transition: 'width 0.3s ease, height 0.3s ease, background-color 0.3s ease, border 0.3s ease',
+        display: 'none',
         mixBlendMode: 'difference',
       }}
     />
