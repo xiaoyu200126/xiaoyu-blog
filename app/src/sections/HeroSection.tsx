@@ -281,7 +281,7 @@ export default function HeroSection() {
                     </p>
                     <div style={{ display: 'flex', gap: '2vw', flexWrap: 'wrap', flexShrink: 0 }}>
                       {article.tags.map((tag: string) => (
-                        <Link key={tag} to="/archives" style={{
+                        <Link key={tag} to={`/archives?tag=${encodeURIComponent(tag)}`} style={{
                           fontFamily: 'var(--font-sans)',
                           fontSize: '2.6vw',
                           letterSpacing: '0.14em', textTransform: 'uppercase',
@@ -420,7 +420,7 @@ export default function HeroSection() {
                   {article.tags.map((tag: string) => (
                     <Link
                       key={tag}
-                      to={`/archives`}
+                      to={`/archives?tag=${encodeURIComponent(tag)}`}
                       style={{
                         fontFamily: 'var(--font-sans)',
                         fontSize: '10px',

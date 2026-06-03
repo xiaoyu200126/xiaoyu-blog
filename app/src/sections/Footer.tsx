@@ -132,9 +132,12 @@ export default function Footer() {
         }}
       >
         {[
+          { label: '首页', path: '/' },
+          { label: '精选文章', path: '/archives' },
           { label: '生活碎碎念', path: '/life' },
           { label: '实用主义&关联主义', path: '/pragmatism-connectivism' },
           { label: 'BRAND & AI', path: '/brand-ai' },
+          { label: '晓宇友人账', path: '/friends' },
           { label: '关于晓宇', path: '/about' },
         ].map((item, index, arr) => (
           <span key={item.path} style={{ display: 'flex', alignItems: 'center' }}>

@@ -178,7 +178,7 @@ export default function LoopSection() {
                 {article.tags.slice(0, 2).map((tag: string) => (
                   <Link
                     key={tag}
-                    to={`/archives`}
+                    to={`/archives?tag=${encodeURIComponent(tag)}`}
                     style={{
                       fontFamily: 'var(--font-sans)', fontSize: '11px',
                       letterSpacing: '0.14em', textTransform: 'uppercase',
