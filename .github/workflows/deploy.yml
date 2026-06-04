@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: old_version/app
+        working-directory: app
     steps:
       - uses: actions/checkout@v4
 
@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: old_version/app/package-lock.json
+          cache-dependency-path: app/package-lock.json
 
       - run: npm ci
       - run: npm run build
@@ -26,5 +26,5 @@ jobs:
       - uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: old_version/app/dist
+          publish_dir: app/dist
           cname: xiaoyu-blog.cn
