@@ -17,6 +17,10 @@ pnpm-lock.yaml
 *.tgz
 .cache/
 
+# 管理后台（仅本地，不上传GitHub）
+app/admin-server/
+app/content/custom-tags.json
+
 # 敏感文件（绝不上传）
 /secrets/
 *.key
