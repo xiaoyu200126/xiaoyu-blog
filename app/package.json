@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:admin": "vite",
-    "admin": "vite",
+    "dev:admin": "node admin-server/index.cjs",
+    "admin": "node admin-server/index.cjs",
     "prebuild": "npx tsx scripts/generate-articles.ts",
     "build": "npm run prebuild && tsc -b && vite build",
     "generate": "npx tsx scripts/generate-articles.ts",
