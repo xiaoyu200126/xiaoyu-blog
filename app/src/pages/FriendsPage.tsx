@@ -1,14 +1,17 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
+import friendsData from '../../content/friends.json'
 
-const friends = [
-  { id: 1, name: '陈默', title: '独立摄影师', description: '用镜头记录城市边缘的诗意，擅长黑白胶片摄影。' },
-  { id: 2, name: '林小雨', title: '文字工作者 / 译者', description: '翻译过多本日文小说，正在写自己的第一本散文集。' },
-  { id: 3, name: '阿北', title: '全栈开发者', description: '开源社区活跃贡献者，相信技术应该服务于人文。' },
-  { id: 4, name: '苏苏', title: '插画师', description: '用水彩和数字画笔描绘梦境与现实交织的世界。' },
-  { id: 5, name: '老周', title: '咖啡馆主理人', description: '经营一家开了八年的独立咖啡馆，也是地下乐队的鼓手。' },
-  { id: 6, name: '阿雅', title: '旅行博主', description: '走过四十个国家，用文字和影像记录路上的故事。' },
-]
+interface Friend {
+  id: number
+  name: string
+  title: string
+  description: string
+  url?: string
+  avatar?: string
+}
+
+const friends: Friend[] = friendsData
 
 export default function FriendsPage() {
   const contentRef = useRef<HTMLDivElement>(null)
@@ -46,15 +49,11 @@ export default function FriendsPage() {
                 border: '1px solid var(--color-border)',
                 transition: 'border-color 0.3s ease',
               }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--color-accent)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--color-border)'
-              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-accent)' }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)' }}
             >
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 400, marginBottom: '4px', color: 'var(--color-text)' }}>
-                {friend.name}
+                {friend.url ? <a href={friend.url} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>{friend.name}</a> : friend.name}
               </h3>
               <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 400, letterSpacing: '0.12em', color: 'var(--color-accent)', display: 'block', marginBottom: '12px', textTransform: 'uppercase' }}>
                 {friend.title}

@@ -21,6 +21,7 @@ interface ArticleMeta {
   readTime: string
   image: string
   category: string
+  featured?: boolean
 }
 
 // Read all .md files
@@ -56,6 +57,7 @@ for (const file of files) {
       readTime: data.readTime,
       image: data.image,
       category: data.category,
+      featured: !!data.featured,
     },
     body: content.trim(),
   })
@@ -78,6 +80,7 @@ export interface Article {
   readTime: string
   image: string
   category: string
+  featured: boolean
 }
 
 export const articles: Article[] = [
@@ -100,6 +103,7 @@ for (let i = 0; i < entries.length; i++) {
     readTime: ${JSON.stringify(a.meta.readTime)},
     image: ${JSON.stringify(a.meta.image)},
     category: ${JSON.stringify(a.meta.category)},
+    featured: ${!!a.meta.featured},
   }${comma}
 `
 }

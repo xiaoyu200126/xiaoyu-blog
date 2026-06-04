@@ -1,5 +1,5 @@
 // AUTO-GENERATED from content/posts/*.md — DO NOT EDIT MANUALLY
-// Generated on 2026-06-04T03:14:17.077Z
+// Generated on 2026-06-04T03:41:11.965Z
 
 export interface Article {
   id: string
@@ -12,6 +12,7 @@ export interface Article {
   readTime: string
   image: string
   category: string
+  featured: boolean
 }
 
 export const articles: Article[] = [
@@ -26,6 +27,7 @@ export const articles: Article[] = [
     readTime: "12 min read",
     image: "/images/featured-1.jpg",
     category: "关联主义学习",
+    featured: false,
   },
   {
     id: "ai-midnight-chat",
@@ -38,6 +40,7 @@ export const articles: Article[] = [
     readTime: "7 min read",
     image: "/images/featured-1.jpg",
     category: "生活碎碎念",
+    featured: false,
   },
   {
     id: "all-in-ai-transition",
@@ -50,6 +53,7 @@ export const articles: Article[] = [
     readTime: "15 min read",
     image: "/images/blog_cover_ALL_IN_AI.jpg",
     category: "BRAND ALL IN AI",
+    featured: false,
   },
   {
     id: "car-sample-bag",
@@ -62,6 +66,7 @@ export const articles: Article[] = [
     readTime: "6 min read",
     image: "/images/polaroid-1.jpg",
     category: "生活碎碎念",
+    featured: false,
   },
   {
     id: "hello-world",
@@ -74,6 +79,7 @@ export const articles: Article[] = [
     readTime: "5 min read",
     image: "/images/featured-2.jpg",
     category: "生活碎碎念",
+    featured: false,
   },
   {
     id: "notion-to-obsidian",
@@ -86,6 +92,7 @@ export const articles: Article[] = [
     readTime: "10 min read",
     image: "/images/featured-2.jpg",
     category: "实用主义研究",
+    featured: false,
   },
   {
     id: "rain-city-reflection",
@@ -98,6 +105,7 @@ export const articles: Article[] = [
     readTime: "5 min read",
     image: "/images/polaroid-2.jpg",
     category: "生活碎碎念",
+    featured: false,
   },
   {
     id: "tools-recommendation",
@@ -110,6 +118,7 @@ export const articles: Article[] = [
     readTime: "8 min read",
     image: "/images/hero-tools.jpg",
     category: "实用主义研究",
+    featured: false,
   }
 ]
 

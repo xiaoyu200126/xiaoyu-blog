@@ -1,94 +1,56 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { gsap } from 'gsap'
+import aboutRaw from '../../content/about.md?raw'
+
+function md2html(md: string): string {
+  if (!md) return ''
+  const lines = md.split('\n')
+  let h = ''
+  let inCode = false
+  let codeBuf = ''
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i]
+    const t = line.trim()
+    if (t.startsWith('```')) {
+      if (inCode) { h += `<pre><code>${esc(codeBuf)}</code></pre>`; codeBuf = ''; inCode = false }
+      else inCode = true
+      continue
+    }
+    if (inCode) { codeBuf += line + '\n'; continue }
+    if (t.startsWith('#### ')) h += `<h4>${esc(t.slice(5))}</h4>`
+    else if (t.startsWith('### ')) h += `<h3>${esc(t.slice(4))}</h3>`
+    else if (t.startsWith('## ')) h += `<h2>${esc(t.slice(3))}</h2>`
+    else if (t.startsWith('# ')) h += `<h1>${esc(t.slice(2))}</h1>`
+    else if (t.startsWith('> ')) h += `<blockquote>${t.slice(2)}</blockquote>`
+    else if (t === '---' || t === '***') h += '<hr>'
+    else if (t === '') h += '<br>'
+    else h += `<p>${t}</p>`
+  }
+  if (inCode && codeBuf) h += `<pre><code>${esc(codeBuf)}</code></pre>`
+  return h
+}
+function esc(s: string) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
 
 export default function AboutPage() {
   const contentRef = useRef<HTMLDivElement>(null)
+  const aboutHtml = useMemo(() => md2html(aboutRaw), [])
 
   useEffect(() => {
     const content = contentRef.current
     if (!content) return
-
-    gsap.fromTo(
-      content,
-      { opacity: 0, y: 40 },
-      { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.2 }
-    )
+    gsap.fromTo(content, { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 1, ease: 'power3.out', delay: 0.2 })
   }, [])
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        paddingTop: '140px',
-        paddingBottom: '80px',
-        backgroundColor: 'var(--color-bg)',
-      }}
-    >
-      <div
-        ref={contentRef}
-        style={{
-          maxWidth: '800px',
-          margin: '0 auto',
-          padding: '0 40px',
-        }}
-      >
-        <span
-          className="badge-month"
-          style={{
-            display: 'block',
-            marginBottom: '24px',
-          }}
-        >
+    <div style={{ minHeight: '100vh', paddingTop: '140px', paddingBottom: '80px', backgroundColor: 'var(--color-bg)' }}>
+      <div ref={contentRef} style={{ maxWidth: '800px', margin: '0 auto', padding: '0 40px' }}>
+        <span className="badge-month" style={{ display: 'block', marginBottom: '24px' }}>
           About XIAOYU
         </span>
-
-        <h1
-          style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(28px, 4vw, 42px)',
-            fontWeight: 300,
-            lineHeight: 1.3,
-            marginBottom: '48px',
-            color: 'var(--color-text)',
-            letterSpacing: '-0.02em',
-          }}
-        >
+        <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 300, lineHeight: 1.3, marginBottom: '48px', color: 'var(--color-text)', letterSpacing: '-0.02em' }}>
           XIAOYU的随笔
         </h1>
-
-        <div
-          className="article-content"
-        >
-          <h4>缘起</h4>
-          <p>
-            "摩西在诗篇90篇里面说："我们经过的日子都在你的震怒之下，我们渡尽的年岁好像是一生叹息。我们一生的年日是七十岁，若是强壮可到八十岁；但其中所矜夸的不过是劳苦愁烦，转眼成空，我们便如飞而去。""
-          </p>
-
-          <h4>生活是一场湮灭的花火</h4>
-          <p>
-            生活本身或许也没有啥子意义，不信你看：爱情会远去，身体会衰老，激情会消失。一切都将归于虚无。生活其实本质是虚无的，因为一切都会消逝，都将会被取代，曾经的印记终将片甲不留。湮灭于时光长河。
-          </p>
-
-          <h4>《摇摇晃晃的人间》</h4>
-          <p>
-            我看了诗人余秀华的纪录片《摇摇晃晃的人间》，导演用重复大量的对身为农民和诗人的余秀华的日常镜头传达了她身份的矛盾和自己的坚持，田间劳作，割草喂兔，读书写作，余秀华的日常就是这样，她没有如花美貌，她说话口齿不清，她的老公是父母包办，她生活条件一点都不优渥，她说写诗是支撑自己生活的支柱。
-          </p>
-
-          <h4>生存、生活、生命</h4>
-          <p>
-            对于别人而言或许在我们死后还会存在意义，如同伟人死后亦成为精神丰碑，生前轶事也被好事者寻出推敲斟酌，可我们没有这样的好福气，多数人只会如同祥林嫂那样，死了就逐渐消逝了，连同那根乞讨生活的竹竿和豁了口的瓷碗一样湮灭。
-          </p>
-
-          <h4>绽放的我们于是有了意义</h4>
-          <p>
-            所以生命本身没有意义，有意义的是活着的我们，我们的喜怒哀乐，我们对生活的感知才有意义。
-          </p>
-
-          <h4>尾</h4>
-          <p>
-            "XIAOYU的随笔"记录着发生过的事、遇见过的人、去过的地方。
-          </p>
-        </div>
+        <div className="article-content" dangerouslySetInnerHTML={{ __html: aboutHtml }} />
       </div>
     </div>
   )
