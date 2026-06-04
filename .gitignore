@@ -1,0 +1,32 @@
+# 系统文件
+.DS_Store
+Thumbs.db
+
+# Hexo 临时文件
+db.json
+*.log
+.deploy*/
+.idea/
+.vscode/
+*.iml
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-lock.yaml
+*.tgz
+.cache/
+
+# 管理后台（仅本地，不上传GitHub main/master）
+# ↓ 已解除注释 — 仅在 full-source 分支包含
+# app/admin-server/
+app/content/custom-tags.json
+
+# 敏感文件（绝不上传）
+/secrets/
+*.key
+*.pem
+.env
+.env.*
+credentials.json
+token*
+*secret*

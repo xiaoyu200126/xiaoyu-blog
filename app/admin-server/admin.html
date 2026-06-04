@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>XIAOYU · 管理后台</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Noto+Sans+SC:wght@300;400;500&family=Noto+Serif+SC:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&display=swap');
+
+:root {
+  --color-bg:       #f5f0e8;
+  --color-bg2:      #ede7db;
+  --color-bg3:      #faf6ef;
+  --color-text:     #2c2418;
+  --color-text2:    #5c4f3d;
+  --color-text-m:   #8a7d6b;
+  --color-accent:   #8b4513;
+  --color-accent-h: #a0522d;
+  --color-accent-l: #c4956a;
+  --color-border:   #d4c9b8;
+  --color-border-l: #e0d8cc;
+  --color-star:     #d4a017;
+  --font-display: 'Playfair Display','Noto Serif SC','Georgia',serif;
+  --font-body: 'Noto Serif SC','Georgia',serif;
+  --font-sans: 'Noto Sans SC','PingFang SC',sans-serif;
+  --font-mono: 'SF Mono','Fira Code','Cascadia Code',monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:var(--font-body); background:var(--color-bg);
+  color:var(--color-text); min-height:100vh;
+  -webkit-font-smoothing:antialiased; letter-spacing:0.04em; line-height:1.7;
+}
+body::before{
+  content:''; position:fixed; inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none; z-index:0;
+}
+::selection{background:var(--color-accent-l);color:var(--color-text)}
+
+/* Top Bar */
+.tbar{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px clamp(20px,3vw,48px);background:var(--color-bg);border-bottom:1px solid var(--color-border);backdrop-filter:blur(8px)}
+.tbar-l{display:flex;align-items:baseline;gap:24px}
+.tbar-l .logo{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--color-text);letter-spacing:0.08em}
+.tbtn{padding:6px 16px;font-size:12px;border-radius:3px;cursor:pointer;border:1px solid var(--color-border);background:transparent;color:var(--color-text2);font-family:var(--font-sans);letter-spacing:0.06em;transition:all 0.3s ease}
+.tbtn:hover{border-color:var(--color-accent);color:var(--color-accent)}
+.tbtn.on{border-color:var(--color-accent);color:var(--color-accent);background:rgba(139,69,19,0.06)}
+.tbtn.accent{background:var(--color-accent);color:var(--color-bg);border-color:var(--color-accent)}
+.tbtn.accent:hover{background:var(--color-accent-h)}
+.tbtn.accent:disabled{opacity:.5;cursor:not-allowed}
+.tbtn.featured{color:var(--color-star);border-color:var(--color-star)}
+.tbtn.featured.on{background:rgba(212,160,23,0.08)}
+.tbtn.carousel{color:#46b5d1;border-color:#46b5d1}
+.tbtn.carousel.on{background:rgba(70,181,209,0.08)}
+.tbar-r{display:flex;align-items:center;gap:12px}
+.dirty{font-family:var(--font-sans);font-size:11px;color:var(--color-accent);letter-spacing:0.06em}
+.msg{font-family:var(--font-sans);font-size:12px;color:var(--color-accent);letter-spacing:0.04em}
+
+/* Layout */
+.layout{display:flex;height:calc(100vh - 57px);position:relative;z-index:1}
+.side{width:200px;flex-shrink:0;padding:28px 20px;overflow-y:auto;border-right:1px solid var(--color-border);background:var(--color-bg)}
+.side .sec-title{font-family:var(--font-display);font-size:10px;font-weight:600;color:var(--color-text-m);text-transform:uppercase;letter-spacing:0.22em;margin:24px 0 8px}
+.side .sec-title:first-child{margin-top:0}
+.side .sep{border:none;border-top:1px solid var(--color-border-l);margin:18px 0 8px}
+.sbtn{display:block;width:100%;text-align:left;padding:7px 10px;font-size:13px;border:none;cursor:pointer;background:transparent;color:var(--color-text2);border-radius:2px;margin-bottom:2px;font-family:var(--font-body);letter-spacing:0.04em;transition:all 0.2s ease}
+.sbtn:hover{background:rgba(139,69,19,0.04);color:var(--color-accent)}
+.sbtn.on{background:rgba(139,69,19,0.07);color:var(--color-accent);font-weight:500}
+.sbtn .cnt{font-size:10px;color:var(--color-text-m);float:right;letter-spacing:0}
+.main{flex:1;overflow-y:auto;padding:36px clamp(28px,4vw,56px)}
+.main h2.page-title{font-family:var(--font-display);font-size:clamp(22px,3vw,32px);font-weight:300;color:var(--color-text);letter-spacing:0.04em;margin-bottom:32px;line-height:1.3}
+
+/* Form Controls */
+input,select,textarea{background:var(--color-bg3);color:var(--color-text);border:1px solid var(--color-border);border-radius:3px;outline:none;font-family:var(--font-body);font-size:13px;padding:8px 12px;transition:border-color 0.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--color-accent-l)}
+input::placeholder{color:var(--color-text-m);font-size:12px}
+.search{width:100%;padding:10px 16px;margin-bottom:20px;font-size:14px}
+select{cursor:pointer}
+
+/* Table */
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:10px 12px;font-family:var(--font-sans);font-size:10px;font-weight:600;color:var(--color-text-m);text-transform:uppercase;letter-spacing:0.14em;border-bottom:1px solid var(--color-border)}
+td{padding:12px;font-size:13px;color:var(--color-text2);border-bottom:1px solid var(--color-border-l);vertical-align:middle}
+td .tid{font-size:11px;color:var(--color-text-m);margin-top:3px;letter-spacing:0.02em}
+td .rtime{font-size:11px;color:var(--color-text-m)}
+tr:hover td{background:rgba(139,69,19,0.02)}
+.badge{display:inline-block;padding:2px 8px;font-size:10px;font-family:var(--font-display);letter-spacing:0.06em;border:1px solid var(--color-border);border-radius:2px;color:var(--color-text-m);margin-right:4px;cursor:pointer;transition:all 0.2s}
+.badge:hover{border-color:var(--color-accent);color:var(--color-accent)}
+.act{padding:3px 8px;font-size:11px;border:none;cursor:pointer;background:transparent;color:var(--color-text2);font-family:var(--font-sans);letter-spacing:0.04em;transition:color 0.2s}
+.act:hover{color:var(--color-accent)}.act.del{color:var(--color-text-m)}.act.del:hover{color:#c0392b}
+.act.star{font-size:15px;padding:2px 6px;color:var(--color-star)}.act.star:hover{opacity:.7}
+.empty{text-align:center;color:var(--color-text-m);padding:60px 20px;font-size:14px}
+
+/* Editor */
+.editor{max-width:1100px}
+.e-tbar{display:flex;gap:10px;margin-bottom:20px;align-items:center;flex-wrap:wrap;padding-bottom:18px;border-bottom:1px solid var(--color-border-l)}
+.e-info{font-size:12px;color:var(--color-text-m);font-family:var(--font-sans)}
+.wc{font-family:var(--font-sans);font-size:10px;color:var(--color-text-m);margin-left:auto;letter-spacing:0.04em}
+.e-grid{display:grid;grid-template-columns:340px 1fr;gap:28px;align-items:start}
+.e-grid.full{grid-template-columns:1fr}
+.e-form{display:flex;flex-direction:column;gap:14px}
+.e-form label{font-family:var(--font-display);font-size:10px;font-weight:600;color:var(--color-accent);letter-spacing:0.14em;text-transform:uppercase;display:block;margin-bottom:4px}
+.e-form input,.e-form select,.e-form textarea{width:100%}
+.e-form textarea{resize:vertical;font-size:13px;padding:10px;font-family:var(--font-body);line-height:1.8}
+.e-form .row3{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:end}
+.e-form .covers{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;max-height:72px;overflow-y:auto}
+.e-form .covers img{width:38px;height:28px;object-fit:cover;border-radius:2px;cursor:pointer;border:2px solid transparent;opacity:.55;transition:all 0.2s}
+.e-form .covers img.sel{border-color:var(--color-accent);opacity:1}
+.e-form .covers img:hover{opacity:1}
+.e-form .tags{display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.e-form .tags button{padding:2px 10px;font-size:10px;border-radius:2px;cursor:pointer;border:1px solid var(--color-border);background:transparent;color:var(--color-text-m);font-family:var(--font-display);letter-spacing:0.06em;transition:all 0.2s}
+.e-form .tags button.on{background:var(--color-accent);color:var(--color-bg);border-color:var(--color-accent)}
+.e-form .tag-del{color:var(--color-text-m);font-size:10px;margin-left:3px;cursor:pointer;opacity:.5}
+.e-form .tag-del:hover{opacity:1}
+.e-form .tag-input{width:80px;padding:2px 6px;font-size:10px;height:22px}
+
+/* MD Toolbar */
+.mdtoolbar{display:flex;gap:4px;padding:8px 12px;background:var(--color-bg2);border:1px solid var(--color-border);border-radius:3px 3px 0 0;flex-wrap:wrap}
+.mdtoolbar button,.mdtoolbar label{padding:3px 10px;font-size:11px;border-radius:2px;cursor:pointer;border:1px solid transparent;background:transparent;color:var(--color-text2);font-family:var(--font-sans);transition:all 0.2s}
+.mdtoolbar label:hover,.mdtoolbar button:hover{border-color:var(--color-border);color:var(--color-accent);background:var(--color-bg3)}
+.mdtoolbar button.hgroup{font-weight:600;color:var(--color-accent);font-family:var(--font-display)}
+.mdtoolbar .sep{width:1px;background:var(--color-border-l);margin:0 4px;align-self:stretch}
+.mdtoolbar input[type=file]{display:none}
+
+.mdedit{width:100%;height:calc(100vh - 240px);min-height:400px;padding:18px;font-family:var(--font-mono);font-size:13px;line-height:1.8;background:var(--color-bg3);color:var(--color-text);border:1px solid var(--color-border);border-top:none;border-radius:0 0 3px 3px;resize:vertical;outline:none;tab-size:2}
+
+/* Preview — matches xiaoyu-blog.cn article page exactly */
+.mdpv{padding:48px 40px;background:var(--color-bg);max-width:760px;min-height:400px;max-height:calc(100vh - 120px);overflow-y:auto;margin:0 auto}
+.mdpv h1{font-family:var(--font-display);font-size:32px;font-weight:700;color:var(--color-text);margin-bottom:20px;letter-spacing:0.04em;line-height:1.3}
+.mdpv h2{font-family:var(--font-display);font-size:24px;font-weight:700;color:var(--color-text);margin:48px 0 16px;letter-spacing:0.04em;line-height:1.4}
+.mdpv h3{font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--color-text);margin:36px 0 12px;line-height:1.4}
+.mdpv h4{font-family:var(--font-display);font-size:14px;font-weight:700;color:var(--color-accent);text-transform:uppercase;letter-spacing:0.2em;margin:28px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--color-border)}
+.mdpv p{font-size:16px;line-height:2.1;color:var(--color-text2);margin:20px 0;letter-spacing:0.05em;text-align:justify}
+.mdpv strong,.mdpv b{color:var(--color-text)}
+.mdpv em,.mdpv i{font-style:italic;color:var(--color-text2)}
+.mdpv code{background:var(--color-bg2);color:var(--color-accent);padding:3px 8px;border-radius:3px;font-size:0.9em;font-family:var(--font-mono)}
+.mdpv pre{background:var(--color-bg2);padding:24px;border-radius:6px;overflow-x:auto;margin:28px 0;border:1px solid var(--color-border);font-size:14px}
+.mdpv pre code{background:none;color:var(--color-text);padding:0;font-size:inherit}
+.mdpv blockquote{border-left:3px solid var(--color-accent-l);padding:16px 24px;margin:28px 0;color:var(--color-text-m);font-style:italic;font-size:17px;background:var(--color-bg2);border-radius:0 4px 4px 0}
+.mdpv ul,.mdpv ol{padding-left:28px;margin:20px 0}
+.mdpv li{margin:10px 0;line-height:1.7}
+.mdpv a{color:var(--color-accent);text-decoration:none;transition:color 0.3s ease}
+.mdpv a:hover{color:var(--color-accent-h)}
+.mdpv hr{border:none;border-top:1px solid var(--color-border);margin:48px 0}
+.mdpv img{max-width:100%;border-radius:4px;margin:28px 0;box-shadow:0 4px 20px rgba(44,36,24,0.1)}
+.mdpv table{border-collapse:collapse;width:100%;margin:20px 0}
+.mdpv th,.mdpv td{padding:8px 12px;border:1px solid var(--color-border)}
+.mdpv th{background:var(--color-bg2);color:var(--color-text-m);font-size:11px;text-transform:uppercase}
+.mdpv .meta-line{font-family:var(--font-sans);font-size:12px;color:var(--color-text-m);margin-bottom:36px;padding-bottom:24px;border-bottom:1px solid var(--color-border);display:flex;gap:16px}
+
+/* Upload / Images */
+.upload-box{padding:28px;border:2px dashed var(--color-border);border-radius:4px;text-align:center;margin-bottom:20px;background:var(--color-bg3);cursor:pointer;transition:border-color 0.3s}
+.upload-box:hover{border-color:var(--color-accent-l)}
+.img-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.img-card{background:var(--color-bg3);border:1px solid var(--color-border);border-radius:4px;overflow:hidden}
+.img-card img{width:100%;height:110px;object-fit:cover;display:block}
+.img-card .info{padding:7px 9px}
+.img-card .info .fn{font-size:9px;color:var(--color-text-m);word-break:break-all;margin-bottom:4px}
+
+/* Friend Cards */
+.fcard{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.fcard .card{background:var(--color-bg3);border:1px solid var(--color-border);border-radius:4px;padding:24px;transition:border-color 0.3s ease}
+.fcard .card:hover{border-color:var(--color-accent)}
+.fcard .card h4{font-family:var(--font-display);font-size:18px;font-weight:400;color:var(--color-text);margin-bottom:4px}
+.fcard .card .ftitle{font-family:var(--font-display);font-size:11px;color:var(--color-accent);text-transform:uppercase;letter-spacing:0.12em;margin-bottom:10px}
+.fcard .card p{font-size:13px;color:var(--color-text2);line-height:1.7;margin-bottom:8px}
+.fcard .card .furl{font-size:11px;color:var(--color-accent-l);margin-bottom:10px}
+</style>
+</head>
+<body>
+<div class="tbar">
+  <div class="tbar-l">
+    <span class="logo">XIAOYU</span>
+    <button class="tbtn on" data-tab="list">文章</button>
+    <button class="tbtn" data-tab="edit" id="btnNew">+ 新文章</button>
+    <button class="tbtn" data-tab="featured">精选</button>
+    <button class="tbtn" data-tab="home">首页</button>
+    <button class="tbtn" data-tab="images">图片</button>
+    <button class="tbtn" data-tab="friends">友链</button>
+    <button class="tbtn" data-tab="about">关于</button>
+  </div>
+  <div class="tbar-r">
+    <span class="dirty" id="dirty" style="display:none">● 未保存</span>
+    <span class="msg" id="msg"></span>
+    <button class="tbtn accent" onclick="doSync()" id="syncBtn">同步到仓库</button>
+  </div>
+</div>
+<div class="layout"><div class="side" id="sidebar"></div><div class="main" id="main"></div></div>
+
+<script>
+let state = { tab:'list', articles:[], nav:[], images:[], allTags:[], catFilter:'', tagFilter:'', search:'', editing:null, dirty:false, preview:false, friends:[], aboutContent:'', aboutDirty:false, friendEditing:null, aboutPreview:false }
+
+async function api(url, opts) { const r = await fetch(url, opts); return r.json() }
+function msg(s) { const el = document.getElementById('msg'); el.textContent = s; setTimeout(() => el.textContent = '', s.length>40?5000:2000) }
+
+async function load() {
+  const [articles, allTags, images, nav, friends, about] = await Promise.all([
+    api('/api/articles'), api('/api/tags'), api('/api/images'), api('/api/nav'),
+    api('/api/friends'), api('/api/about')
+  ])
+  state.articles = articles; state.allTags = allTags; state.images = images; state.nav = nav
+  state.friends = Array.isArray(friends) ? friends : (friends.friends || [])
+  state.aboutContent = about.content; render()
+}
+
+function render() {
+  try {
+  document.getElementById('dirty').style.display = state.dirty || state.aboutDirty ? 'inline':'none'
+  document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === state.tab && b.id !== 'btnNew'))
+  renderSidebar()
+  if (state.tab === 'list') renderList()
+  else if (state.tab === 'edit') renderEditor()
+  else if (state.tab === 'featured') renderFeaturedManager()
+  else if (state.tab === 'home') renderHome()
+  else if (state.tab === 'images') renderImages()
+  else if (state.tab === 'friends') renderFriends()
+  else if (state.tab === 'about') renderAbout()
+  } catch(e) { document.getElementById('main').innerHTML='<div class="empty">渲染出错，请刷新页面<br><small>'+esc(e.message)+'</small></div>' }
+}
+
+// ── Sidebar ──
+function renderSidebar() {
+  let h = `<div class="sec-title">📋 栏目筛选</div>`
+  const articleNav = state.nav.filter(n => !n.type && ['','生活碎碎念','__merged__','BRAND ALL IN AI'].includes(n.filter))
+  articleNav.forEach(n => {
+    let isActive; const f = n.filter
+    if (f === '__merged__') isActive = state.catFilter === f
+    else if (!f) isActive = !state.catFilter && !state.tagFilter
+    else isActive = state.catFilter === f
+    h += `<button class="sbtn${isActive?' on':''}" onclick="applyNavFilter('${esc(f)}')">${n.icon} ${esc(n.label)} <span class="cnt">${n.count||0}</span></button>`
+  })
+  h += `<div class="sec-title">🏷 标签筛选</div>`
+  if (!state.allTags.length) h += `<div style="font-size:11px;color:var(--color-text-m);padding:4px 10px">暂无标签</div>`
+  else state.allTags.forEach(t => h += `<button class="sbtn${state.tagFilter===t?' on':''}" onclick="applyNavFilter('__tag__${esc(t)}')">${esc(t)}</button>`)
+  h += `<hr class="sep"><div class="sec-title">📄 页面管理</div>`
+  const pageItems = [
+    {type:'home', label:'🏠 首页', count:state.articles.filter(a=>a.featured).length+'精 / '+state.articles.length+'篇'},
+    {type:'featured', label:'⭐ 精选文章', count:state.articles.filter(a=>a.featured).length},
+    ...state.nav.filter(n => n.type && n.type !== 'page').map(n=>({type:n.type, label:n.icon+' '+n.label, count:n.count}))
+  ]
+  pageItems.forEach(n => {
+    const isActive = state.tab === n.type
+    h += `<button class="sbtn${isActive?' on':''}" onclick="switchTab('${n.type}')">${esc(n.label)} <span class="cnt">${n.count||0}</span></button>`
+  })
+  document.getElementById('sidebar').innerHTML = h
+}
+function applyNavFilter(val) {
+  if (val.startsWith('__tag__')) { state.catFilter=''; state.tagFilter=val.slice(7); state.search='' }
+  else { state.catFilter=val||''; state.tagFilter=''; state.search='' }
+  state.tab='list'; state.editing=null; state.dirty=false; state.preview=false; render()
+}
+function switchTab(t) { state.tab=t; state.catFilter=''; state.tagFilter=''; state.friendEditing=null; render() }
+function filtered() {
+  return state.articles.filter(a => {
+    if (state.catFilter === '__merged__') { if (!['实用主义研究','关联主义学习'].includes(a.category)) return false }
+    else if (state.catFilter && a.category !== state.catFilter) return false
+    if (state.tagFilter && !(a.tags||[]).includes(state.tagFilter)) return false
+    if (state.search) { const q = state.search.toLowerCase(); if (!a.title.toLowerCase().includes(q) && !a.id.includes(q) && !(a.excerpt||'').toLowerCase().includes(q)) return false }
+    return true
+  })
+}
+
+// ── List ──
+function renderList() {
+  const list = filtered()
+  let h = `<h2 class="page-title">${state.catFilter==='__featured__'?'⭐ 精选文章':(state.nav.find(n=>n.filter===state.catFilter&&!n.type)?.label||'全部文章')}</h2>
+    <div style="display:flex;gap:12px;margin-bottom:20px"><input class="search" placeholder="搜索标题 / ID..." value="${esc(state.search)}" oninput="state.search=this.value;renderList()">`
+  if (state.catFilter || state.tagFilter) {
+    const label = state.tagFilter ? `标签: ${state.tagFilter}` : (state.nav.find(n=>n.filter===state.catFilter)?.label||state.catFilter)
+    h += `<button class="tbtn" onclick="state.catFilter='';state.tagFilter='';state.search='';render()">✕ 清除</button>`
+  }
+  h += `</div>`
+  if (!list.length) return document.getElementById('main').innerHTML = h + '<div class="empty">暂无匹配文章</div>'
+  h += `<table><thead><tr><th style="width:30px"></th><th>标题</th><th>日期</th><th>栏目</th><th>标签</th><th>阅读</th><th style="width:100px"></th></tr></thead><tbody>`
+  list.forEach(a => {
+    h += `<tr>
+      <td><button class="act star" onclick="toggleFeatured('${esc(a.id)}')" title="${a.featured?'取消精选':'设为精选'}">${a.featured?'★':'☆'}</button></td>
+      <td><div style="font-family:var(--font-display);font-size:14px;color:var(--color-text)">${esc(a.title)||'(无标题)'}</div><div class="tid">ID: ${a.id}</div></td>
+      <td>${esc(fmtDate(a.date))}</td>
+      <td><span class="badge" onclick="applyNavFilter('${esc(a.category)}')">${esc(a.category)}</span></td>
+      <td>${(a.tags||[]).map(t=>`<span class="badge" onclick="applyNavFilter('__tag__${esc(t)}')">${esc(t)}</span>`).join('')}</td>
+      <td><div class="rtime">${esc(a.readTime||'')}</div></td>
+      <td><button class="act" onclick="editArticle('${esc(a.id)}')">编辑</button><button class="act del" onclick="delArticle('${esc(a.id)}')">删除</button></td>
+    </tr>`
+  }); h += `</tbody></table>`; document.getElementById('main').innerHTML = h
+}
+async function toggleFeatured(id) { const a = state.articles.find(x => x.id === id); if (!a) return; await api('/api/articles/' + encodeURIComponent(id), { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify({...a, featured:!a.featured}) }); await load(); msg(a.featured ? '已取消精选' : '已设为精选') }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;') }
+function fmtDate(d) { if (!d) return ''; try { const dt = new Date(d); if (!isNaN(dt.getTime())) return dt.toISOString().slice(0,10) } catch {}; return String(d).slice(0,10) }
+
+// ── Editor ──
+function newArticle() { if (state.dirty&&!confirm('未保存'))return; state.editing={id:'post-'+Date.now(),title:'',date:new Date().toISOString().slice(0,10),category:'生活碎碎念',excerpt:'',content:'',image:'',tags:[],readTime:'',featured:false,carousel:false}; state.dirty=false; state.preview=false; state.tab='edit'; render() }
+async function editArticle(id) { if(state.dirty&&!confirm('未保存'))return; state.editing=await api('/api/articles/'+encodeURIComponent(id)); state.dirty=false; state.preview=false; state.tab='edit'; render() }
+async function delArticle(id) { if(!confirm('删除「'+id+'」？'))return; await api('/api/articles/'+encodeURIComponent(id),{method:'DELETE'}); if(state.editing&&state.editing.id===id){state.editing=null;state.tab='list'} msg('已删除'); await load() }
+
+// onFieldChange: text input handler — NO re-render, just update state (fixes Chinese IME)
+function onFieldChange(field, val) { if(!state.editing)return; state.editing[field]=val; state.dirty=true }
+// update: for non-text changes (select, tag toggle, image click) — re-renders form panel only
+function update(patch) { if(!state.editing)return; Object.assign(state.editing,patch); state.dirty=true; if(!('content' in patch)) renderEditorForm() }
+// toggleEditorFeatured: directly updates DOM button without re-render
+function toggleEditorFeatured() {
+  if(!state.editing)return; state.editing.featured=!state.editing.featured; state.dirty=true
+  const btn=document.querySelector('.e-tbar .tbtn.featured'); if(btn){btn.classList.toggle('on',state.editing.featured);btn.textContent=state.editing.featured?'★ 精选':'☆ 设精选'}
+}
+function toggleEditorCarousel() {
+  if(!state.editing)return; state.editing.carousel=!state.editing.carousel; state.dirty=true
+  const btn=document.querySelector('.e-tbar .tbtn.carousel'); if(btn){btn.classList.toggle('on',state.editing.carousel);btn.textContent=state.editing.carousel?'🎠 轮播中':'🎠 推荐轮播'}
+}
+
+// MD helpers — work directly on textarea, no re-render
+function mdWrap(prefix,suffix) { actOnTA('mdEditor',(ta,s,e,sel)=>{ta.setRangeText(prefix+sel+suffix,s,e,'select');ta.focus();ta.setSelectionRange(s+prefix.length,s+prefix.length+sel.length)}) }
+function mdHeading(level) { actOnTA('mdEditor',(ta,s,e,sel,val)=>{const ls=val.lastIndexOf('\n',s-1)+1;const le=val.indexOf('\n',s);const ae=le===-1?val.length:le;const line=val.substring(ls,ae);ta.setRangeText('#'.repeat(level)+' '+line.replace(/^#{1,6}\s*/,''),ls,ae,'end');ta.focus()}) }
+function mdInsert(prefix) { actOnTA('mdEditor',(ta,s)=>{ta.setRangeText(prefix,s,s,'end');ta.focus()}) }
+function actOnTA(id, fn) { const ta=document.getElementById(id); if(!ta)return; const s=ta.selectionStart,e=ta.selectionEnd,sel=ta.value.substring(s,e),val=ta.value; fn(ta,s,e,sel,val); state.editing.content=ta.value; state.dirty=true; document.getElementById('wordcount').textContent='字数: '+ta.value.length }
+
+function renderEditor() {
+  if(!state.editing)return
+  const e=state.editing; const pv=state.preview
+  const allCats = [...new Set(state.articles.map(a=>a.category).filter(Boolean))].sort()
+  let h=`<div class="editor"><div class="e-tbar">
+    <button class="tbtn" onclick="goBackFromEditor()">← 返回</button>
+    <button class="tbtn accent" onclick="saveArticle()" id="saveBtn">保存</button>
+    <button class="tbtn${pv?' on':''}" onclick="state.preview=!state.preview;renderEditor()">${pv?'编辑':'预览'}</button>
+    <button class="tbtn featured${e.featured?' on':''}" onclick="toggleEditorFeatured()">${e.featured?'★ 精选':'☆ 设精选'}</button>
+    <button class="tbtn carousel${e.carousel?' on':''}" onclick="toggleEditorCarousel()">${e.carousel?'🎠 轮播中':'🎠 推荐轮播'}</button>
+    <span class="e-info">${esc(e.title)||'新文章'} · ${esc(e.id)||'(未设置)'}</span><span class="wc" id="wordcount"></span>
+  </div>`
+  h+=`<div class="e-grid${pv?' full':''}">`
+  if(!pv) {
+    h+=`<div class="e-form" id="editorForm">`
+    h+=renderEditorFormInner()
+    h+=`</div>`
+    h+=`<div>
+      <div class="mdtoolbar">
+        <label title="上传.md文件自动识别">📥<input type="file" accept=".md,.txt" onchange="uploadMdFile(this)" id="mdUpload"></label>
+        <span class="sep"></span>
+        <button onclick="mdHeading(1)" class="hgroup">H1</button><button onclick="mdHeading(2)" class="hgroup">H2</button><button onclick="mdHeading(3)" class="hgroup">H3</button>
+        <span class="sep"></span><button onclick="mdWrap('**','**')"><b>B</b></button><button onclick="mdWrap('*','*')"><i>I</i></button><button onclick="mdWrap('\`','\`')">&lt;/&gt;</button>
+        <span class="sep"></span><button onclick="mdWrap('[','](url)')">🔗</button><button onclick="mdWrap('![alt](',')')">🖼</button>
+        <span class="sep"></span><button onclick="mdInsert('- ')">•</button><button onclick="mdInsert('1. ')">1.</button><button onclick="mdInsert('> ')">💬</button><button onclick="mdInsert('---\n')">—</button>
+      </div>
+      <textarea id="mdEditor" class="mdedit" oninput="onContentInput(this.value)" placeholder="# 开始写文章...">${esc(e.content)}</textarea>
+    </div>`
+  } else {
+    h+=`<div class="mdpv"><h1>${esc(e.title)||'(无标题)'}</h1>
+      <div class="meta-line"><span>${fmtDate(e.date)}</span><span>·</span><span>${esc(e.category)}</span><span>·</span><span>${esc(e.readTime)}</span>${e.featured?'<span>·</span><span style="color:var(--color-star)">⭐ 精选</span>':''}</div>
+      ${md2html(e.content)}</div>`
+  }
+  h+=`</div></div>`; document.getElementById('main').innerHTML=h
+  document.getElementById('wordcount').textContent='字数: '+(e.content||'').length
+}
+
+function renderEditorForm() { if(!state.editing||state.tab!=='edit')return; const el=document.getElementById('editorForm'); if(el) el.innerHTML=renderEditorFormInner() }
+function renderEditorFormInner() {
+  const e=state.editing; if(!e)return''
+  const allCats = [...new Set(state.articles.map(a=>a.category).filter(Boolean))].sort()
+  // Build blog-aligned category options with optgroup
+  const catOpts = []
+  if (allCats.includes('生活碎碎念')) catOpts.push(`<option value="生活碎碎念"${e.category==='生活碎碎念'?' selected':''}>生活碎碎念</option>`)
+  const mergedCats = allCats.filter(c=>['实用主义研究','关联主义学习'].includes(c))
+  if (mergedCats.length) catOpts.push(`<optgroup label="实用主义&关联主义">${mergedCats.map(c=>`<option value="${esc(c)}"${e.category===c?' selected':''}>${esc(c)}</option>`).join('')}</optgroup>`)
+  if (allCats.includes('BRAND ALL IN AI')) catOpts.push(`<option value="BRAND ALL IN AI"${e.category==='BRAND ALL IN AI'?' selected':''}>BRAND & AI</option>`)
+  // any other categories
+  allCats.filter(c=>!['生活碎碎念','实用主义研究','关联主义学习','BRAND ALL IN AI'].includes(c)).forEach(c=>catOpts.push(`<option value="${esc(c)}"${e.category===c?' selected':''}>${esc(c)}</option>`))
+  return `<div><label>文章 ID</label><input value="${esc(e.id)}" oninput="onFieldChange('id',this.value)" placeholder="英文连字符，如 my-new-post"><div style="font-size:10px;color:var(--color-text-m);margin-top:2px">文件名=ID，决定文章URL: /article/<b>id</b></div></div>
+    <div><label>标题</label><input value="${esc(e.title)}" oninput="onFieldChange('title',this.value)" id="titleInput"></div>
+    <div class="row3"><div><label>日期</label><input type="date" value="${fmtDate(e.date)}" oninput="onFieldChange('date',this.value)"></div><div><label>阅读时长</label><input value="${esc(e.readTime)}" oninput="onFieldChange('readTime',this.value)" placeholder="自动" id="rtInput"></div><button class="tbtn" style="height:33px" onclick="autoReadTime()">🕐 自动</button></div>
+    <div><label>栏目</label><select onchange="update({category:this.value})">${catOpts.join('')}</select>
+      <div style="font-size:10px;color:var(--color-text-m);margin-top:2px">决定文章出现在博客的哪个分类页</div></div>
+    <div><label>封面图</label><div style="display:flex;gap:8px;align-items:flex-start"><div style="flex:1"><input value="${esc(e.image)}" oninput="onFieldChange('image',this.value)" placeholder="/images/xxx.jpg"><div class="covers">${state.images.slice(0,15).map(i=>`<img src="${i.url}" class="${e.image===i.url?'sel':''}" onclick="update({image:'${esc(i.url)}'})" title="${esc(i.filename)}">`).join('')}</div></div>${e.image?`<img src="${e.image}" style="width:80px;height:56px;object-fit:cover;border-radius:3px;flex-shrink:0">`:''}</div></div>
+    <div><label>标签</label><div class="tags">${state.allTags.map(t=>{const sel=(e.tags||[]).includes(t);return`<button class="${sel?'on':''}" onclick="toggleTag('${esc(t)}')">${esc(t)}<span class="tag-del" onclick="event.stopPropagation();deleteTag('${esc(t)}')">×</span></button>`}).join('')}<input class="tag-input" placeholder="+新标签" id="newTagInput" onkeydown="if(event.key==='Enter'){addCustomTag(this.value);this.value=''}"></div></div>
+    <div><label>摘要</label><textarea rows="3" oninput="onFieldChange('excerpt',this.value)" placeholder="文章摘要，首页卡片展示">${esc(e.excerpt)}</textarea></div>`
+}
+
+function onContentInput(val) { state.editing.content=val; state.dirty=true; document.getElementById('wordcount').textContent='字数: '+val.length }
+
+async function autoReadTime() { if(!state.editing)return; const r=await api('/api/reading-time?content='+encodeURIComponent(state.editing.content||'')); update({readTime:r.readTime}) }
+function goBackFromEditor() { if(state.dirty&&!confirm('未保存'))return; state.editing=null; state.dirty=false; state.preview=false; state.tab='list'; render() }
+function toggleTag(t) { if(!state.editing)return; const tags=[...(state.editing.tags||[])]; const i=tags.indexOf(t); i>=0?tags.splice(i,1):tags.push(t); update({tags}) }
+async function addCustomTag(name) { if(!name||!name.trim())return; const r=await api('/api/tags',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:name.trim()})}); if(r.ok){state.allTags=r.tags;if(state.tab==='edit')renderEditorForm();msg('标签已添加')}else msg(r.error) }
+async function deleteTag(name) { if(!confirm('删除标签「'+name+'」？'))return; const r=await api('/api/tags/'+encodeURIComponent(name),{method:'DELETE'}); if(r.ok){state.allTags=r.tags;if(state.tab==='edit')renderEditorForm();msg('标签已删除')}else msg(r.error) }
+
+// ↓ NEW: .md file upload → auto-parse
+async function uploadMdFile(input) {
+  const file = input.files[0]; if(!file)return
+  const form = new FormData(); form.append('md', file)
+  const r = await fetch('/api/upload-md', { method:'POST', body: form }).then(r=>r.json())
+  if(r.error){msg(r.error);return}
+  // Merge parsed data into current editing article
+  const e = state.editing
+  if(r.title&&!e.title) e.title=r.title
+  if(r.date) e.date=r.date
+  if(r.category) e.category=r.category
+  if(r.tags&&r.tags.length) e.tags=r.tags
+  if(r.image) e.image=r.image
+  if(r.content) e.content=r.content
+  if(r.excerpt) e.excerpt=r.excerpt
+  if(r.readTime) e.readTime=r.readTime
+  state.dirty=true
+  renderEditorForm()
+  // Also update textarea if it exists
+  const ta = document.getElementById('mdEditor')
+  if(ta&&r.content) { ta.value=r.content; document.getElementById('wordcount').textContent='字数: '+r.content.length }
+  msg(`已识别: ${r.title||file.name}`)
+  input.value='' // allow re-upload same file
+}
+
+async function saveArticle() {
+  const e=state.editing; if(!e)return
+  if(!e.id||!e.id.trim())return msg('请输入文章ID')
+  if(!e.title||!e.title.trim()){msg('请输入标题');const inp=document.getElementById('titleInput');if(inp)inp.focus();return}
+  const ta=document.getElementById('mdEditor'); if(ta)e.content=ta.value
+  if(!e.readTime&&e.content){const r=await api('/api/reading-time?content='+encodeURIComponent(e.content));e.readTime=r.readTime}
+  const btn=document.getElementById('saveBtn'); btn.textContent='保存中...'; btn.disabled=true
+  const r=await api('/api/articles/'+encodeURIComponent(e.id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(e)})
+  btn.textContent='保存'; btn.disabled=false
+  if(r.ok){
+    state.dirty=false
+    // Show save confirm briefly
+    btn.textContent='已保存 ✓'; setTimeout(()=>btn.textContent='保存',1500)
+    msg('已保存')
+    // Silently refresh articles list in background (no re-render)
+    state.articles = await api('/api/articles')
+    state.allTags = await api('/api/tags')
+    // Update readTime in editing object (no dirty trigger)
+    if(r.readTime) { state.editing.readTime=r.readTime; renderEditorForm() }
+  }else msg(r.error||'保存失败')
+}
+async function doSync() { if(state.dirty||state.aboutDirty){msg('请先保存');return}; const btn=document.getElementById('syncBtn');btn.textContent='推送中...';btn.disabled=true;try{const r=await fetch('/api/sync',{method:'POST',signal:AbortSignal.timeout(180000)}).then(r=>r.json());msg(r.message||r.error||'同步完成');if(r.ok&&r.message.includes('Pages'))msg('✅ 网页已部署！1-2分钟后生效');await load()}catch(e){msg('同步失败: '+(e.message||'网络错误'))};btn.textContent='同步到仓库';btn.disabled=false }
+
+// ── Featured Manager ──
+function renderFeaturedManager() {
+  const sorted = [...state.articles].sort((a,b)=>new Date(b.date)-new Date(a.date))
+  const featured = sorted.filter(a=>a.featured), regular = sorted.filter(a=>!a.featured)
+  let h=`<h2 class="page-title">⭐ 精选文章管理</h2>
+    <p style="color:var(--color-text-m);font-size:13px;margin-bottom:28px">设为精选的文章在博客首页轮播和精选文章页顶部优先展示。</p>`
+  if(featured.length){
+    h+=`<div class="sec-title" style="margin-bottom:12px">已精选 (${featured.length})</div>`
+    h+=`<table><thead><tr><th style="width:30px"></th><th>标题</th><th>日期</th><th>栏目</th><th></th></tr></thead><tbody>`
+    featured.forEach(a=>{h+=featuredRow(a)})
+    h+=`</tbody></table>`
+  }
+  if(regular.length){
+    h+=`<div class="sec-title" style="margin:32px 0 12px">未精选 (${regular.length})</div>`
+    h+=`<table><thead><tr><th style="width:30px"></th><th>标题</th><th>日期</th><th>栏目</th><th></th></tr></thead><tbody>`
+    regular.forEach(a=>{h+=featuredRow(a)})
+    h+=`</tbody></table>`
+  }
+  document.getElementById('main').innerHTML=h
+}
+function featuredRow(a){ return `<tr>
+  <td><button class="act star" onclick="toggleFeaturedQuick('${esc(a.id)}')" title="${a.featured?'取消精选':'设为精选'}">${a.featured?'★':'☆'}</button></td>
+  <td><div style="font-family:var(--font-display);font-size:14px;color:var(--color-text)">${esc(a.title)||'(无标题)'}</div><div class="tid">${a.id}</div></td>
+  <td>${esc(fmtDate(a.date))}</td>
+  <td><span class="badge">${esc(a.category)}</span></td>
+  <td><button class="act" onclick="editArticle('${esc(a.id)}')">编辑</button></td></tr>` }
+async function toggleFeaturedQuick(id) {
+  const a = state.articles.find(x=>x.id===id); if(!a)return
+  await api('/api/articles/'+encodeURIComponent(id),{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({...a,featured:!a.featured})})
+  state.articles = await api('/api/articles'); renderFeaturedManager(); msg(a.featured?'已取消精选':'已设为精选')
+}
+
+// ── Home Manager ──
+function renderHome() {
+  const sorted = [...state.articles].sort((a,b)=>new Date(b.date)-new Date(a.date))
+  const carousel = sorted.filter(a=>a.carousel).slice(0,3)  // max 3 carousel slots
+  const featured = sorted.filter(a=>a.featured)
+  let h=`<h2 class="page-title">🏠 首页管理</h2>`
+  h+=`<div class="sec-title" style="margin-bottom:12px">🎠 首页轮播 (推荐上轮播的文章，最多3篇)</div>`
+  if(!carousel.length)h+=`<p style="color:var(--color-text-m);font-size:13px;margin-bottom:20px">暂无轮播文章 — 编辑文章时点击"🎠 推荐轮播"</p>`
+  else{h+=`<table><thead><tr><th>#</th><th>标题</th><th>日期</th><th>栏目</th><th>阅读</th><th></th></tr></thead><tbody>`
+    carousel.forEach((a,i)=>{h+=`<tr>
+      <td style="font-family:var(--font-display);font-size:16px;color:var(--color-accent)">${i+1}</td>
+      <td><div style="font-family:var(--font-display);font-size:14px;color:var(--color-text)">${esc(a.title)}</div><div class="tid">${a.id}</div></td>
+      <td>${esc(fmtDate(a.date))}</td>
+      <td><span class="badge">${esc(a.category)}</span></td>
+      <td>${esc(a.readTime)}</td>
+      <td><button class="act" onclick="editArticle('${esc(a.id)}')">编辑</button></td></tr>`})
+    h+=`</tbody></table>`}
+  h+=`<div class="sec-title" style="margin:32px 0 12px">⭐ 精选文章 (在精选页顶部优先展示)</div>`
+  if(!featured.length)h+=`<p style="color:var(--color-text-m);font-size:13px;margin-bottom:20px">暂无精选文章</p>`
+  else{h+=`<table><thead><tr><th>标题</th><th>日期</th><th>栏目</th><th>阅读</th><th>轮播</th><th></th></tr></thead><tbody>`
+    featured.forEach(a=>{h+=`<tr>
+      <td><div style="font-family:var(--font-display);font-size:14px;color:var(--color-text)">${esc(a.title)}</div><div class="tid">${a.id}</div></td>
+      <td>${esc(fmtDate(a.date))}</td>
+      <td><span class="badge">${esc(a.category)}</span></td>
+      <td>${esc(a.readTime)}</td>
+      <td>${a.carousel?'🎠':''}</td>
+      <td><button class="act" onclick="editArticle('${esc(a.id)}')">编辑</button></td></tr>`})
+    h+=`</tbody></table>`}
+  h+=`<div class="sec-title" style="margin:32px 0 12px">📰 最新文章 (新文章自动按日期排列)</div>`
+  h+=`<table><thead><tr><th>标题</th><th>日期</th><th>栏目</th><th>阅读</th><th>精</th><th>轮</th><th></th></tr></thead><tbody>`
+  sorted.forEach(a=>{h+=`<tr>
+    <td><div style="font-family:var(--font-display);font-size:14px;color:var(--color-text)">${esc(a.title)}</div><div class="tid">${a.id}</div></td>
+    <td>${esc(fmtDate(a.date))}</td>
+    <td><span class="badge">${esc(a.category)}</span></td>
+    <td>${esc(a.readTime)}</td>
+    <td>${a.featured?'★':''}</td>
+    <td>${a.carousel?'🎠':''}</td>
+    <td><button class="act" onclick="editArticle('${esc(a.id)}')">编辑</button></td></tr>`})
+  h+=`</tbody></table>`
+  document.getElementById('main').innerHTML=h
+}
+
+// ── Friends ──
+function renderFriends() { if(state.friendEditing)return renderFriendEditor()
+  let h=`<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px"><h2 class="page-title" style="margin-bottom:0">晓宇友人账</h2><button class="tbtn accent" onclick="addFriend()">+ 添加好友</button></div>`
+  if(!state.friends.length)h+='<div class="empty">暂无友链</div>'
+  else{h+='<div class="fcard">';state.friends.forEach(f=>{h+=`<div class="card"><h4>${esc(f.name)||'(未命名)'}</h4><div class="ftitle">${esc(f.title)}</div><p>${esc(f.description)}</p>${f.url?`<div class="furl"><a href="${esc(f.url)}" target="_blank">${esc(f.url)}</a></div>`:''}<div style="margin-top:12px;display:flex;gap:8px"><button class="act" onclick="editFriend(${f.id})">编辑</button><button class="act del" onclick="deleteFriend(${f.id})">删除</button></div></div>`});h+='</div>'}
+  document.getElementById('main').innerHTML=h }
+function addFriend(){state.friendEditing={name:'',title:'',description:'',url:'',avatar:''};renderFriendEditor()}
+function editFriend(id){const f=state.friends.find(x=>x.id===id);if(!f)return;state.friendEditing={...f};renderFriendEditor()}
+async function deleteFriend(id){if(!confirm('删除此友链？'))return;await api('/api/friends/'+id,{method:'DELETE'});await load();msg('已删除')}
+function renderFriendEditor(){const f=state.friendEditing;if(!f)return renderFriends();
+  let h=`<div style="max-width:500px"><h2 class="page-title" style="margin-bottom:24px">${f.id?'编辑好友':'添加好友'}</h2><div class="e-form">
+    <div><label>姓名</label><input value="${esc(f.name)}" oninput="state.friendEditing.name=this.value;renderFriendEditor()"></div>
+    <div><label>头衔</label><input value="${esc(f.title)}" oninput="state.friendEditing.title=this.value;renderFriendEditor()"></div>
+    <div><label>描述</label><textarea rows="2" oninput="state.friendEditing.description=this.value;renderFriendEditor()">${esc(f.description)}</textarea></div>
+    <div><label>链接</label><input value="${esc(f.url)}" oninput="state.friendEditing.url=this.value;renderFriendEditor()" placeholder="https://..."></div>
+    <div style="display:flex;gap:12px;margin-top:12px"><button class="tbtn accent" onclick="saveFriend()">保存</button><button class="tbtn" onclick="state.friendEditing=null;renderFriends()">取消</button></div></div></div>`
+  document.getElementById('main').innerHTML=h }
+async function saveFriend(){const f=state.friendEditing;if(!f||!f.name.trim())return msg('请输入姓名');if(f.id){await api('/api/friends/'+f.id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(f)})}else await api('/api/friends',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(f)});state.friendEditing=null;msg('已保存');await load()}
+
+// ── About ──
+function renderAbout() {
+  let h=`<div style="max-width:800px"><h2 class="page-title">关于 XIAOYU</h2>
+    <div style="margin-bottom:18px;display:flex;gap:12px"><button class="tbtn accent" onclick="saveAbout()" id="aboutSaveBtn">保存</button><button class="tbtn" onclick="state.aboutPreview=!state.aboutPreview;renderAbout()">${state.aboutPreview?'编辑':'预览'}</button></div>`
+  if(!state.aboutPreview){h+=`<div><div class="mdtoolbar" style="margin-bottom:0">
+    <button onclick="aboutHeading(2)" class="hgroup">H2</button><button onclick="aboutHeading(3)" class="hgroup">H3</button><button onclick="aboutHeading(4)" class="hgroup">H4</button>
+    <span class="sep"></span><button onclick="aboutWrap('**','**')"><b>B</b></button><button onclick="aboutWrap('*','*')"><i>I</i></button>
+    <span class="sep"></span><button onclick="aboutWrap('\n> ','')">💬</button></div>
+    <textarea class="mdedit" style="border-radius:0 0 3px 3px;border-top:none;font-family:var(--font-body);font-size:14px" oninput="state.aboutContent=this.value;state.aboutDirty=true" id="aboutEditor">${esc(state.aboutContent)}</textarea></div>`}
+  else h+=`<div class="mdpv"><h1>关于 XIAOYU</h1>${md2html(state.aboutContent)}</div>`
+  h+=`</div>`; document.getElementById('main').innerHTML=h }
+function aboutWrap(p,s){const ta=document.getElementById('aboutEditor');if(!ta)return;const st=ta.selectionStart,e=ta.selectionEnd;ta.setRangeText(p+ta.value.substring(st,e)+s,st,e,'select');ta.focus();ta.setSelectionRange(st+p.length,st+p.length+ta.value.substring(st,e).length);state.aboutContent=ta.value;state.aboutDirty=true}
+function aboutHeading(l){const ta=document.getElementById('aboutEditor');if(!ta)return;const ls=ta.value.lastIndexOf('\n',ta.selectionStart-1)+1;const le=ta.value.indexOf('\n',ta.selectionStart);const ae=le===-1?ta.value.length:le;ta.setRangeText('#'.repeat(l)+' '+ta.value.substring(ls,ae).replace(/^#{1,6}\s*/,''),ls,ae,'end');ta.focus();state.aboutContent=ta.value;state.aboutDirty=true}
+async function saveAbout(){const btn=document.getElementById('aboutSaveBtn');btn.textContent='保存中...';btn.disabled=true;const r=await api('/api/about',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({content:state.aboutContent})});btn.textContent='保存';btn.disabled=false;if(r.ok){state.aboutDirty=false;msg('已保存')}else msg(r.error||'保存失败')}
+
+// ── Images ──
+async function uploadImg(){const f=document.getElementById('fileInput').files[0];if(!f)return;const fd=new FormData();fd.append('image',f);await api('/api/upload',{method:'POST',body:fd});await load();msg('上传成功')}
+async function delImg(fn){if(!confirm('删除 '+fn+'？'))return;await api('/api/images/'+encodeURIComponent(fn),{method:'DELETE'});await load()}
+function renderImages(){let h=`<h2 class="page-title">图片管理</h2><div class="upload-box" onclick="document.getElementById('fileInput').click()"><p style="color:var(--color-text-m);margin-bottom:8px">点击选择图片上传</p><input type="file" accept="image/*" id="fileInput" onchange="uploadImg()" style="display:none"></div><div class="img-grid">`;state.images.forEach(i=>{h+=`<div class="img-card"><img src="${i.url}" alt=""><div class="info"><div class="fn">${esc(i.filename)}</div><button class="act" onclick="navigator.clipboard.writeText('${esc(i.url)}');msg('路径已复制')">复制</button><button class="act del" onclick="delImg('${esc(i.filename)}')">删除</button></div></div>`});h+=`</div>`;document.getElementById('main').innerHTML=h}
+
+// ── MD → HTML (matches blog .article-content) ──
+function md2html(md) { if(!md)return'<p style="color:var(--color-text-m)">正文为空</p>'
+  const lines=md.split('\n'); let h='',inCode=false,codeBuf=''
+  for(let i=0;i<lines.length;i++){const line=lines[i];const t=line.trim()
+    if(t.startsWith('```')){if(inCode){h+=`<pre><code>${esc(codeBuf)}</code></pre>`;codeBuf='';inCode=false}else inCode=true;continue}
+    if(inCode){codeBuf+=line+'\n';continue}
+    if(t.startsWith('#### '))h+=`<h4>${esc(t.slice(5))}</h4>`
+    else if(t.startsWith('### '))h+=`<h3>${esc(t.slice(4))}</h3>`
+    else if(t.startsWith('## '))h+=`<h2>${esc(t.slice(3))}</h2>`
+    else if(t.startsWith('# '))h+=`<h1>${esc(t.slice(2))}</h1>`
+    else if(t.startsWith('> '))h+=`<blockquote>${inline(t.slice(2))}</blockquote>`
+    else if(t.startsWith('- '))h+=`<li>${inline(t.slice(2))}</li>`
+    else if(/^\d+\.\s/.test(t))h+=`<li>${inline(t.replace(/^\d+\.\s/,''))}</li>`
+    else if(t==='---'||t==='***')h+='<hr>'
+    else if(t==='')h+='<br>'
+    else if(/^!\[.*\]\(.*\)$/.test(t)){const m=t.match(/!\[.*\]\((.*)\)/);h+=m?`<img src="${m[1]}" alt="">`:`<p>${inline(t)}</p>`}
+    else if(/^\[.*\]\(.*\)$/.test(t)){const m=t.match(/\[(.*)\]\((.*)\)/);h+=m?`<a href="${m[2]}" target="_blank">${inline(m[1])}</a>`:`<p>${inline(t)}</p>`}
+    else h+=`<p>${inline(t)}</p>`}
+  if(inCode&&codeBuf)h+=`<pre><code>${esc(codeBuf)}</code></pre>`
+  return h }
+function inline(s){return(s||'').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`(.+?)`/g,'<code>$1</code>')}
+
+// ── Events ──
+document.querySelectorAll('[data-tab]').forEach(btn=>{if(btn.id==='btnNew')return;btn.addEventListener('click',function(){const t=this.dataset.tab;if(t!=='edit'&&(state.dirty||state.aboutDirty)&&!confirm('未保存，确定离开？'))return;state.tab=t;if(t==='friends'){state.friendEditing=null};state.dirty=false;state.aboutDirty=false;state.preview=false;state.aboutPreview=false;render()})})
+document.getElementById('btnNew').addEventListener('click',()=>newArticle())
+document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();if(state.tab==='edit'&&state.editing){const ta=document.getElementById('mdEditor');if(ta)state.editing.content=ta.value;saveArticle()}if(state.tab==='about')saveAbout()}})
+window.addEventListener('beforeunload',function(e){if(state.dirty||state.aboutDirty){e.preventDefault();e.returnValue=''}})
+load()
+</script>
+</body>
+</html>
