@@ -4,76 +4,84 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>落笔阁 · 管理后台</title>
 <style>
 :root { --bg: #1a1a2e; --bg2: #16213e; --bg3: #0f0f23; --text: #c9d1d9; --text2: #888; --acc: #e94560; --acc2: #46b5d1; --border: #2a2a4a; --border2: #1f1f3a; --font: -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
-.tbar { display: flex; justify-content: space-between; align-items: center; padding: 8px 20px; background: var(--bg2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
-.tbar-l { display: flex; align-items: center; gap: 12px; }
-.tbar-l span.logo { color: var(--acc); font-weight: 700; font-size: 15px; }
-.tbtn { padding: 6px 14px; font-size: 12px; border-radius: 4px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text2); font-family: var(--font); }
-.tbtn.on { border-color: var(--acc); color: var(--acc); background: #2a1040; }
-.tbtn.sync { background: var(--acc); color: #fff; border-color: var(--acc); margin-left: 8px; }
-.layout { display: flex; height: calc(100vh - 42px); }
-.side { width: 180px; background: var(--bg2); border-right: 1px solid var(--border); padding: 14px 10px; overflow-y: auto; flex-shrink: 0; }
-.side h3 { font-size: 10px; color: var(--text2); letter-spacing: .15em; text-transform: uppercase; margin: 14px 0 6px; }
-.side h3:first-child { margin-top: 0; }
-.sbtn { display: block; width: 100%; text-align: left; padding: 5px 8px; font-size: 11px; border: none; cursor: pointer; background: transparent; color: var(--text2); border-radius: 3px; margin-bottom: 1px; font-family: var(--font); }
-.sbtn.on { background: #2a1040; color: var(--acc); }
-.main { flex: 1; overflow-y: auto; padding: 20px; }
-input, select, textarea { background: var(--bg3); color: var(--text); border: 1px solid var(--border); border-radius: 4px; outline: none; font-family: var(--font); }
-input, select { padding: 7px 10px; font-size: 12px; }
-.search { width: 100%; padding: 8px 12px; margin-bottom: 14px; font-size: 13px; }
-table { width: 100%; border-collapse: collapse; }
-th { text-align: left; padding: 8px 10px; font-size: 10px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--border); }
-td { padding: 8px 10px; font-size: 12px; border-bottom: 1px solid var(--border2); vertical-align: middle; }
-td .tid { font-size: 10px; color: #666; margin-top: 2px; }
-.badge { display: inline-block; padding: 1px 6px; font-size: 10px; border: 1px solid var(--border); border-radius: 3px; color: var(--text2); margin-right: 3px; }
-.act { padding: 2px 7px; font-size: 11px; border: none; cursor: pointer; background: transparent; color: var(--acc2); font-family: var(--font); }
-.act.del { color: var(--acc); }
-.msg { font-size: 12px; color: var(--acc2); }
-.dirty { font-size: 11px; color: var(--acc); margin-right: 8px; }
-.editor { max-width: 1200px; }
-.e-tbar { display: flex; gap: 10px; margin-bottom: 14px; align-items: center; flex-wrap: wrap; }
-.e-info { font-size: 11px; color: var(--text2); }
-.e-grid { display: grid; grid-template-columns: 360px 1fr; gap: 18px; align-items: start; }
-.e-grid.full { grid-template-columns: 1fr; }
-.e-form { display: flex; flex-direction: column; gap: 10px; }
-.e-form label { font-size: 10px; color: var(--text2); font-weight: 600; letter-spacing: .04em; display: block; margin-bottom: 2px; }
-.e-form input, .e-form select, .e-form textarea { width: 100%; }
-.e-form textarea { resize: vertical; font-size: 12px; padding: 8px; }
-.e-form .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.e-form .covers { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; max-height: 70px; overflow-y: auto; }
-.e-form .covers img { width: 36px; height: 26px; object-fit: cover; border-radius: 2px; cursor: pointer; border: 2px solid transparent; opacity: .6; }
-.e-form .covers img.sel { border-color: var(--acc); opacity: 1; }
-.e-form .tags { display: flex; flex-wrap: wrap; gap: 3px; }
-.e-form .tags button { padding: 1px 7px; font-size: 10px; border-radius: 3px; cursor: pointer; border: 1px solid var(--border); background: transparent; color: var(--text2); font-family: var(--font); }
-.e-form .tags button.on { background: var(--acc); color: #fff; border-color: var(--acc); }
-.mdedit { width: 100%; height: calc(100vh - 150px); min-height: 450px; padding: 14px; font-family: "Fira Code","Cascadia Code",monospace; font-size: 13px; line-height: 1.7; background: var(--bg3); color: var(--text); border: 1px solid var(--border); border-radius: 5px; resize: vertical; outline: none; }
-.mdpv { padding: 20px 28px; background: var(--bg3); border: 1px solid var(--border); border-radius: 5px; min-height: 450px; max-height: calc(100vh - 150px); overflow-y: auto; }
-.mdpv h1 { color: #e0e0e0; font-size: 26px; margin-bottom: 6px; }
-.mdpv h2 { color: #e0e0e0; font-size: 20px; margin: 18px 0 8px; }
-.mdpv h3 { color: #e0e0e0; font-size: 16px; margin: 14px 0 6px; }
-.mdpv p { margin: 6px 0; line-height: 1.7; font-size: 14px; }
-.mdpv b, .mdpv strong { color: #e0e0e0; }
-.mdpv i, .mdpv em { font-style: italic; color: var(--text2); }
-.mdpv code { background: var(--bg2); color: var(--acc); padding: 1px 5px; border-radius: 3px; font-size: 12px; }
-.mdpv pre { background: var(--bg2); padding: 12px; border-radius: 4px; overflow-x: auto; margin: 8px 0; }
-.mdpv pre code { background: none; color: var(--text); padding: 0; }
-.mdpv blockquote { border-left: 3px solid var(--acc); padding: 6px 14px; margin: 10px 0; color: var(--text2); }
-.mdpv ul, .mdpv ol { padding-left: 22px; margin: 6px 0; }
-.mdpv li { margin: 3px 0; }
-.mdpv a { color: var(--acc2); }
-.mdpv hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
-.mdpv img { max-width: 100%; border-radius: 4px; margin: 8px 0; }
-.mdpv table { border-collapse: collapse; width: 100%; margin: 10px 0; }
-.mdpv th, .mdpv td { padding: 6px 10px; border: 1px solid var(--border); }
-.mdpv th { background: var(--bg2); color: var(--text2); }
-.upload-box { padding: 20px; border: 2px dashed var(--border); border-radius: 6px; text-align: center; margin-bottom: 16px; background: var(--bg3); }
-.img-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap: 8px; }
-.img-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 5px; overflow: hidden; }
-.img-card img { width: 100%; height: 100px; object-fit: cover; display: block; }
-.img-card .info { padding: 5px 7px; }
-.img-card .info .fn { font-size: 9px; color: var(--text2); word-break: break-all; margin-bottom: 3px; }
-.empty { text-align: center; color: var(--text2); padding: 40px; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:var(--font); background:var(--bg); color:var(--text); min-height:100vh; }
+.tbar { display:flex; justify-content:space-between; align-items:center; padding:8px 20px; background:var(--bg2); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:10; }
+.tbar-l { display:flex; align-items:center; gap:12px; }
+.tbar-l span.logo { color:var(--acc); font-weight:700; font-size:15px; }
+.tbtn { padding:6px 14px; font-size:12px; border-radius:4px; cursor:pointer; border:1px solid var(--border); background:transparent; color:var(--text2); font-family:var(--font); }
+.tbtn.on { border-color:var(--acc); color:var(--acc); background:#2a1040; }
+.tbtn.sync { background:var(--acc); color:#fff; border-color:var(--acc); margin-left:8px; }
+.tbtn.sync:disabled { opacity:.6; cursor:not-allowed; }
+.layout { display:flex; height:calc(100vh - 42px); }
+.side { width:180px; background:var(--bg2); border-right:1px solid var(--border); padding:14px 10px; overflow-y:auto; flex-shrink:0; }
+.side h3 { font-size:10px; color:var(--text2); letter-spacing:.15em; text-transform:uppercase; margin:14px 0 6px; }
+.side h3:first-child { margin-top:0; }
+.sbtn { display:block; width:100%; text-align:left; padding:5px 8px; font-size:11px; border:none; cursor:pointer; background:transparent; color:var(--text2); border-radius:3px; margin-bottom:1px; font-family:var(--font); }
+.sbtn.on { background:#2a1040; color:var(--acc); }
+.sbtn:hover { background:rgba(233,69,96,.08); }
+.main { flex:1; overflow-y:auto; padding:20px; }
+input, select, textarea { background:var(--bg3); color:var(--text); border:1px solid var(--border); border-radius:4px; outline:none; font-family:var(--font); }
+input:focus, select:focus, textarea:focus { border-color:var(--acc2); }
+input, select { padding:7px 10px; font-size:12px; }
+.search { width:100%; padding:8px 12px; margin-bottom:14px; font-size:13px; }
+table { width:100%; border-collapse:collapse; }
+th { text-align:left; padding:8px 10px; font-size:10px; font-weight:600; color:var(--text2); text-transform:uppercase; letter-spacing:.05em; border-bottom:1px solid var(--border); }
+td { padding:8px 10px; font-size:12px; border-bottom:1px solid var(--border2); vertical-align:middle; }
+td .tid { font-size:10px; color:#666; margin-top:2px; }
+.badge { display:inline-block; padding:1px 6px; font-size:10px; border:1px solid var(--border); border-radius:3px; color:var(--text2); margin-right:3px; cursor:pointer; }
+.badge:hover { border-color:var(--acc); color:var(--acc); }
+.act { padding:2px 7px; font-size:11px; border:none; cursor:pointer; background:transparent; color:var(--acc2); font-family:var(--font); }
+.act.del { color:var(--acc); }
+.msg { font-size:12px; color:var(--acc2); }
+.dirty { font-size:11px; color:var(--acc); margin-right:8px; }
+.editor { max-width:1200px; }
+.e-tbar { display:flex; gap:10px; margin-bottom:14px; align-items:center; flex-wrap:wrap; }
+.e-info { font-size:11px; color:var(--text2); }
+.e-grid { display:grid; grid-template-columns:360px 1fr; gap:18px; align-items:start; }
+.e-grid.full { grid-template-columns:1fr; }
+.e-form { display:flex; flex-direction:column; gap:10px; }
+.e-form label { font-size:10px; color:var(--text2); font-weight:600; letter-spacing:.04em; display:block; margin-bottom:2px; }
+.e-form input, .e-form select, .e-form textarea { width:100%; }
+.e-form textarea { resize:vertical; font-size:12px; padding:8px; }
+.e-form .row2 { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.e-form .covers { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; max-height:70px; overflow-y:auto; }
+.e-form .covers img { width:36px; height:26px; object-fit:cover; border-radius:2px; cursor:pointer; border:2px solid transparent; opacity:.6; }
+.e-form .covers img.sel { border-color:var(--acc); opacity:1; }
+.e-form .tags { display:flex; flex-wrap:wrap; gap:3px; align-items:center; }
+.e-form .tags button { padding:1px 7px; font-size:10px; border-radius:3px; cursor:pointer; border:1px solid var(--border); background:transparent; color:var(--text2); font-family:var(--font); }
+.e-form .tags button.on { background:var(--acc); color:#fff; border-color:var(--acc); }
+.e-form .tag-del { color:var(--acc); font-size:9px; margin-left:2px; cursor:pointer; opacity:.6; }
+.e-form .tag-del:hover { opacity:1; }
+.e-form .tag-input { width:80px; padding:1px 5px; font-size:10px; height:20px; }
+.mdedit { width:100%; height:calc(100vh - 150px); min-height:450px; padding:14px; font-family:"Fira Code","Cascadia Code",monospace; font-size:13px; line-height:1.7; background:var(--bg3); color:var(--text); border:1px solid var(--border); border-radius:5px; resize:vertical; outline:none; }
+.mdpv { padding:20px 28px; background:var(--bg3); border:1px solid var(--border); border-radius:5px; min-height:450px; max-height:calc(100vh - 150px); overflow-y:auto; }
+.mdpv h1 { color:#e0e0e0; font-size:26px; margin-bottom:6px; }
+.mdpv h2 { color:#e0e0e0; font-size:20px; margin:18px 0 8px; }
+.mdpv h3 { color:#e0e0e0; font-size:16px; margin:14px 0 6px; }
+.mdpv p { margin:6px 0; line-height:1.7; font-size:14px; }
+.mdpv b,.mdpv strong { color:#e0e0e0; }
+.mdpv i,.mdpv em { font-style:italic; color:var(--text2); }
+.mdpv code { background:var(--bg2); color:var(--acc); padding:1px 5px; border-radius:3px; font-size:12px; }
+.mdpv pre { background:var(--bg2); padding:12px; border-radius:4px; overflow-x:auto; margin:8px 0; }
+.mdpv pre code { background:none; color:var(--text); padding:0; }
+.mdpv blockquote { border-left:3px solid var(--acc); padding:6px 14px; margin:10px 0; color:var(--text2); }
+.mdpv ul,.mdpv ol { padding-left:22px; margin:6px 0; }
+.mdpv li { margin:3px 0; }
+.mdpv a { color:var(--acc2); }
+.mdpv hr { border:none; border-top:1px solid var(--border); margin:16px 0; }
+.mdpv img { max-width:100%; border-radius:4px; margin:8px 0; }
+.mdpv table { border-collapse:collapse; width:100%; margin:10px 0; }
+.mdpv th,.mdpv td { padding:6px 10px; border:1px solid var(--border); }
+.mdpv th { background:var(--bg2); color:var(--text2); }
+.upload-box { padding:20px; border:2px dashed var(--border); border-radius:6px; text-align:center; margin-bottom:16px; background:var(--bg3); cursor:pointer; }
+.img-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; }
+.img-card { background:var(--bg3); border:1px solid var(--border); border-radius:5px; overflow:hidden; }
+.img-card img { width:100%; height:100px; object-fit:cover; display:block; }
+.img-card .info { padding:5px 7px; }
+.img-card .info .fn { font-size:9px; color:var(--text2); word-break:break-all; margin-bottom:3px; }
+.empty { text-align:center; color:var(--text2); padding:40px; }
+.wc { font-size:10px; color:var(--text2); margin-left:auto; }
 </style>
 </head>
 <body>
@@ -96,121 +104,235 @@ td .tid { font-size: 10px; color: #666; margin-top: 2px; }
 </div>
 
 <script>
-const CATS = ['生活碎碎念','实用主义研究','关联主义学习','BRAND ALL IN AI']
-let state = { tab:'list', articles:[], images:[], allTags:[], catFilter:'', tagFilter:'', search:'', editing:null, dirty:false, preview:false }
+let state = { tab:'list', articles:[], categories:[], images:[], allTags:[], catFilter:'', tagFilter:'', search:'', editing:null, dirty:false, preview:false }
 
 async function api(url, opts) { const r = await fetch(url, opts); return r.json() }
-function msg(s) { document.getElementById('msg').textContent = s; setTimeout(() => document.getElementById('msg').textContent = '', s.includes('编译部署') ? 6000 : 2000) }
+function msg(s) { const el = document.getElementById('msg'); el.textContent = s; setTimeout(() => el.textContent = '', s.includes('编译部署') ? 6000 : 2000) }
 
-async function load() { state.articles = await api('/api/articles'); state.allTags = await api('/api/tags'); state.images = await api('/api/images'); render() }
+async function load() {
+  const [articles, allTags, images, categories] = await Promise.all([
+    api('/api/articles'), api('/api/tags'), api('/api/images'), api('/api/categories')
+  ])
+  state.articles = articles; state.allTags = allTags; state.images = images; state.categories = categories
+  render()
+}
+
 function render() {
   document.getElementById('dirty').style.display = state.dirty ? 'inline':'none'
-  renderSidebar(); if (state.tab === 'list') renderList(); else if (state.tab === 'edit') renderEditor(); else if (state.tab === 'images') renderImages()
+  document.querySelectorAll('[data-tab]').forEach(b => b.classList.toggle('on', b.dataset.tab === state.tab && b.id !== 'btnNew'))
+  renderSidebar()
+  if (state.tab === 'list') renderList()
+  else if (state.tab === 'edit') renderEditor()
+  else if (state.tab === 'images') renderImages()
 }
+
+// ── Sidebar ──
 function renderSidebar() {
   const byCat = {}; state.articles.forEach(a => byCat[a.category] = (byCat[a.category]||0) + 1)
-  let h = `<h3>栏目</h3><button class="sbtn${!state.catFilter?' on':''}" onclick="setFilter('','')">全部文章 (${state.articles.length})</button>`
-  CATS.forEach(c => h += `<button class="sbtn${state.catFilter===c?' on':''}" onclick="setFilter(c,'')">${c} (${byCat[c]||0})</button>`)
+  let h = `<h3>栏目</h3>
+    <button class="sbtn${!state.catFilter&&!state.tagFilter?' on':''}" onclick="applyFilter('','')">全部文章 (${state.articles.length})</button>`
+  state.categories.forEach(c => {
+    h += `<button class="sbtn${state.catFilter===c?' on':''}" onclick="applyFilter('${esc(c)}','')">${esc(c)} (${byCat[c]||0})</button>`
+  })
   h += `<h3>标签</h3>`
-  state.allTags.forEach(t => h += `<button class="sbtn${state.tagFilter===t?' on':''}" onclick="setFilter('',t)">${t}</button>`)
+  if (!state.allTags.length) h += `<div style="font-size:11px;color:#666;padding:4px 8px">暂无标签</div>`
+  else state.allTags.forEach(t => {
+    h += `<button class="sbtn${state.tagFilter===t?' on':''}" onclick="applyFilter('','${esc(t)}')">${esc(t)}</button>`
+  })
   document.getElementById('sidebar').innerHTML = h
 }
-function setFilter(cat, tag) { state.catFilter = cat; state.tagFilter = tag; state.search = ''; state.tab = 'list'; render() }
+
+function applyFilter(cat, tag) {
+  state.catFilter = cat; state.tagFilter = tag; state.search = ''
+  state.tab = 'list'; state.editing = null; state.dirty = false; state.preview = false
+  render()
+}
+
 function filtered() {
   return state.articles.filter(a => {
     if (state.catFilter && a.category !== state.catFilter) return false
     if (state.tagFilter && !a.tags.includes(state.tagFilter)) return false
-    if (state.search) { const q = state.search.toLowerCase(); if (!a.title.toLowerCase().includes(q) && !a.id.includes(q) && !a.excerpt.toLowerCase().includes(q)) return false }
+    if (state.search) {
+      const q = state.search.toLowerCase()
+      if (!a.title.toLowerCase().includes(q) && !a.id.includes(q) && !a.excerpt.toLowerCase().includes(q)) return false
+    }
     return true
   })
 }
+
+// ── List ──
 function renderList() {
   const list = filtered()
-  let h = `<div style="display:flex;gap:10px;margin-bottom:12px"><input class="search" placeholder="搜索标题 / ID / 摘要..." value="${esc(state.search)}" oninput="state.search=this.value;renderList()">`
-  if (state.catFilter || state.tagFilter) h += `<button class="tbtn" onclick="state.catFilter='';state.tagFilter='';state.search='';render()">清除筛选</button>`
+  let h = `<div style="display:flex;gap:10px;margin-bottom:12px">
+    <input class="search" placeholder="搜索标题 / ID / 摘要..." value="${esc(state.search)}" oninput="state.search=this.value;renderList()">`
+  if (state.catFilter || state.tagFilter) {
+    h += `<button class="tbtn" onclick="state.catFilter='';state.tagFilter='';state.search='';render()">清除筛选</button>`
+  }
   h += `</div>`
   if (!list.length) return document.getElementById('main').innerHTML = h + '<div class="empty">暂无匹配文章</div>'
   h += `<table><thead><tr><th>标题</th><th>日期</th><th>栏目</th><th>标签</th><th>操作</th></tr></thead><tbody>`
   list.forEach(a => {
-    h += `<tr><td><div style="font-weight:600">${esc(a.title)||'(无标题)'}</div><div class="tid">${a.id}</div></td><td>${a.date||''}</td><td><span class="badge">${esc(a.category)}</span></td><td>${(a.tags||[]).map(t=>`<span class="badge" style="cursor:pointer" onclick="setFilter('','${esc(t)}')">${esc(t)}</span>`).join('')}</td><td><button class="act" onclick="editArticle('${esc(a.id)}')">编辑</button><button class="act del" onclick="delArticle('${esc(a.id)}')">删除</button></td></tr>`
+    h += `<tr>
+      <td><div style="font-weight:600">${esc(a.title)||'(无标题)'}</div><div class="tid">${a.id}</div></td>
+      <td>${a.date||''}</td>
+      <td><span class="badge" onclick="applyFilter('${esc(a.category)}','')">${esc(a.category)}</span></td>
+      <td>${(a.tags||[]).map(t=>`<span class="badge" onclick="applyFilter('','${esc(t)}')">${esc(t)}</span>`).join('')}</td>
+      <td><button class="act" onclick="editArticle('${esc(a.id)}')">编辑</button><button class="act del" onclick="delArticle('${esc(a.id)}')">删除</button></td>
+    </tr>`
   })
   h += `</tbody></table>`
   document.getElementById('main').innerHTML = h
 }
-function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;') }
 
-function newArticle() { if (state.dirty && !confirm('未保存，确定放弃？')) return; state.editing = { id:'',title:'',date:new Date().toISOString().slice(0,10),category:state.catFilter||'生活碎碎念',excerpt:'',content:'',image:'',tags:state.tagFilter?[state.tagFilter]:[],readTime:'' }; state.dirty=false; state.preview=false; state.tab='edit'; render() }
-async function editArticle(id) { if (state.dirty && !confirm('未保存，确定放弃？')) return; state.editing = await api(`/api/articles/${id}`); state.dirty=false; state.preview=false; state.tab='edit'; render() }
-async function delArticle(id) { if (!confirm('确定删除「'+id+'」？')) return; await api(`/api/articles/${id}`,{method:'DELETE'}); msg('已删除'); load() }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;') }
 
-function update(patch) { if (!state.editing) return; Object.assign(state.editing, patch); state.dirty=true; renderEditor() }
+// ── Editor ──
+function newArticle() {
+  if (state.dirty && !confirm('未保存，确定放弃？')) return
+  state.editing = {
+    id: 'post-' + Date.now(),
+    title: '', date: new Date().toISOString().slice(0,10),
+    category: state.catFilter || state.categories[0] || '生活碎碎念',
+    excerpt: '', content: '', image: '', tags: state.tagFilter ? [state.tagFilter] : [], readTime: ''
+  }
+  state.dirty = false; state.preview = false; state.tab = 'edit'; render()
+}
+
+async function editArticle(id) {
+  if (state.dirty && !confirm('未保存，确定放弃？')) return
+  state.editing = await api('/api/articles/' + encodeURIComponent(id))
+  state.dirty = false; state.preview = false; state.tab = 'edit'; render()
+}
+
+async function delArticle(id) {
+  if (!confirm('确定删除「' + id + '」？此操作不可恢复。')) return
+  await api('/api/articles/' + encodeURIComponent(id), { method: 'DELETE' })
+  if (state.editing && state.editing.id === id) { state.editing = null; state.tab = 'list' }
+  msg('已删除'); await load()
+}
+
+function update(patch) { if (!state.editing) return; Object.assign(state.editing, patch); state.dirty = true; renderEditor() }
+
 function renderEditor() {
   if (!state.editing) return
   const e = state.editing; const pv = state.preview
+  const cats = state.categories.length ? state.categories : ['生活碎碎念','实用主义研究','关联主义学习','BRAND ALL IN AI']
+
   let h = `<div class="editor"><div class="e-tbar">
-    <button class="tbtn" onclick="state.editing=null;state.tab='list';state.dirty=false;render()">← 返回</button>
+    <button class="tbtn" onclick="goBackFromEditor()">← 返回</button>
     <button class="tbtn sync" onclick="saveArticle()" id="saveBtn">💾 保存</button>
-    <button class="tbtn${pv?' on':''}" onclick="state.preview=!state.preview;render()">${pv?'✏️ 编辑':'👁 预览'}</button>
+    <button class="tbtn${pv?' on':''}" onclick="state.preview=!state.preview;renderEditor()">${pv?'✏️ 编辑':'👁 预览'}</button>
     <span class="e-info">编辑: ${esc(e.title)||'新文章'} · ID: ${esc(e.id)||'(未设置)'}</span>
+    <span class="wc" id="wordcount"></span>
   </div>`
+
   h += `<div class="e-grid${pv?' full':''}">`
+
+  // Form (hidden in preview)
   if (!pv) h += `<div class="e-form">
     <div><label>ID</label><input value="${esc(e.id)}" oninput="update({id:this.value})" placeholder="英文连字符，如 my-new-post"></div>
-    <div><label>标题</label><input value="${esc(e.title)}" oninput="update({title:this.value})"></div>
+    <div><label>标题</label><input value="${esc(e.title)}" oninput="update({title:this.value})" id="titleInput"></div>
     <div class="row2"><div><label>日期</label><input type="date" value="${e.date||''}" oninput="update({date:this.value})"></div><div><label>阅读时长</label><input value="${esc(e.readTime)}" oninput="update({readTime:this.value})" placeholder="如 8 min read"></div></div>
-    <div><label>栏目</label><select onchange="update({category:this.value})">${CATS.map(c=>`<option value="${c}"${e.category===c?' selected':''}>${c}</option>`).join('')}</select></div>
-    <div><label>封面图</label><div style="display:flex;gap:8px;align-items:flex-start"><div style="flex:1"><input value="${esc(e.image)}" oninput="update({image:this.value})" placeholder="/images/xxx.jpg — 点下方缩略图选图"><div class="covers">${state.images.slice(0,12).map(i=>`<img src="${i.url}" class="${e.image===i.url?'sel':''}" onclick="update({image:'${i.url}')" title="${esc(i.filename)}">`).join('')}</div></div>${e.image?`<img src="${e.image}" style="width:64px;height:44px;object-fit:cover;border-radius:3px;flex-shrink:0">`:''}</div></div>
-    <div><label>标签</label><div class="tags">${state.allTags.map(t=>{const sel=(e.tags||[]).includes(t);return`<button class="${sel?'on':''}" onclick="toggleTag('${esc(t)}')">${esc(t)}</button>`}).join('')}</div></div>
+    <div><label>栏目</label><select onchange="update({category:this.value})">${cats.map(c=>`<option value="${esc(c)}"${e.category===c?' selected':''}>${esc(c)}</option>`).join('')}</select></div>
+    <div><label>封面图</label><div style="display:flex;gap:8px;align-items:flex-start"><div style="flex:1"><input value="${esc(e.image)}" oninput="update({image:this.value})" placeholder="/images/xxx.jpg — 点下方缩略图选图"><div class="covers">${state.images.slice(0,15).map(i=>`<img src="${i.url}" class="${e.image===i.url?'sel':''}" onclick="update({image:'${esc(i.url)}'})" title="${esc(i.filename)}">`).join('')}</div></div>${e.image?`<img src="${e.image}" style="width:64px;height:44px;object-fit:cover;border-radius:3px;flex-shrink:0">`:''}</div></div>
+    <div><label>标签</label><div class="tags" id="tagArea">
+      ${state.allTags.map(t=>{const sel=(e.tags||[]).includes(t);return`<button class="${sel?'on':''}" onclick="toggleTag('${esc(t)}')">${esc(t)}<span class="tag-del" onclick="event.stopPropagation();deleteTag('${esc(t)}')">×</span></button>`}).join('')}
+      <input class="tag-input" placeholder="+新标签" id="newTagInput" onkeydown="if(event.key==='Enter'){addCustomTag(this.value);this.value=''}">
+    </div></div>
     <div><label>摘要</label><textarea rows="3" oninput="update({excerpt:this.value})" placeholder="文章摘要，首页卡片展示">${esc(e.excerpt)}</textarea></div>
   </div>`
-  if (!pv) h += `<div><textarea class="mdedit" oninput="update({content:this.value})" placeholder="# 开始写文章...">${esc(e.content)}</textarea></div>`
-  else h += `<div class="mdpv"><h1>${esc(e.title)||'(无标题)'}</h1><div style="color:var(--text2);font-size:12px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)">${e.date||''} · ${esc(e.category)} · ${esc(e.readTime)}</div>${md2html(e.content)}</div>`
+
+  // Editor / Preview
+  if (!pv) {
+    const wc = (e.content||'').length
+    h += `<div><textarea class="mdedit" oninput="update({content:this.value});var w=document.getElementById('wordcount');if(w)w.textContent='字数: '+this.value.length" placeholder="# 开始写文章...">${esc(e.content)}</textarea></div>`
+  } else {
+    h += `<div class="mdpv"><h1>${esc(e.title)||'(无标题)'}</h1><div style="color:var(--text2);font-size:12px;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)">${e.date||''} · ${esc(e.category)} · ${esc(e.readTime)}</div>${md2html(e.content)}</div>`
+  }
+
   h += `</div></div>`
   document.getElementById('main').innerHTML = h
+
+  // Update word count after render
+  const wcEl = document.getElementById('wordcount')
+  if (wcEl) wcEl.textContent = '字数: ' + (e.content||'').length
 }
 
-function toggleTag(t) { const tags = [...(state.editing.tags||[])]; const i = tags.indexOf(t); i>=0 ? tags.splice(i,1) : tags.push(t); update({tags}) }
+function goBackFromEditor() {
+  if (state.dirty && !confirm('未保存，确定离开？')) return
+  state.editing = null; state.dirty = false; state.preview = false; state.tab = 'list'; render()
+}
 
+function toggleTag(t) {
+  if (!state.editing) return
+  const tags = [...(state.editing.tags||[])]
+  const i = tags.indexOf(t)
+  i >= 0 ? tags.splice(i,1) : tags.push(t)
+  update({tags})
+}
+
+async function addCustomTag(name) {
+  if (!name || !name.trim()) return
+  const r = await api('/api/tags', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({name:name.trim()}) })
+  if (r.ok) { state.allTags = r.tags; renderEditor(); msg('标签已添加') }
+  else msg(r.error || '添加失败')
+}
+
+async function deleteTag(name) {
+  if (!confirm('删除标签「' + name + '」？')) return
+  const r = await api('/api/tags/' + encodeURIComponent(name), { method:'DELETE' })
+  if (r.ok) { state.allTags = r.tags; renderEditor(); msg('标签已删除') }
+  else msg(r.error || '删除失败')
+}
+
+// ── Save ──
 async function saveArticle() {
-  const e = state.editing; if (!e || !e.id || !e.title) return msg('请填写ID和标题')
-  if (e.id !== e.id.trim().toLowerCase().replace(/\s+/g,'-')) { if (!confirm('ID建议英文小写+连字符，继续保存？')) return }
-  document.getElementById('saveBtn').textContent = '保存中...'
-  await api(`/api/articles/${e.id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(e)})
-  state.dirty = false; msg('已保存'); await load()
+  const e = state.editing
+  if (!e) return
+  if (!e.id || !e.id.trim()) return msg('请输入文章ID')
+  if (!e.title || !e.title.trim()) { msg('请输入标题'); const inp = document.getElementById('titleInput'); if (inp) inp.focus(); return }
+  const btn = document.getElementById('saveBtn')
+  btn.textContent = '保存中...'; btn.disabled = true
+  const r = await api('/api/articles/' + encodeURIComponent(e.id), { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(e) })
+  btn.textContent = '💾 保存'; btn.disabled = false
+  if (r.ok) { state.dirty = false; msg('已保存'); await load(); renderEditor() }
+  else msg(r.error || '保存失败')
 }
 
+// ── Sync ──
 async function doSync() {
-  const btn = document.getElementById('syncBtn'); btn.textContent = '⏳ 推送中...'; btn.disabled = true
-  try { const r = await api('/api/sync',{method:'POST'}); msg(r.message||r.error) } catch(e) { msg('同步失败') }
+  const btn = document.getElementById('syncBtn')
+  btn.textContent = '⏳ 推送中...'; btn.disabled = true
+  try { const r = await api('/api/sync',{method:'POST'}); msg(r.message||r.error) } catch(e) { msg('同步失败: '+e.message) }
   btn.textContent = '🚀 同步到仓库'; btn.disabled = false
 }
 
+// ── Images ──
 async function uploadImg() {
   const f = document.getElementById('fileInput').files[0]; if (!f) return
   const fd = new FormData(); fd.append('image', f)
-  await api('/api/upload',{method:'POST',body:fd}); load(); msg('上传成功')
+  await api('/api/upload',{method:'POST',body:fd}); await load(); msg('上传成功')
 }
-
-async function delImg(fn) { if (!confirm('删除 '+fn+'？')) return; await api(`/api/images/${fn}`,{method:'DELETE'}); load() }
+async function delImg(fn) { if (!confirm('删除 '+fn+'？')) return; await api('/api/images/'+encodeURIComponent(fn),{method:'DELETE'}); await load() }
 
 function renderImages() {
   let h = `<div class="upload-box" onclick="document.getElementById('fileInput').click()"><p style="color:var(--text2);margin-bottom:8px">点击选择图片上传</p><input type="file" accept="image/*" id="fileInput" onchange="uploadImg()" style="display:none"></div><div class="img-grid">`
   state.images.forEach(i => {
-    h += `<div class="img-card"><img src="${i.url}" alt=""><div class="info"><div class="fn">${esc(i.filename)}</div><button class="act" onclick="navigator.clipboard.writeText('${i.url}');msg('路径已复制')">复制</button><button class="act del" onclick="delImg('${esc(i.filename)}')">删除</button></div></div>`
+    h += `<div class="img-card"><img src="${i.url}" alt=""><div class="info"><div class="fn">${esc(i.filename)}</div><button class="act" onclick="navigator.clipboard.writeText('${esc(i.url)}');msg('路径已复制')">复制</button><button class="act del" onclick="delImg('${esc(i.filename)}')">删除</button></div></div>`
   })
   h += `</div>`
   document.getElementById('main').innerHTML = h
 }
 
-// Simple markdown to HTML
+// ── Simple Markdown to HTML ──
 function md2html(md) {
   if (!md) return '<p style="color:var(--text2)">正文为空</p>'
-  const lines = md.split('\n'); let h = ''; let inCode = false, codeBuf = '', codeLang = ''
+  const lines = md.split('\n'); let h = ''; let inCode = false, codeBuf = ''
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]; const t = line.trim()
     if (t.startsWith('```')) {
       if (inCode) { h += `<pre><code>${esc(codeBuf)}</code></pre>`; codeBuf = ''; inCode = false }
-      else { inCode = true; codeLang = t.slice(3).trim() }
+      else { inCode = true }
       continue
     }
     if (inCode) { codeBuf += line+'\n'; continue }
@@ -229,18 +351,29 @@ function md2html(md) {
   if (inCode && codeBuf) h += `<pre><code>${esc(codeBuf)}</code></pre>`
   return h
 }
-function inline(s) { return s.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`(.+?)`/g,'<code>$1</code>') }
+function inline(s) { return (s||'').replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/`(.+?)`/g,'<code>$1</code>') }
+
+// ── Global events ──
 
 // Tab buttons
 document.querySelectorAll('[data-tab]').forEach(btn => {
+  if (btn.id === 'btnNew') return
   btn.addEventListener('click', function() {
     const tab = this.dataset.tab
-    if (tab === 'edit') return newArticle()
     if (tab === 'list' && state.dirty && !confirm('未保存，确定离开？')) return
-    state.tab = tab; state.dirty = false; render()
+    if (tab === 'images' && state.dirty && !confirm('未保存，确定离开？')) return
+    state.tab = tab; state.dirty = false; state.preview = false; render()
   })
 })
-document.getElementById('btnNew').addEventListener('click', newArticle)
+document.getElementById('btnNew').addEventListener('click', () => newArticle())
+
+// Ctrl+S save
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); if (state.tab === 'edit' && state.editing) saveArticle() }
+})
+
+// beforeunload
+window.addEventListener('beforeunload', function(e) { if (state.dirty) { e.preventDefault(); e.returnValue = '' } })
 
 load()
 </script>
