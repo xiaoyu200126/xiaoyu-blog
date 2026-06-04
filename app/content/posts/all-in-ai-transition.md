@@ -1,7 +1,7 @@
 ---
 id: all-in-ai-transition
-title: "ALL IN AI是智力相关行业转型的必然"
-date: 2026-04-21
+title: ALL IN AI是智力相关行业转型的必然
+date: '2026-04-21T00:00:00.000Z'
 tags:
   - AI
   - 认知
@@ -9,9 +9,8 @@ tags:
 readTime: 15 min read
 image: /images/blog_cover_ALL_IN_AI.jpg
 category: BRAND ALL IN AI
-excerpt: "这篇文章记录了我从2026年2月至今的AI实践，以及实践中形成的一些个人观点。从认知外包到认知卸载，从建构主义到关联主义，AI时代的学习正在发生范式转移。"
+excerpt: 这篇文章记录了我从2026年2月至今的AI实践，以及实践中形成的一些个人观点。从认知外包到认知卸载，从建构主义到关联主义，AI时代的学习正在发生范式转移。
 ---
-
 # ALL IN AI是智力相关行业转型的必然
 
 > 这篇文章记录了我从2026年2月至今的AI实践，以及实践中形成的一些个人观点。欢迎交流。
