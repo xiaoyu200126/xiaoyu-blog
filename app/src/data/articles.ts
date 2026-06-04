@@ -1,5 +1,5 @@
 // AUTO-GENERATED from content/posts/*.md — DO NOT EDIT MANUALLY
-// Generated on 2026-06-04T03:59:31.629Z
+// Generated on 2026-06-04T04:17:30.874Z
 
 export interface Article {
   id: string
