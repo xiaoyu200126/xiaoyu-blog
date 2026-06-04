@@ -78,5 +78,6 @@ app.post('/api/sync', (req, res) => {
 app.get('/', (_, res) => res.sendFile(path.join(__dirname, 'admin.html')))
 app.get('/admin', (_, res) => res.sendFile(path.join(__dirname, 'admin.html')))
 
-const PORT = 4001
-app.listen(PORT, () => console.log(`落笔阁管理后台: http://localhost:${PORT}`))
+const PORT = 3001
+const server = app.listen(PORT, '127.0.0.1', () => console.log(`落笔阁管理后台: http://localhost:${PORT}`))
+server.on('error', (e) => { console.error('启动失败:', e.message); process.exit(1) })
