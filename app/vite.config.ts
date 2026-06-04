@@ -2,16 +2,13 @@ import path from "path"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import { inspectAttr } from 'kimi-plugin-inspect-react'
+import adminPlugin from './admin-api-plugin.mjs'
 
-// https://vite.dev/config/
 export default defineConfig({
   base: '/',
-  plugins: [inspectAttr(), react()],
+  plugins: [inspectAttr(), react(), adminPlugin()],
   server: {
-    port: 5173,
-    proxy: {
-      '/api': 'http://localhost:4001',
-    },
+    port: 3000,
   },
   resolve: {
     alias: {

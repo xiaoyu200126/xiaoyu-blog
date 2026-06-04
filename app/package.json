@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:admin": "concurrently \"node admin-server/index.mjs\" \"vite\"",
-    "admin": "node admin-server/index.mjs",
+    "dev:admin": "vite",
+    "admin": "vite",
     "prebuild": "npx tsx scripts/generate-articles.ts",
     "build": "npm run prebuild && tsc -b && vite build",
     "generate": "npx tsx scripts/generate-articles.ts",
