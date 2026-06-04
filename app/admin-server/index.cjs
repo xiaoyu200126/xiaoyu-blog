@@ -12,7 +12,6 @@ const GIT_DIR = path.resolve(ROOT, '..')
 
 const app = express()
 app.use(express.json({ limit: '10mb' }))
-app.use(express.static(path.join(ROOT, 'public')))
 
 function rd(id) {
   const fp = path.join(POSTS_DIR, `${id}.md`)
@@ -75,8 +74,13 @@ app.post('/api/sync', (req, res) => {
   try { execSync('npm run build', { cwd: ROOT, stdio: 'pipe', timeout: 120000 }); execSync('python deploy2.py', { cwd: GIT_DIR, stdio: 'pipe', timeout: 60000 }) } catch {}
 })
 
-app.get('/', (_, res) => res.sendFile(path.join(__dirname, 'admin.html')))
-app.get('/admin', (_, res) => res.sendFile(path.join(__dirname, 'admin.html')))
+const ADMIN_HTML = path.join(__dirname, 'admin.html')
+
+app.get('/', (_, res) => res.type('html').send(fs.readFileSync(ADMIN_HTML, 'utf-8')))
+app.get('/admin', (_, res) => res.type('html').send(fs.readFileSync(ADMIN_HTML, 'utf-8')))
+
+// Static files (images) — must be after routes
+app.use('/images', express.static(path.join(ROOT, 'public', 'images')))
 
 const PORT = 3001
 const server = app.listen(PORT, '127.0.0.1', () => console.log(`落笔阁管理后台: http://localhost:${PORT}`))
