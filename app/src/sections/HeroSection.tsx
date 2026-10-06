@@ -379,12 +379,62 @@ export default function HeroSection() {
           </div>
         </div>
 
+        {/* Scroll-down indicator —— 放在分页圆点**上方**。
+            之前排在圆点下方，整块被顶到 812 视口的 y≈792 处，
+            文字刚好露在折线上、箭头整个被挤没了。
+
+            图标由桌面那套「鼠标轮廓 + 内点」换成一支细的向下箭头：
+            触屏上根本没有鼠标，鼠标轮廓反而在传递错误暗示。 */}
+        <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '4px' }}>
+          <button
+            onClick={handleScrollDown}
+            aria-label="向下滚动"
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '10px',
+              fontFamily: 'var(--font-display)',
+              fontSize: '10px',
+              letterSpacing: '0.24em',
+              textTransform: 'uppercase',
+              // 之前压到 0.55，纸上几乎看不见，箭头也跟着消失。
+              color: 'var(--color-text-secondary)',
+              opacity: 0.8,
+              transition: 'opacity 0.3s ease',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = '1' }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.8' }}
+          >
+            <span>Scroll</span>
+            <svg
+              width="18"
+              height="11"
+              viewBox="0 0 18 11"
+              fill="none"
+              style={{ animation: 'hero-scroll-bounce 2.2s ease-in-out infinite' }}
+            >
+              <path
+                d="M1.5 1.5 L9 8.5 L16.5 1.5"
+                stroke="currentColor"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
+        </div>
+
         {/* Dots below carousel — 触控目标补到 44px 高 */}
         <div style={{
           display: 'flex', justifyContent: 'center', alignItems: 'center',
           gap: '4px',
           // 上下留白收到最小，44px 的触控高度已由每个圆点的 padding 提供
-          padding: '0 0 4px',
+          padding: '0 0 20px',
         }}>
           {featuredArticles.map((_, i) => (
             <button
@@ -414,58 +464,6 @@ export default function HeroSection() {
               }} />
             </button>
           ))}
-        </div>
-
-        {/* Scroll-down indicator —— 与桌面同一套 keyframes。
-            之前只有桌面分支有（position:absolute 浮在轮播之上），
-            手机分支整块是文档流布局，浮层会盖住分页圆点，所以放在圆点下方。
-
-            图标由桌面那套「鼠标轮廓 + 内点」换成一支细的向下箭头：
-            触屏上根本没有鼠标，鼠标轮廓反而在传递错误暗示。
-            颜色压到 text-muted 的一半透明，整体更轻，不与内容抢视线。 */}
-        <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '20px' }}>
-          <button
-            onClick={handleScrollDown}
-            aria-label="向下滚动"
-            style={{
-              background: 'none',
-              border: 'none',
-              padding: 0,
-              cursor: 'pointer',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '10px',
-              fontFamily: 'var(--font-display)',
-              fontSize: '10px',
-              letterSpacing: '0.24em',
-              textTransform: 'uppercase',
-              // 之前压到 0.55，纸上几乎看不见，箭头也跟着消失。
-              // 回到 0.8，颜色用 text-secondary 而不是 muted。
-              color: 'var(--color-text-secondary)',
-              opacity: 0.8,
-              transition: 'opacity 0.3s ease',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.opacity = '1' }}
-            onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.8' }}
-          >
-            <span>Scroll</span>
-            <svg
-              width="18"
-              height="11"
-              viewBox="0 0 18 11"
-              fill="none"
-              style={{ animation: 'hero-scroll-bounce 2.2s ease-in-out infinite' }}
-            >
-              <path
-                d="M1.5 1.5 L9 8.5 L16.5 1.5"
-                stroke="currentColor"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
         </div>
       </section>
     )
