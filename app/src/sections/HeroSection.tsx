@@ -234,10 +234,13 @@ export default function HeroSection() {
               <div key={article.id} style={{ width: '100%', flexShrink: 0 }}>
                 <div
                   style={{
-                    backgroundColor: 'var(--color-bg-secondary)',
+                    // 原来这里有 backgroundColor(--color-bg-secondary)，
+                    // 手机端凭空多出一层卡片底色，收尾时形成一条硬边，
+                    // 和下方的 Loop 区看起来像被切成两段。
+                    // 桌面本来就是「图 + 文」直接落在页面底色上，没有卡片底，
+                    // 这里去掉后手机与桌面才是同一套构图语言。
                     overflow: 'hidden',
-                    // 手机端去掉左右 20px 留白，图片直接顶到屏幕两边。
-                    // 桌面是大图主导构图，手机也该由图说话，卡片边框感会削弱。
+                    // 手机端去掉左右留白，图片直接顶到屏幕两边
                     margin: isNarrow ? '0' : '0 20px',
                   }}
                 >
@@ -278,7 +281,11 @@ export default function HeroSection() {
                       letterSpacing: '0.22em', textTransform: 'uppercase',
                       color: 'var(--color-text-muted)',
                       border: '1px solid var(--color-border)',
-                      padding: '6px clamp(10px, 2.4vw, 20px)',
+                      padding: '6px 14px',
+                      // 关键：框本身有内边距 + 1px 边框，文字会比下面的
+                      // 日期、标题整体右移约 15px，看起来就是「三者没对齐」。
+                      // 用负外边距把框往左拉，让框内的文字与下方文字左缘对齐。
+                      marginLeft: '-15px',
                       marginBottom: 'clamp(14px, 2.5vw, 28px)',
                       flexShrink: 0,
                     }}>
@@ -326,7 +333,7 @@ export default function HeroSection() {
                     }}>
                       {article.excerpt}
                     </p>
-                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', flexShrink: 0 }}>
+                    <div className="hero-tags">
                       {article.tags.map((tag: string) => (
                         <Link key={tag} to={`/archives?tag=${encodeURIComponent(tag)}`} style={{
                           fontFamily: 'var(--font-sans)',

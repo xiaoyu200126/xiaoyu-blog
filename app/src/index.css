@@ -310,6 +310,55 @@
     font-weight: 500;
   }
 
+  /* 标签行。标签是带边框的小方块，框内的文字会比标题右移约 15px。
+     这里用负外边距把**第一个**标签的框往左拉，让它的文字与上方标题左缘对齐。
+     只作用于 :first-child —— 若每个标签都拉，后续标签之间的间距会被破坏。 */
+  .hero-tags {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+  }
+
+  .hero-tags > :first-child {
+    margin-left: -15px;
+  }
+
+  /* ── 页脚 ──────────────────────────────────────────────────────
+     桌面：一条 flex 链 + 「|」分隔符，一行排开。
+     手机：原本竖排 7 行，页脚被撑得很长。改两列网格后行数减半，
+     分隔竖线在网格里没有意义，隐藏掉。 */
+  .footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .footer-nav-item {
+    display: flex;
+    align-items: center;
+  }
+
+  @media (max-width: 767px) {
+    .footer-nav {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      padding: 24px 16px;
+    }
+
+    .footer-nav-item {
+      justify-content: center;
+    }
+
+    /* 网格里用间距代替竖线 */
+    .footer-nav-sep {
+      display: none;
+    }
+
+    .footer-subscribe {
+      margin-bottom: 40px;
+    }
+  }
+
   /* Loop card hover - subtle lift */
   .loop-card {
     transition: transform 0.4s ease, box-shadow 0.4s ease;

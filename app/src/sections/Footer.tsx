@@ -17,6 +17,7 @@ export default function Footer() {
     >
       {/* Subscribe section */}
       <div
+        className="footer-subscribe"
         style={{
           textAlign: 'center',
           maxWidth: '500px',
@@ -79,16 +80,17 @@ export default function Footer() {
         </a>
       </div>
 
-      {/* Footer links */}
+      {/* Footer links —— 手机端改用两列网格。
+          原来是一条 flex 链 + 「|」分隔符，375px 下每个链接一行竖排，
+          7 个链接把页脚撑得很长。窄屏改两列后高度减半，且不再需要分隔线。 */}
       <div
+        className="footer-nav"
         style={{
-          display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           gap: '0',
           padding: '30px 40px',
           borderTop: '1px solid var(--color-border)',
-          flexWrap: 'wrap',
         }}
       >
         {[
@@ -100,7 +102,7 @@ export default function Footer() {
           { label: '晓宇友人账', path: '/friends' },
           { label: '关于晓宇', path: '/about' },
         ].map((item, index, arr) => (
-          <span key={item.path} style={{ display: 'flex', alignItems: 'center' }}>
+          <span className="footer-nav-item" key={item.path}>
             <Link
               to={item.path}
               style={{
@@ -110,7 +112,8 @@ export default function Footer() {
                 textTransform: 'uppercase',
                 color: 'var(--color-text-muted)',
                 textDecoration: 'none',
-                padding: '8px 14px',
+                padding: '10px 14px',
+                display: 'block',
                 transition: 'color 0.3s ease',
                 whiteSpace: 'nowrap',
               }}
@@ -120,7 +123,7 @@ export default function Footer() {
               {item.label}
             </Link>
             {index < arr.length - 1 && (
-              <span style={{ color: 'var(--color-border-light)', fontSize: '12px' }}>|</span>
+              <span className="footer-nav-sep" style={{ color: 'var(--color-border-light)', fontSize: '12px' }}>|</span>
             )}
           </span>
         ))}
