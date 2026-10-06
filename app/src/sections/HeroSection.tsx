@@ -14,6 +14,8 @@ export default function HeroSection() {
   const [isReady, setIsReady] = useState(false)
   const touchRef = useRef({ startX: 0, startY: 0, dragging: false })
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  // 字体异步加载完成后需要让 Flickity 重新布局，这里存 resize 监听的清理函数
+  const fontsReadyCleanup = useRef<(() => void) | null>(null)
 
   const featuredArticles = getArticles()
     .sort((a: Article, b: Article) => new Date(b.date).getTime() - new Date(a.date).getTime())
@@ -60,10 +62,21 @@ export default function HeroSection() {
       })
 
       setIsReady(true)
+
+      // 字体是异步加载的（见 index.html 的 media="print" 方案）。
+      // Flickity 在上面初始化时量的是回退字体的尺寸，字体换上后文字重排、
+      // cell 变宽，若不通知它重新布局，被选中的 cell 会停在 translateX(100%)
+      // —— 整个 Hero 滑出屏幕，页面上看起来就是一片空白。
+      const relayout = () => flktyRef.current?.resize()
+      document.fonts?.ready.then(relayout).catch(() => {})
+      window.addEventListener('resize', relayout)
+      fontsReadyCleanup.current = () => window.removeEventListener('resize', relayout)
     }, 100)
 
     return () => {
       clearTimeout(timer)
+      fontsReadyCleanup.current?.()
+      fontsReadyCleanup.current = null
       if (flktyRef.current) {
         flktyRef.current.destroy()
         flktyRef.current = null
