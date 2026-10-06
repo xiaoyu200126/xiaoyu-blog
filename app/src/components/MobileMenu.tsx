@@ -66,8 +66,10 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         position: 'fixed',
         top: 0,
         left: 0,
-        width: '100vw',
-        height: '100vh',
+        // 原来是 100vw：移动端 100vw 含滚动条宽度，会撑出横向滚动条。
+        // 100dvw/100% + overflow hidden 在有无滚动条时都与视口一致。
+        width: '100%',
+        height: '100dvh',
         backgroundColor: 'var(--color-text)',
         zIndex: 200,
         opacity: 0,

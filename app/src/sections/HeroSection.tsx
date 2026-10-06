@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom'
 import Flickity from 'flickity'
 import { getArticles } from '../data/articles'
 import type { Article } from '../data/articles'
-import { useIsMobile } from '../hooks/use-mobile'
+import { useIsMobile, useIsNarrow, useIsTablet } from '../hooks/use-mobile'
 import 'flickity/css/flickity.css'
 
 export default function HeroSection() {
   const isMobile = useIsMobile()
+  const isNarrow = useIsNarrow()
+  const isTablet = useIsTablet()
   const flktyRef = useRef<Flickity | null>(null)
   const carouselRef = useRef<HTMLDivElement>(null)
   const [currentSlide, setCurrentSlide] = useState(0)
@@ -214,11 +216,15 @@ export default function HeroSection() {
           >
             {featuredArticles.map((article: Article) => (
               <div key={article.id} style={{ width: '100%', flexShrink: 0 }}>
-                <div style={{
-                  backgroundColor: 'var(--color-bg-secondary)',
-                  overflow: 'hidden',
-                  margin: '0 20px',
-                }}>
+                <div
+                  style={{
+                    backgroundColor: 'var(--color-bg-secondary)',
+                    overflow: 'hidden',
+                    // 手机端去掉左右 20px 留白，图片直接顶到屏幕两边。
+                    // 桌面是大图主导构图，手机也该由图说话，卡片边框感会削弱。
+                    margin: isNarrow ? '0' : '0 20px',
+                  }}
+                >
                   {/* Image 16:9 */}
                   <div style={{
                     width: '100%',
@@ -238,7 +244,7 @@ export default function HeroSection() {
                   </div>
                   {/* Text — uniform layout, flow naturally */}
                   <div style={{
-                    padding: '18px 20px 22px',
+                    padding: isNarrow ? '20px 20px 24px' : '18px 20px 22px',
                     minHeight: '210px',
                     display: 'flex',
                     flexDirection: 'column',
@@ -246,21 +252,24 @@ export default function HeroSection() {
                     <span style={{
                       display: 'inline-block',
                       fontFamily: 'var(--font-sans)',
-                      fontSize: '2.6vw',
+                      // 原为裸 2.6vw：1440px 下 37px 尚可，375px 下只剩 9.75px，
+                      // 小到等于没有。clamp 给一个手机可读的下限。
+                      fontSize: 'clamp(12px, 2.6vw, 20px)',
                       letterSpacing: '0.22em', textTransform: 'uppercase',
                       color: 'var(--color-text-muted)',
                       border: '1px solid var(--color-border)',
-                      padding: '1vw 2.4vw',
-                      marginBottom: '2.5vw',
+                      padding: '6px clamp(10px, 2.4vw, 20px)',
+                      marginBottom: 'clamp(14px, 2.5vw, 28px)',
                       flexShrink: 0,
                     }}>
                       XIAOYU THOUGHT &amp; NOTES
                     </span>
                     <div style={{
                       fontFamily: 'var(--font-display)',
-                      fontSize: '3.2vw',
+                      // 同上：原 3.2vw 在 375px 下只有 12px
+                      fontSize: 'clamp(15px, 3.2vw, 24px)',
                       fontStyle: 'italic', color: 'var(--color-accent)',
-                      marginBottom: '2.2vw',
+                      marginBottom: 'clamp(10px, 2.2vw, 20px)',
                       flexShrink: 0,
                     }}>
                       {formatDate(article.date)}
@@ -270,10 +279,10 @@ export default function HeroSection() {
                       // 与宋体偏粗在同一行里出现重量接缝。Playfair 仍用于
                       // XIAOYU 标识与纯拉丁元素。
                       fontFamily: 'var(--font-display-mixed)',
-                      fontSize: 'clamp(28px, 4.8vw, 58px)',
-                      fontWeight: 600, lineHeight: 1.35,
+                      fontSize: 'clamp(26px, 4.8vw, 40px)',
+                      fontWeight: 600, lineHeight: 1.3,
                       color: 'var(--color-text)',
-                      margin: '0 0 2.2vw',
+                      margin: '0 0 clamp(12px, 2.2vw, 20px)',
                       letterSpacing: '0.02em',
                       textWrap: 'balance',
                       flexShrink: 0,
@@ -285,25 +294,27 @@ export default function HeroSection() {
                     </h1>
                     <p style={{
                       fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
-                      fontSize: '3.6vw',
-                      lineHeight: 1.65,
+                      // 原 3.6vw → 375px 下 13.5px，正文级文字必须给下限
+                      fontSize: 'clamp(14px, 3.6vw, 18px)',
+                      lineHeight: 1.7,
                       color: 'var(--color-text-secondary)',
-                      margin: '0 0 3vw',
-                      fontWeight: 300,
+                      margin: '0 0 clamp(16px, 3vw, 28px)',
+                      fontWeight: 400,
                       display: '-webkit-box', WebkitLineClamp: 3,
                       WebkitBoxOrient: 'vertical', overflow: 'hidden',
                       flexShrink: 0,
                     }}>
                       {article.excerpt}
                     </p>
-                    <div style={{ display: 'flex', gap: '2vw', flexWrap: 'wrap', flexShrink: 0 }}>
+                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', flexShrink: 0 }}>
                       {article.tags.map((tag: string) => (
                         <Link key={tag} to={`/archives?tag=${encodeURIComponent(tag)}`} style={{
                           fontFamily: 'var(--font-sans)',
-                          fontSize: '2.6vw',
-                          letterSpacing: '0.14em', textTransform: 'uppercase',
+                          fontSize: 'clamp(12px, 2.6vw, 14px)',
+                          letterSpacing: '0.1em', textTransform: 'uppercase',
                           color: 'var(--color-text-muted)',
-                          padding: '1vw 2.4vw',
+                          // 触控目标不小于 44px 高
+                          padding: '12px 14px',
                           border: '1px solid var(--color-border)',
                           textDecoration: 'none',
                         }}>
@@ -318,22 +329,39 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Dots below carousel */}
+        {/* Dots below carousel — 触控目标补到 44px 高 */}
         <div style={{
-          display: 'flex', justifyContent: 'center', gap: '8px',
-          padding: '18px 0 20px',
+          display: 'flex', justifyContent: 'center', alignItems: 'center',
+          gap: '4px',
+          padding: '10px 0 20px',
         }}>
           {featuredArticles.map((_, i) => (
             <button
               key={i}
               onClick={() => goToSlide(i)}
+              aria-label={`第 ${i + 1} 张`}
+              aria-current={i === currentSlide}
               style={{
-                width: i === currentSlide ? '20px' : '6px', height: '6px',
-                borderRadius: '3px', border: 'none', padding: 0, cursor: 'pointer',
+                width: i === currentSlide ? '24px' : '8px',
+                // 外层 padding 撑出 44px 的可点区域，视觉仍是细圆点
+                padding: '19px 0',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <span style={{
+                display: 'block',
+                width: i === currentSlide ? '24px' : '8px',
+                height: '6px',
+                borderRadius: '3px',
                 background: i === currentSlide ? 'var(--color-accent)' : 'var(--color-border)',
                 transition: 'all 0.3s ease',
-              }}
-            />
+              }} />
+            </button>
           ))}
         </div>
       </section>
@@ -366,7 +394,9 @@ export default function HeroSection() {
             key={article.id}
             style={{
               display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
+              // 平板保留双栏杂志感，但文图比例从 1:1 放宽到 1.15:1，
+              // 让标题那栏有更充裕的行宽，不必挤成三四行。
+              gridTemplateColumns: isTablet ? '1.15fr 1fr' : '1fr 1fr',
               width: '100%',
               height: '100vh',
             }}
