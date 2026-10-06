@@ -202,6 +202,19 @@ export default function HeroSection() {
         className="hero-section"
         style={{ backgroundColor: 'var(--color-bg)', padding: '80px 0 0' }}
       >
+        {/* 极淡的纵向渐层。整片纯色平铺会显得"贴"在屏幕上，
+            从略暖到略浅的一点点过渡就能把内容带进纸的调子里。
+            幅度刻意压得很低（bg-warm → bg），只求融入，不抢视觉。 */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background:
+              'linear-gradient(to bottom, var(--color-bg-warm) 0%, var(--color-bg) 42%, var(--color-bg) 100%)',
+            pointerEvents: 'none',
+          }}
+        />
         {/* 与桌面分支同一个视觉隐藏 h1，保证两种布局下标题层级一致 */}
         <h1
           style={{
@@ -218,6 +231,21 @@ export default function HeroSection() {
         >
           XIAOYU的随笔 —— 首页
         </h1>
+
+        {/* 顶部渐隐：从 Header 下沿淡出，导航区与首屏之间有个柔和的过渡，
+            不会出现一条生硬的横向分界 */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            left: 0, right: 0, top: 0,
+            height: '96px',
+            background:
+              'linear-gradient(to bottom, var(--color-bg) 0%, transparent 100%)',
+            pointerEvents: 'none',
+            zIndex: 2,
+          }}
+        />
         <div
           ref={touchTrackRef}
           style={{ width: '100%', overflow: 'hidden', position: 'relative' }}
@@ -264,6 +292,23 @@ export default function HeroSection() {
                         position: 'absolute', top: 0, left: 0,
                         width: '100%', height: '100%',
                         objectFit: 'cover',
+                        // 与桌面一致：轻微降饱和，去掉数码味，让照片和纸感底色相融
+                        filter: 'saturate(0.9)',
+                      }}
+                    />
+
+                    {/* 底部渐隐 —— 与桌面 L613 同一手法。
+                        没有它，16:9 的图会在文字上方切出一条硬边，
+                        卡片和页面各是一块，缺少融入感。 */}
+                    <div
+                      aria-hidden="true"
+                      style={{
+                        position: 'absolute',
+                        left: 0, right: 0, bottom: 0,
+                        height: '38%',
+                        background:
+                          'linear-gradient(to bottom, transparent 0%, var(--color-bg) 88%)',
+                        pointerEvents: 'none',
                       }}
                     />
                   </div>
