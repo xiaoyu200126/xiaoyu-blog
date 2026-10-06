@@ -32,7 +32,7 @@ export default function PragmatismConnectivismPage() {
           Pragmatism &amp; Connectivism
         </span>
         <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 300, lineHeight: 1.3, marginBottom: tagFilter ? '16px' : '60px', color: 'var(--color-text)', letterSpacing: '0.04em' }}>
-          实用主义&关联主义
+          思考随笔
         </h1>
         {tagFilter && (
           <div style={{ marginBottom: '40px', display: 'flex', alignItems: 'center', gap: '12px' }}>

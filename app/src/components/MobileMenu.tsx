@@ -10,11 +10,11 @@ interface MobileMenuProps {
 const menuLinks = [
   { label: '首页', path: '/' },
   { label: '生活碎碎念', path: '/life' },
-  { label: '实用主义&关联主义', path: '/pragmatism-connectivism' },
+  { label: '思考随笔', path: '/pragmatism-connectivism' },
   { label: 'BRAND & AI', path: '/brand-ai' },
-  { label: '精选文章', path: '/archives' },
   { label: '晓宇友人账', path: '/friends' },
   { label: '关于XIAOYU', path: '/about' },
+  { label: '精选文章', path: '/archives' },
 ]
 
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
