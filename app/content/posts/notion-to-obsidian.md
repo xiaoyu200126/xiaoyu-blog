@@ -8,7 +8,7 @@ tags:
   - 知识管理
 readTime: 10 min read
 image: /images/featured-2.jpg
-category: 实用主义研究
+category: 思考随笔
 excerpt: "五年间换了六款笔记工具，最终发现工具不重要，重要的是持续记录的习惯。"
 ---
 

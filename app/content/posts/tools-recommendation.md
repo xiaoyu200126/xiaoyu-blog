@@ -7,7 +7,7 @@ tags:
   - 工具
 readTime: 8 min read
 image: /images/hero-tools.jpg
-category: 实用主义研究
+category: 思考随笔
 excerpt: 作为一名实用主义者，我一直在寻找能够真正提升效率的工具。这是一份经过长期使用筛选后的工具清单，每一款都是精挑细选。
 featured: true
 ---

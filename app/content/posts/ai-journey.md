@@ -7,7 +7,7 @@ tags:
   - 学习
 readTime: 12 min read
 image: /images/featured-1.jpg
-category: 关联主义学习
+category: 思考随笔
 excerpt: "从大语言模型到 AI Agent，从理论到落地。这条路走得不快，但每一步都留下了脚印。"
 ---
 

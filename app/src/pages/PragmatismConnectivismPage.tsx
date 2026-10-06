@@ -3,10 +3,9 @@ import { gsap } from '../lib/motion'
 import { Link, useSearchParams } from 'react-router-dom'
 import { getArticlesByCategory } from '../data/articles'
 
-const allPosts = [
-  ...getArticlesByCategory('实用主义研究'),
-  ...getArticlesByCategory('关联主义学习'),
-].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+const allPosts = getArticlesByCategory('思考随笔').sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+)
 
 export default function PragmatismConnectivismPage() {
   const contentRef = useRef<HTMLDivElement>(null)

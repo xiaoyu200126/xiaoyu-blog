@@ -26,7 +26,7 @@ export const articles: Article[] = [
     tags: ["AI","学习"],
     readTime: "12 min read",
     image: "/images/featured-1.jpg",
-    category: "关联主义学习",
+    category: "思考随笔",
     featured: false,
   },
   {
@@ -91,7 +91,7 @@ export const articles: Article[] = [
     tags: ["效率","工具","知识管理"],
     readTime: "10 min read",
     image: "/images/featured-2.jpg",
-    category: "实用主义研究",
+    category: "思考随笔",
     featured: false,
   },
   {
@@ -117,7 +117,7 @@ export const articles: Article[] = [
     tags: ["效率","工具"],
     readTime: "8 min read",
     image: "/images/hero-tools.jpg",
-    category: "实用主义研究",
+    category: "思考随笔",
     featured: true,
   }
 ]
