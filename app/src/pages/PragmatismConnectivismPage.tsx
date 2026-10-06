@@ -29,7 +29,7 @@ export default function PragmatismConnectivismPage() {
     <div style={{ minHeight: '100vh', paddingTop: '140px', paddingBottom: '80px', backgroundColor: 'var(--color-bg)' }}>
       <div ref={contentRef} style={{ maxWidth: '800px', margin: '0 auto', padding: '0 40px' }}>
         <span className="badge-month" style={{ display: 'block', marginBottom: '24px' }}>
-          Pragmatism &amp; Connectivism
+          Essays
         </span>
         <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 300, lineHeight: 1.3, marginBottom: tagFilter ? '16px' : '60px', color: 'var(--color-text)', letterSpacing: '0.04em' }}>
           思考随笔

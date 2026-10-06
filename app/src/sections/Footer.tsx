@@ -99,7 +99,7 @@ export default function Footer() {
           { label: '思考随笔', path: '/pragmatism-connectivism' },
           { label: 'BRAND & AI', path: '/brand-ai' },
           { label: '晓宇友人账', path: '/friends' },
-          { label: '关于晓宇', path: '/about' },
+          { label: '关于XIAOYU', path: '/about' },
           { label: '精选文章', path: '/archives' },
         ].map((item, index, arr) => (
           <span className="footer-nav-item" key={item.path}>
