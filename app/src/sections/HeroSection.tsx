@@ -90,7 +90,9 @@ export default function HeroSection() {
   useEffect(() => {
     if (!isMobile || totalSlides <= 1) return
 
-    // Auto-advance every 3s
+    // 每 3s 自动切一张。
+    // 触摸滑动结束时会重置这个计时器（见下方 touch handler），
+    // 所以手动滑一下不会马上被自动播放切走。
     intervalRef.current = setInterval(() => {
       nextSlide()
     }, 3000)
@@ -281,11 +283,11 @@ export default function HeroSection() {
                       letterSpacing: '0.22em', textTransform: 'uppercase',
                       color: 'var(--color-text-muted)',
                       border: '1px solid var(--color-border)',
-                      padding: '6px 14px',
-                      // 关键：框本身有内边距 + 1px 边框，文字会比下面的
-                      // 日期、标题整体右移约 15px，看起来就是「三者没对齐」。
-                      // 用负外边距把框往左拉，让框内的文字与下方文字左缘对齐。
-                      marginLeft: '-15px',
+                      // 保持「原版对齐」：徽标的框左缘与下方日期、标题左缘对齐。
+                      // 之前试过用 margin-left:-15px 把框内的文字也拉齐，
+                      // 但框体会左移出内容栏，看起来反而更歪。
+                      // 这里改为把横向内边距收窄，让框内文字的错位小到不显眼。
+                      padding: '6px 9px',
                       marginBottom: 'clamp(14px, 2.5vw, 28px)',
                       flexShrink: 0,
                     }}>
@@ -390,6 +392,47 @@ export default function HeroSection() {
               }} />
             </button>
           ))}
+        </div>
+
+        {/* Scroll-down indicator —— 与桌面同一套 keyframes。
+            之前只有桌面分支有（position:absolute 浮在轮播之上），
+            手机分支整块是文档流布局，浮层会盖住分页圆点，所以放在圆点下方。 */}
+        <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '28px' }}>
+          <button
+            onClick={handleScrollDown}
+            aria-label="向下滚动"
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: 0,
+              cursor: 'pointer',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '8px',
+              fontFamily: 'var(--font-display)',
+              fontSize: '10px',
+              letterSpacing: '0.24em',
+              textTransform: 'uppercase',
+              color: 'var(--color-text-muted)',
+              transition: 'color 0.3s ease',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-muted)' }}
+          >
+            <span>Scroll</span>
+            <svg
+              width="14"
+              height="20"
+              viewBox="0 0 14 20"
+              fill="none"
+              style={{ animation: 'hero-scroll-bounce 2s ease-in-out infinite' }}
+            >
+              <rect x="1" y="1" width="12" height="18" rx="6" stroke="currentColor" strokeWidth="1.5" />
+              <rect x="6" y="5" width="2" height="4" rx="1" fill="currentColor"
+                style={{ animation: 'hero-scroll-dot 2s ease-in-out infinite' }} />
+            </svg>
+          </button>
         </div>
       </section>
     )
@@ -659,14 +702,8 @@ export default function HeroSection() {
       </div>
 
       <style>{`
-        @keyframes hero-scroll-bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(5px); }
-        }
-        @keyframes hero-scroll-dot {
-          0%, 100% { opacity: 0.3; transform: translateY(0); }
-          50% { opacity: 1; transform: translateY(3px); }
-        }
+        /* hero-scroll-bounce / hero-scroll-dot 的 keyframes 已移入 index.css，
+           这里桌面与手机两套布局共用同一份定义。 */
         .main-carousel .flickity-viewport {
           height: 100vh !important;
         }
