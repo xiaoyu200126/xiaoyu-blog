@@ -193,6 +193,9 @@ const NON_IMPORT_REFS = new Set([
   'tailwindcss-animate',
   'typescript',
   'tsx',
+  // scripts/optimize-images.mjs 用的是 createRequire(...)(...) 拿 sharp，
+  // 不是静态 import，本工具的 import 分析看不到它。
+  'sharp',
 ])
 
 const pkg = JSON.parse(readFileSync(join(appDir, 'package.json'), 'utf8'))

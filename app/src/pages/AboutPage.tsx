@@ -1,5 +1,5 @@
 import { useEffect, useRef, useMemo } from 'react'
-import { gsap } from 'gsap'
+import { gsap } from '../lib/motion'
 import aboutRaw from '../../content/about.md?raw'
 
 function md2html(md: string): string {
@@ -20,7 +20,9 @@ function md2html(md: string): string {
     if (t.startsWith('#### ')) h += `<h4>${esc(t.slice(5))}</h4>`
     else if (t.startsWith('### ')) h += `<h3>${esc(t.slice(4))}</h3>`
     else if (t.startsWith('## ')) h += `<h2>${esc(t.slice(3))}</h2>`
-    else if (t.startsWith('# ')) h += `<h1>${esc(t.slice(2))}</h1>`
+    // 页面上方已有一个 h1（站点标题），正文里的「# 」若也渲染成 h1
+    // 就会出现两个 h1。这里降级为 h2，标题层级才正确。
+    else if (t.startsWith('# ')) h += `<h2>${esc(t.slice(2))}</h2>`
     else if (t.startsWith('> ')) h += `<blockquote>${t.slice(2)}</blockquote>`
     else if (t === '---' || t === '***') h += '<hr>'
     else if (t === '') h += '<br>'

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
+import { gsap } from '../lib/motion'
 import { Link, useSearchParams } from 'react-router-dom'
 import { getArticlesByCategory } from '../data/articles'
 

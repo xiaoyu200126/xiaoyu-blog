@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
-import { gsap } from 'gsap'
+import { gsap } from '../lib/motion'
 
 interface MobileMenuProps {
   isOpen: boolean

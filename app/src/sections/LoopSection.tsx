@@ -98,6 +98,9 @@ export default function LoopSection() {
                 <img
                   src={article.image}
                   alt={article.title}
+                  // 首屏之下，懒加载
+                  loading="lazy"
+                  decoding="async"
                   style={{
                     width: '100%', height: '100%', objectFit: 'cover',
                     transition: 'transform 0.7s ease',

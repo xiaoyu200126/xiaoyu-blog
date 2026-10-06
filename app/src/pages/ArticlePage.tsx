@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { gsap } from 'gsap'
+import { gsap } from '../lib/motion'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { getArticleById, articles } from '../data/articles'
 import { Calendar, Clock, ArrowLeft, Share2, Tag } from 'lucide-react'
@@ -87,6 +87,31 @@ export default function ArticlePage() {
     updateMeta('og:locale', 'zh_CN')
 
     document.title = `${article.title} — XIAOYU的随笔`
+
+    // 结构化数据：让搜索引擎拿到作者/发布时间/封面，而不只是抓文本
+    let ld = document.getElementById('ld-article')
+    if (!ld) {
+      ld = document.createElement('script')
+      ld.id = 'ld-article'
+      // 用 setAttribute 而非 ld.type：getElementById 的返回类型是 HTMLElement，
+      // 没有 .type 属性，直接赋值过不了类型检查。
+      ld.setAttribute('type', 'application/ld+json')
+      document.head.appendChild(ld)
+    }
+    ld.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: article.title,
+      description: article.excerpt,
+      image: [window.location.origin + article.image],
+      datePublished: article.date,
+      dateModified: article.date,
+      author: { '@type': 'Person', name: article.author },
+      publisher: { '@type': 'Person', name: 'XIAOYU' },
+      inLanguage: 'zh-CN',
+      mainEntityOfPage: window.location.href,
+      keywords: article.tags?.join(', '),
+    })
 
     return () => {
       document.title = 'XIAOYU的随笔'

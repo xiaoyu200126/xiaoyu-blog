@@ -120,3 +120,53 @@ ${items}
 fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true })
 fs.writeFileSync(OUT_FILE, xml, 'utf-8')
 console.log(`已生成 public/feed.xml（${posts.length} 篇文章）`)
+
+// ── 同时产出 sitemap.xml 与 robots.txt ────────────────────────────
+// 之前两者都缺失，搜索引擎只能靠爬链接猜测站点结构。
+const STATIC_ROUTES = [
+  { path: '/', priority: '1.0', changefreq: 'weekly' },
+  { path: '/archives', priority: '0.9', changefreq: 'weekly' },
+  { path: '/about', priority: '0.6', changefreq: 'monthly' },
+  { path: '/life', priority: '0.8', changefreq: 'weekly' },
+  { path: '/brand-ai', priority: '0.8', changefreq: 'weekly' },
+  { path: '/pragmatism-connectivism', priority: '0.7', changefreq: 'monthly' },
+  { path: '/friends', priority: '0.5', changefreq: 'monthly' },
+]
+
+const lastmod = posts[0].date.slice(0, 10)
+const urlEntries = [
+  ...STATIC_ROUTES.map(
+    (r) => `  <url>
+    <loc>${SITE_URL}${r.path}</loc>
+    <lastmod>${lastmod}</lastmod>
+    <changefreq>${r.changefreq}</changefreq>
+    <priority>${r.priority}</priority>
+  </url>`,
+  ),
+  ...posts.map(
+    (p) => `  <url>
+    <loc>${SITE_URL}/article/${encodeURIComponent(p.id)}</loc>
+    <lastmod>${String(p.date).slice(0, 10)}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>`,
+  ),
+].join('\n')
+
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urlEntries}
+</urlset>
+`
+fs.writeFileSync(path.resolve('public/sitemap.xml'), sitemap, 'utf-8')
+
+const robots = `User-agent: *
+Allow: /
+
+Sitemap: ${SITE_URL}/sitemap.xml
+`
+fs.writeFileSync(path.resolve('public/robots.txt'), robots, 'utf-8')
+
+console.log(
+  `已生成 public/sitemap.xml（${STATIC_ROUTES.length + posts.length} 条 URL）与 public/robots.txt`,
+)

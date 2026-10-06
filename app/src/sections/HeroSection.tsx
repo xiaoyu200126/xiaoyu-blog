@@ -200,6 +200,22 @@ export default function HeroSection() {
         className="hero-section"
         style={{ backgroundColor: 'var(--color-bg)', padding: '80px 0 0' }}
       >
+        {/* 与桌面分支同一个视觉隐藏 h1，保证两种布局下标题层级一致 */}
+        <h1
+          style={{
+            position: 'absolute',
+            width: 1,
+            height: 1,
+            padding: 0,
+            margin: -1,
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            border: 0,
+          }}
+        >
+          XIAOYU的随笔 —— 首页
+        </h1>
         <div
           ref={touchTrackRef}
           style={{ width: '100%', overflow: 'hidden', position: 'relative' }}
@@ -235,6 +251,10 @@ export default function HeroSection() {
                     <img
                       src={article.image}
                       alt={article.title}
+                      // 首屏大图是 LCP 元素：优先取、不要 lazy。
+                      // 浏览器若先下载 JS 再发现图在哪，会白白推迟最大内容绘制。
+                      fetchPriority="high"
+                      decoding="async"
                       style={{
                         position: 'absolute', top: 0, left: 0,
                         width: '100%', height: '100%',
@@ -274,7 +294,7 @@ export default function HeroSection() {
                     }}>
                       {formatDate(article.date)}
                     </div>
-                    <h1 style={{
+                    <h2 style={{
                       // 中英混排标题：整行交给 Noto Serif SC，避免 Playfair 发丝细
                       // 与宋体偏粗在同一行里出现重量接缝。Playfair 仍用于
                       // XIAOYU 标识与纯拉丁元素。
@@ -291,7 +311,7 @@ export default function HeroSection() {
                         style={{ color: 'inherit', textDecoration: 'none' }}>
                         {article.title}
                       </Link>
-                    </h1>
+                    </h2>
                     <p style={{
                       fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
                       // 原 3.6vw → 375px 下 13.5px，正文级文字必须给下限
@@ -379,6 +399,24 @@ export default function HeroSection() {
         overflow: 'hidden',
       }}
     >
+      {/* 整页唯一的 h1。轮播里的文章标题已降级为 h2 ——
+          之前一张轮播图一个 h1，首页会同时存在 3 个 h1，对屏幕阅读器和 SEO 都不对。
+          这里用视觉隐藏，屏幕阅读器能读到，视觉不占位。 */}
+      <h1
+        style={{
+          position: 'absolute',
+          width: 1,
+          height: 1,
+          padding: 0,
+          margin: -1,
+          overflow: 'hidden',
+          clip: 'rect(0, 0, 0, 0)',
+          whiteSpace: 'nowrap',
+          border: 0,
+        }}
+      >
+        XIAOYU的随笔 —— 首页
+      </h1>
       <div
         ref={carouselRef}
         className="main-carousel"
@@ -431,7 +469,7 @@ export default function HeroSection() {
                 }}>
                   {formatDate(article.date)}
                 </div>
-                <h1 style={{
+                <h2 style={{
                   // 与上方轮播标题同款处理：文章标题中英混排，整行用 Noto Serif SC
                   fontFamily: 'var(--font-display-mixed)',
                   fontSize: 'clamp(28px, 4vw, 48px)',
@@ -454,7 +492,7 @@ export default function HeroSection() {
                   >
                     {article.title}
                   </Link>
-                </h1>
+                </h2>
                 <p style={{
                   fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
                   fontSize: 'clamp(14px, 1.4vw, 16px)',
@@ -507,6 +545,9 @@ export default function HeroSection() {
               <img
                 src={article.image}
                 alt={article.title}
+                // 同上：这是整站的 LCP 元素
+                fetchPriority="high"
+                decoding="async"
                 style={{
                   width: '100%',
                   height: '100%',

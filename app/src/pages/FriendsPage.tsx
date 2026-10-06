@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
+import { gsap } from '../lib/motion'
 import friendsData from '../../content/friends.json'
 
 interface Friend {
