@@ -304,7 +304,7 @@ export default function HeroSection() {
                     // 顶部的 32px 把文字块整体下移，与加高后的图片拉开呼吸；
                     // 横向 20px 与图片的满出血形成错位是刻意的 —— 但底部收口
                     // 保持一致，避免上下两段的左右边界看着不对称。
-                    padding: isNarrow ? '32px 20px 24px' : '18px 20px 22px',
+                    padding: isNarrow ? '28px 20px 12px' : '18px 20px 22px',
                     // 原来固定 minHeight:210px。内容比它矮时，多余空间会全堆在
                     // 标签下面，分页圆点和 Scroll 就被顶得很远，看着像空了一截。
                     // 手机端交给内容自然撑开即可。
@@ -367,16 +367,7 @@ export default function HeroSection() {
                     </p>
                     <div className="hero-tags">
                       {article.tags.map((tag: string) => (
-                        <Link key={tag} to={`/archives?tag=${encodeURIComponent(tag)}`} style={{
-                          fontFamily: 'var(--font-sans)',
-                          fontSize: 'clamp(12px, 2.6vw, 14px)',
-                          letterSpacing: '0.1em', textTransform: 'uppercase',
-                          color: 'var(--color-text-muted)',
-                          // 触控目标不小于 44px 高
-                          padding: '12px 14px',
-                          border: '1px solid var(--color-border)',
-                          textDecoration: 'none',
-                        }}>
+                        <Link key={tag} to={`/archives?tag=${encodeURIComponent(tag)}`} className="hero-tag">
                           {tag}
                         </Link>
                       ))}
@@ -449,25 +440,27 @@ export default function HeroSection() {
               fontSize: '10px',
               letterSpacing: '0.24em',
               textTransform: 'uppercase',
-              color: 'var(--color-text-muted)',
-              opacity: 0.55,
-              transition: 'opacity 0.3s ease, color 0.3s ease',
+              // 之前压到 0.55，纸上几乎看不见，箭头也跟着消失。
+              // 回到 0.8，颜色用 text-secondary 而不是 muted。
+              color: 'var(--color-text-secondary)',
+              opacity: 0.8,
+              transition: 'opacity 0.3s ease',
             }}
             onMouseEnter={(e) => { e.currentTarget.style.opacity = '1' }}
-            onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.55' }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.8' }}
           >
             <span>Scroll</span>
             <svg
-              width="16"
-              height="10"
-              viewBox="0 0 16 10"
+              width="18"
+              height="11"
+              viewBox="0 0 18 11"
               fill="none"
               style={{ animation: 'hero-scroll-bounce 2.2s ease-in-out infinite' }}
             >
               <path
-                d="M1 1.5 L8 8.5 L15 1.5"
+                d="M1.5 1.5 L9 8.5 L16.5 1.5"
                 stroke="currentColor"
-                strokeWidth="1.4"
+                strokeWidth="1.6"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />

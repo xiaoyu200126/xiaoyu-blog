@@ -310,12 +310,15 @@
     font-weight: 500;
   }
 
-  /* 首屏底部的 Scroll 指示器：鼠标轮廓 + 内点上下浮动。
-   桌面与手机两套布局共用这一份 keyframes（之前内联在桌面分支的 <style> 里，
-   手机分支因此拿不到动画）。 */
+  /* ─────────────────────────────────────────────────────────────
+   首屏底部 Scroll 指示器的动画。
+   放在 @layer 之外：@keyframes 若被裹在 @layer components 里，
+   有被构建工具链丢弃的风险（表现为「箭头不上下动，看起来像没动画」）。
+   桌面与手机两套布局共用这一份定义。
+   ───────────────────────────────────────────────────────────── */
 @keyframes hero-scroll-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(5px); }
+  0%, 100% { transform: translateY(0); opacity: 0.45; }
+  50% { transform: translateY(7px); opacity: 1; }
 }
 
 @keyframes hero-scroll-dot {
@@ -344,15 +347,34 @@
   flex-shrink: 0;
 }
 
-/* 标签行。标签是带边框的小方块，框左缘与上方标题对齐（原版做法）；
-     横向内边距已收窄到 9px，框内文字的错位小到不显眼。
-     这里只负责排布，不再用负外边距拉框。 */
-  .hero-tags {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    flex-shrink: 0;
-  }
+/* 标签 chip。
+   原来纵向内边距(12px)比横向(14px)还接近，两个字的标签被撑成竖长方块，
+   比例很别扭。这里横向加宽、纵向压扁，让它读成一枚 chip 而不是一根竖条。
+   高度仍保留在 36px 上下，够手指点。 */
+.hero-tag {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: clamp(12px, 2.6vw, 14px);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  padding: 8px 20px;
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.hero-tag:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.hero-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
 
   /* ── 页脚 ──────────────────────────────────────────────────────
      桌面：一条 flex 链 + 「|」分隔符，一行排开。
