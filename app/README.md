@@ -35,18 +35,21 @@ app/
 │  ├─ posts/*.md        文章源文件（frontmatter + 正文）
 │  ├─ about.md          关于页文案
 │  └─ friends.json      友链数据
-├─ public/              静态资源（图片、404 页、CNAME）
+├─ public/              静态资源（图片、CNAME）
 ├─ scripts/
-│  └─ generate-articles.ts   把 content/posts/*.md 编译成 src/data/articles.ts
+│  ├─ generate-articles.ts   把 content/posts/*.md 编译成 src/data/articles.ts
+│  └─ spa-fallback.mjs       构建后把 index.html 复制成 404.html
 ├─ src/
 │  ├─ pages/            9 个路由页面
 │  ├─ sections/         首页区块（HeroSection / LoopSection / Footer）
 │  ├─ components/       Header / MobileMenu / MagneticCursor / RouteErrorBoundary
-│  │  └─ ui/            shadcn 风格基础组件
-│  ├─ data/articles.ts  ⚠️ 自动生成，禁止手改
-│  └─ App.tsx           路由表
+│  └─ data/articles.ts  ⚠️ 自动生成，禁止手改
 └─ dist/                构建产物（不入库）
 ```
+
+> `src/components/ui/` 与 `src/lib/utils.ts` 已在死代码清理中整目录删除。
+> 当前没有引入 shadcn 组件，Tailwind 直接写在页面里。需要新组件时，
+> 确认真的会被用到再加进来 —— CI 会用 `tools/find-dead-code.mjs --check` 拦截。
 
 ---
 
@@ -75,20 +78,25 @@ featured: true            # 可选，是否进精选
 
 ## 路由
 
-| 路径 | 页面 | 加载方式 |
-|------|------|----------|
-| `/` | 首页 | 同步（首屏不等网络往返） |
-| `/about` | 关于 | 懒加载 |
-| `/archives` | 精选文章 | 懒加载 |
-| `/article/:id` | 文章详情 | 懒加载（单独打包 ~207 kB） |
-| `/life` | 生活碎碎念 | 懒加载 |
-| `/pragmatism-connectivism` | 实用主义&关联主义 | 懒加载 |
-| `/brand-ai` | BRAND & AI | 懒加载 |
-| `/friends` | 晓宇友人帐 | 懒加载 |
-| `*` | 404 | 懒加载 |
+| 路径 | 页面 |
+|------|------|
+| `/` | 首页 |
+| `/about` | 关于 |
+| `/archives` | 精选文章 |
+| `/article/:id` | 文章详情 |
+| `/life` | 生活碎碎念 |
+| `/pragmatism-connectivism` | 实用主义&关联主义 |
+| `/brand-ai` | BRAND & AI |
+| `/friends` | 晓宇友人帐 |
+| `*` | 404 |
 
-除首页外全部走 `React.lazy`，由 `RouteErrorBoundary` 兜底 —— 重新部署后旧
-chunk 变成 404 时，页面会给出「重新加载」按钮而不是永久卡在骨架屏。
+**深链接必须能直接打开。** GitHub Pages 是纯静态托管，只按真实文件路径查找，
+所以所有客户端路由都依赖 `dist/404.html` 作为回退。构建后的 `postbuild`
+会自动把 `index.html` 复制成 `404.html`；CI 也会校验该文件存在。
+
+> 页面目前是**同步导入**。曾尝试用 `React.lazy` 做代码分割（首屏 gzip 可降到
+> 148 kB），但实测所有非首页路由会永久停在 Suspense 骨架屏，因此已回退。
+> 原因排查记录见 [tech-spec.md](../tech-spec.md) 的「已知技术债」。
 
 ---
 
@@ -117,6 +125,7 @@ chunk 变成 404 时，页面会给出「重新加载」按钮而不是永久卡
 node tools/guard-secrets.mjs --self-test   # 验证检查器本身有效
 node tools/guard-secrets.mjs --history     # 扫描全部历史提交
 node tools/guard-secrets.mjs --all         # 扫描工作区全部受控文件
+node tools/find-dead-code.mjs --check      # 死代码 / 无引用依赖（有则 exit 1）
 ```
 
 首次克隆后需激活 pre-commit 钩子：
@@ -124,6 +133,10 @@ node tools/guard-secrets.mjs --all         # 扫描工作区全部受控文件
 ```bash
 git config core.hooksPath .githooks
 ```
+
+`tools/find-dead-code.mjs` 从 `src/main.tsx` 出发做 import 可达性分析，
+用 TypeScript 编译器 API 解析语法树（不是正则，避免把注释和字符串里的路径算进去）。
+**新增文件或依赖后请跑一次**，避免无用代码悄悄堆积。
 
 ---
 

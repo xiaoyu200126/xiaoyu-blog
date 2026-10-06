@@ -16,14 +16,17 @@
 
 ### 依赖取舍记录
 
-- **`tailwindcss-animate`（v3 插件）是必需的。** `dialog` / `sheet` / `tooltip` 三个
-  在用的组件依赖它提供的 `animate-in`、`fade-in-0`、`zoom-in-95`、`slide-in-from-*`。
-  历史上该包被从 `package.json` 删掉却没删配置引用，导致全新克隆无法构建。
-- **`tw-animate-css` 目前未被使用。** 它是 Tailwind v4 的替代方案，v3 配置下用不上，
-  属于预留。若将来迁到 v4，应连同 `tailwind.config.js`、`postcss.config.js` 一起重构。
-- **recharts / cmdk / vaul / sonner / embla / react-day-picker 不进包体。** 它们只被
-  `components/ui/` 里那 43 个未引用的组件 import，已被 tree-shaking 完全排除
-  （产物中 0 命中）。它们只影响 `npm install` 耗时，不影响线上流量。
+- **`tailwindcss-animate` 已移除。** 它是 Tailwind v3 插件，为 dialog / sheet /
+  tooltip 提供 `animate-in` / `fade-in-0` / `zoom-in-95` 等类。历史上该包曾从
+  package.json 被删掉却留下配置引用，导致全新克隆无法构建（`[vite:css] Cannot
+  find module`）；补回后这三个组件又在死代码清理中被删除，于是插件连同
+  `tailwind.config.js` 里的 `plugins` 一起移除。**最终解法是删除，而非加依赖。**
+- **`tw-animate-css` 已移除。** 它是 Tailwind v4 的替代方案，v3 配置下用不上。
+- **recharts / cmdk / vaul / sonner / embla / react-day-picker 等已移除。**
+  它们只被那批死组件 import，连同对应文件一起清掉了。
+- **`clsx` / `tailwind-merge` 已移除。** 唯一的消费者是 `lib/utils.ts`，
+  而 `utils.ts` 随 `ui/` 目录一起成为死代码。
+- **`tailwindcss` 仍是 v3（3.4）**，走 `tailwind.config.js` + PostCSS。
 
 ## 动画
 
@@ -41,46 +44,70 @@
 
 ## 构建产物
 
-代码分割后（首页同步、其余 8 页懒加载）：
+| 产物 | 体积 | 说明 |
+|------|------|------|
+| `index-*.js` | 455 kB | 应用代码与页面 |
+| `vendor-motion-*.js` | 126 kB | gsap + flickity + aos |
+| `vendor-react-*.js` | 47 kB | react + react-dom + react-router |
+| `index-*.css` | 37 kB | 由实际用到的类名生成 |
 
-| 产物 | 体积 | gzip | 加载时机 |
-|------|------|------|----------|
-| `index-*.js`（入口） | 431 kB | 148 kB | 首屏 |
-| `ArticlePage-*.js` | 207 kB | 69 kB | 仅 `/article/:id` |
-| 其余 7 个页面 chunk | 1.4–3.6 kB | <2 kB | 按需 |
-| `index-*.css` | 108 kB | 17 kB | 首屏 |
+`vendor-*` 通过 `build.rollupOptions.output.manualChunks` 拆出，作用是
+**缓存稳定性**：只改文章内容时这三个分块的哈希不变，用户不会重新下载。
 
-分割前入口为单块 654 kB（gzip 212 kB），分割后首屏 gzip 降至 148 kB（**-30%**），
-并消除了 Vite 的 500 kB 超限告警。
+### 依赖清理的收益
 
-`ArticlePage` 体积占比高是因为它独占 `react-markdown` + `remark-gfm`，
-这也是它最值得单独切分的原因。
+删掉 53 个死文件后，CSS 从 108 kB 降到 37 kB（**-66%**）。原因是 Tailwind
+只按源码里真实出现过的类名生成 CSS，那 53 个组件文件里写的大量类名
+（以及 shadcn 主题里的 sidebar 变量）随之消失。
 
-## 内容管线
+JS 体积基本没变 —— 那些组件本来就被 tree-shaking 排除在产物之外，
+它们影响的是 `npm install` 耗时（本次共移除 184 个包），不是线上流量。
 
-```
-content/posts/*.md
-      │  scripts/generate-articles.ts（prebuild 自动触发）
-      ▼
-src/data/articles.ts
-      │  静态 import
-      ▼
-src/data/articles.ts → 页面
-```
-
-生成过程是**确定性**的：不写入时间戳，同样的文章源产出逐字节一致的文件。
-这是刻意的设计 —— 否则每次 `npm run build` 都会弄脏工作区，让真实的代码变更
-淹没在无意义的时间戳 diff 里。
-
-必填 frontmatter 字段：`id` / `title` / `date` / `tags` / `image` / `category` /
-`excerpt` / `readTime`，缺任一项构建即失败并指明是哪个文件。
+---
 
 ## 已知技术债
 
-1. **`components/ui/` 有 43 个死组件。** 只用到 button、dialog、input、label、
-   separator、sheet、skeleton、textarea、toggle、tooltip 十个。删掉可让
-   `npm install` 明显变快，但不改变包体（已被 tree-shaking 排除）。
-2. **三套动画引擎未收敛**（见上）。
-3. **`启动管理后台.bat` 对新克隆者不可用**，因为 `app/admin-server/` 已 gitignore。
-4. **`app/src/data/articles.ts` 仍在版本控制中。** 它是生成物，理论上可以加进
-   `.gitignore`；但保留它能让不装 Node 的人直接看到文章数据，故暂时保留。
+### 1. 路由代码分割曾尝试并回退（重要）
+
+用 `React.lazy` + `Suspense` 对 8 个非首页页面做代码分割，产物正确
+（首屏 gzip 212 kB → 148 kB，各页面独立分块），**但运行时所有非首页路由
+永久停在 Suspense 骨架屏**，页面组件从不挂载。
+
+已排除的因素（每一项都做过对照实验）：
+
+- chunk 文件存在、HTTP 200、MIME 正确，构建产物 8 个 `import()` 目标全部匹配
+- 直接 `import('./pages/ArchivesPage')` 能 resolve，且带 `default` 导出
+- `React.lazy` + `Suspense` 本身可用（用一个最简懒加载组件验证通过）
+- 懒加载组件内引入 `gsap` 正常（v3.15.0）
+- 懒加载组件内使用 `useSearchParams` / `Link` 正常
+- 与 `StrictMode`、`RouteErrorBoundary`、`Suspense` 嵌套位置无关
+- 换成 `manualChunks` 拆分 vendor 后仍复现
+- 清空 `dist` 与 `node_modules/.vite` 后全新构建、全新端口、全新标签页仍复现
+- 同步导入同一组件时渲染完全正常
+
+特征始终是：**console 零报错、ErrorBoundary 不触发（说明 promise 是 pending
+而非 reject）、DOM 里只有 fallback 标记**。
+
+因 `/archives` 与 `/article/:id` 是最常被分享和被收录的地址，让它们随时可能
+打不开的风险远高于首屏少几十 KB，故保持同步导入。
+若日后要重试，请先在真实浏览器（非内置预览面板）里验证深链接再上线。
+
+### 2. 三套动画引擎未收敛
+
+GSAP / Flickity / AOS 各自管理生命周期，无统一清理。路由来回切换会累积
+动画实例。这是后续可考虑收敛成单一 GSAP 的主要动机。
+
+### 3. `启动管理后台.bat` 对新克隆者不可用
+
+`app/admin-server/` 已 gitignore，仓库里没有该目录，脚本会给出明确提示。
+
+### 4. 三个依赖无法验证
+
+`express` / `multer` / `concurrently` 只被本地管理后台（已 gitignore）使用，
+仓库内无法验证是否还需要，暂予保留。
+
+### 5. `app/src/data/articles.ts` 仍在版本控制中
+
+它是生成物，理论上可以加进 `.gitignore`；但保留它能让不装 Node 的人
+直接看到文章数据，故暂时保留。
+

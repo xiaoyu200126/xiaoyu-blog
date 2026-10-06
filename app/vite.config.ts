@@ -24,5 +24,21 @@ export default defineConfig(({ command }) => {
         "@": path.resolve(__dirname, "./src"),
       },
     },
+    build: {
+      rollupOptions: {
+        output: {
+          // 页面被拆成懒加载块后，各页面块要 import 入口块里的 react / gsap
+          // 等共享绑定，形成「入口 ⇄ 页面块」的循环分块引用。这种结构下，
+          // 懒加载的 promise 可能永不 settle —— 页面永久停在 Suspense 骨架屏，
+          // 且 console 没有任何报错，chunk 文件也全部 200。
+          // 把共享依赖显式拆成独立分块，让入口与页面都单向依赖 vendor，
+          // 从结构上消除这个环。
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+            'vendor-motion': ['gsap', 'flickity', 'aos'],
+          },
+        },
+      },
+    },
   }
 })

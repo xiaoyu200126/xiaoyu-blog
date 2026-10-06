@@ -80,5 +80,8 @@ module.exports = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  // 曾经 plugins: [require("tailwindcss-animate")]。
+  // 它只为 dialog / sheet / tooltip 提供 animate-in / fade-in-0 / zoom-in-95
+  // 等类，这三个组件在死代码清理中已删除，站内再无引用，故一并移除该插件。
+  plugins: [],
 }
