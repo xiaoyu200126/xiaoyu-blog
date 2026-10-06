@@ -144,10 +144,9 @@ export default function LoopSection() {
 
               {/* Title */}
               <h3 style={{
-                fontFamily: 'var(--font-display)',
+                // 文章标题中英混排，整行用 Noto Serif SC 保证两半同源
+                fontFamily: 'var(--font-display-mixed)',
                 fontSize: isMobile ? 'clamp(18px, 4.5vw, 24px)' : 'clamp(22px, 3vw, 32px)',
-                // 同 HeroSection：中英混排标题降到 600，缓解 Playfair 发丝细
-                // 与 Noto Serif SC 偏粗之间的光学重量差。
                 fontWeight: 600, lineHeight: 1.35,
                 margin: '0 0 20px', letterSpacing: '0.02em',
                 textWrap: 'balance',

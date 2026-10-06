@@ -253,11 +253,11 @@ export default function HeroSection() {
                       {formatDate(article.date)}
                     </div>
                     <h1 style={{
-                      fontFamily: 'var(--font-display)',
+                      // 中英混排标题：整行交给 Noto Serif SC，避免 Playfair 发丝细
+                      // 与宋体偏粗在同一行里出现重量接缝。Playfair 仍用于
+                      // XIAOYU 标识与纯拉丁元素。
+                      fontFamily: 'var(--font-display-mixed)',
                       fontSize: 'clamp(28px, 4.8vw, 58px)',
-                      // 标题是中英混排（如「ALL IN AI是智力相关行业转型的必然」）：
-                      // Playfair Display 在 700 时发丝极细，而中文回退到 Noto Serif SC
-                      // 明显更粗，同一 font-weight 下两半对不上。降到 600 拉近。
                       fontWeight: 600, lineHeight: 1.35,
                       color: 'var(--color-text)',
                       margin: '0 0 2.2vw',
@@ -389,13 +389,15 @@ export default function HeroSection() {
                   {formatDate(article.date)}
                 </div>
                 <h1 style={{
-                  fontFamily: 'var(--font-display)',
+                  // 与上方轮播标题同款处理：文章标题中英混排，整行用 Noto Serif SC
+                  fontFamily: 'var(--font-display-mixed)',
                   fontSize: 'clamp(28px, 4vw, 48px)',
-                  fontWeight: 700,
-                  lineHeight: 1.2,
+                  fontWeight: 600,
+                  lineHeight: 1.3,
                   color: 'var(--color-text)',
                   margin: '0 0 20px',
-                  letterSpacing: '0.04em',
+                  letterSpacing: '0.02em',
+                  textWrap: 'balance',
                 }}>
                   <Link
                     to={`/article/${article.id}`}

@@ -28,7 +28,19 @@
     --color-border-light: #e0d8cc;
 
     /* 落笔阁 Typography */
+    /* 两支 display 字体，字库和气质完全不变，只是顺序不同：
+       - display       Playfair 打头，用于纯拉丁元素（XIAOYU 标识、ARCHIVES 之类
+                        标签、日期）。保留它的高对比线条与编辑感。
+       - display-mixed Noto Serif SC 打头，用于中英混排的标题。
+       原因：Playfair 是高对比衬线，600/700 时发丝极细；Noto Serif SC 是低对比
+       宋体，同一 font-weight 下笔画明显更粗。两者放在同一个 font-family 里，
+       一行里「ALL IN AI」和「是智力相关行业转型的必然」会呈现不同重量。
+       这个失配**无法用单一 font-weight 修正** —— Playfair 需要更高的数字才
+       显得重，Noto 需要更低的数字，两者方向相反。
+       所以按脚本分开：混排标题整行交给 Noto Serif SC 统一渲染，中英两半同源，
+       不再有接缝。 */
     --font-display: 'Playfair Display', 'Noto Serif SC', 'Georgia', serif;
+    --font-display-mixed: 'Noto Serif SC', 'Playfair Display', 'Georgia', serif;
     --font-body: 'Noto Serif SC', 'Georgia', serif;
     --font-sans: 'Noto Sans SC', 'PingFang SC', sans-serif;
 
@@ -112,7 +124,7 @@
 }
 
 .article-content h1 {
-  font-family: var(--font-display);
+  font-family: var(--font-display-mixed);
   font-size: clamp(26px, 5.2vw, 38px);
   /* Playfair Display 是高对比衬线，700 时发丝极细；同一 font-weight 下
      中文回退到 Noto Serif SC 明显更粗。降到 600 让中英两半更接近。 */
@@ -125,7 +137,7 @@
 }
 
 .article-content h2 {
-  font-family: var(--font-display);
+  font-family: var(--font-display-mixed);
   font-size: clamp(22px, 4.2vw, 28px);
   font-weight: 600;
   margin: 56px 0 20px;
@@ -136,7 +148,7 @@
 }
 
 .article-content h3 {
-  font-family: var(--font-display);
+  font-family: var(--font-display-mixed);
   font-size: clamp(18px, 3.4vw, 22px);
   font-weight: 600;
   margin: 40px 0 16px;
@@ -149,7 +161,7 @@
    uppercase 对中文完全无效，0.2em 字距在中文标题上又过散。
    改为中英文都成立的方案：小字号 + 中等字距 + 强调色 + 下划线。 */
 .article-content h4 {
-  font-family: var(--font-display);
+  font-family: var(--font-display-mixed);
   font-size: clamp(15px, 2.8vw, 16px);
   font-weight: 600;
   margin: 32px 0 12px;

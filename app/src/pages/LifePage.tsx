@@ -53,7 +53,7 @@ export default function LifePage() {
               <span style={{ fontFamily: 'var(--font-display)', fontSize: '12px', fontWeight: 400, color: 'var(--color-text-muted)', letterSpacing: '0.1em', display: 'block', marginBottom: '12px' }}>
                 {post.date}
               </span>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(18px, 2vw, 24px)', fontWeight: 400, lineHeight: 1.4, marginBottom: '12px', color: 'var(--color-text)', transition: 'color 0.3s ease' }}>
+              <h2 style={{ fontFamily: 'var(--font-display-mixed)', fontSize: 'clamp(18px, 2vw, 24px)', fontWeight: 600, lineHeight: 1.4, marginBottom: '12px', color: 'var(--color-text)', transition: 'color 0.3s ease' }}>
                 <Link to={`/article/${post.id}`} style={{ color: 'inherit', textDecoration: 'none' }} onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)' }} onMouseLeave={(e) => { e.currentTarget.style.color = 'inherit' }}>
                   {post.title}
                 </Link>

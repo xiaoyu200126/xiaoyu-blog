@@ -52,7 +52,7 @@ export default function FriendsPage() {
               onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-accent)' }}
               onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--color-border)' }}
             >
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '20px', fontWeight: 400, marginBottom: '4px', color: 'var(--color-text)' }}>
+              <h3 style={{ fontFamily: 'var(--font-display-mixed)', fontSize: '20px', fontWeight: 600, marginBottom: '4px', color: 'var(--color-text)' }}>
                 {friend.url ? <a href={friend.url} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'none' }}>{friend.name}</a> : friend.name}
               </h3>
               <span style={{ fontFamily: 'var(--font-display)', fontSize: '11px', fontWeight: 400, letterSpacing: '0.12em', color: 'var(--color-accent)', display: 'block', marginBottom: '12px', textTransform: 'uppercase' }}>

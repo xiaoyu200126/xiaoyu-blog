@@ -216,11 +216,12 @@ export default function ArticlePage() {
           <h1
             className="hero-animate"
             style={{
-              fontFamily: 'var(--font-display)',
+              // 文章标题中英混排，整行用 Noto Serif SC 保证两半同源
+              fontFamily: 'var(--font-display-mixed)',
               fontSize: 'clamp(28px, 5vw, 48px)',
-              fontWeight: 300,
+              fontWeight: 600,
               color: '#fff',
-              lineHeight: 1.15,
+              lineHeight: 1.25,
               marginBottom: '20px',
             }}
           >
@@ -366,7 +367,7 @@ export default function ArticlePage() {
                 onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-muted)' }}
               >
                 <span style={{ fontSize: '11px', letterSpacing: '0.1em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>← 上一篇</span>
-                <span style={{ fontSize: '14px', fontFamily: 'var(--font-display)' }}>{prevArticle.title}</span>
+                <span style={{ fontSize: '14px', fontFamily: 'var(--font-display-mixed)' }}>{prevArticle.title}</span>
               </Link>
             ) : <div style={{ flex: 1 }} />}
             {nextArticle ? (
@@ -383,7 +384,7 @@ export default function ArticlePage() {
                 onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-muted)' }}
               >
                 <span style={{ fontSize: '11px', letterSpacing: '0.1em', textTransform: 'uppercase', display: 'block', marginBottom: '6px' }}>下一篇 →</span>
-                <span style={{ fontSize: '14px', fontFamily: 'var(--font-display)' }}>{nextArticle.title}</span>
+                <span style={{ fontSize: '14px', fontFamily: 'var(--font-display-mixed)' }}>{nextArticle.title}</span>
               </Link>
             ) : <div style={{ flex: 1 }} />}
           </div>
