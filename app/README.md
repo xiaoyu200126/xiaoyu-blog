@@ -78,25 +78,26 @@ featured: true            # 可选，是否进精选
 
 ## 路由
 
-| 路径 | 页面 |
-|------|------|
-| `/` | 首页 |
-| `/about` | 关于 |
-| `/archives` | 精选文章 |
-| `/article/:id` | 文章详情 |
-| `/life` | 生活碎碎念 |
-| `/pragmatism-connectivism` | 实用主义&关联主义 |
-| `/brand-ai` | BRAND & AI |
-| `/friends` | 晓宇友人帐 |
-| `*` | 404 |
+| 路径 | 页面 | 加载方式 |
+|------|------|----------|
+| `/` | 首页 | 同步（首屏不等网络往返） |
+| `/about` | 关于 | 懒加载 |
+| `/archives` | 精选文章 | 懒加载 |
+| `/article/:id` | 文章详情 | 懒加载（独立 207 kB 块） |
+| `/life` | 生活碎碎念 | 懒加载 |
+| `/pragmatism-connectivism` | 实用主义&关联主义 | 懒加载 |
+| `/brand-ai` | BRAND & AI | 懒加载 |
+| `/friends` | 晓宇友人帐 | 懒加载 |
+| `*` | 404 | 懒加载 |
 
 **深链接必须能直接打开。** GitHub Pages 是纯静态托管，只按真实文件路径查找，
 所以所有客户端路由都依赖 `dist/404.html` 作为回退。构建后的 `postbuild`
 会自动把 `index.html` 复制成 `404.html`；CI 也会校验该文件存在。
 
-> 页面目前是**同步导入**。曾尝试用 `React.lazy` 做代码分割（首屏 gzip 可降到
-> 148 kB），但实测所有非首页路由会永久停在 Suspense 骨架屏，因此已回退。
-> 原因排查记录见 [tech-spec.md](../tech-spec.md) 的「已知技术债」。
+> ⚠️ `vite.config.ts` 里的 `build.modulePreload: false` **不能删**。
+> 开启 Vite 的 modulepreload 预加载包装，会让懒加载的 promise 永不 settle：
+> 所有非首页路由卡死在骨架屏，chunk 请求却是 200，且不产生任何报错。
+> 完整根因与排查过程见 [tech-spec.md](../tech-spec.md) 的构建产物章节。
 
 ---
 

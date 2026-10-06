@@ -25,6 +25,13 @@ export default defineConfig(({ command }) => {
       },
     },
     build: {
+      // 关闭 modulepreload 预加载包装。
+      // Vite 默认会在真正 import() 之前先插 <link rel="modulepreload">，并
+      // 在入口注入一段 relList.supports("modulepreload") 的 polyfill。
+      // 在本项目里，这条路径会让懒加载的 promise 永远不 settle：chunk 已
+      // 请求成功（HTTP 200），组件却始终不挂载，且不产生任何 rejection，
+      // 所以 ErrorBoundary 也不会触发，页面永久停在 Suspense 骨架屏。
+      modulePreload: false,
       rollupOptions: {
         output: {
           // 页面被拆成懒加载块后，各页面块要 import 入口块里的 react / gsap
