@@ -385,7 +385,7 @@ export default function HeroSection() {
 
             图标由桌面那套「鼠标轮廓 + 内点」换成一支细的向下箭头：
             触屏上根本没有鼠标，鼠标轮廓反而在传递错误暗示。 */}
-        <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '4px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', paddingTop: '15px', paddingBottom: '4px' }}>
           <button
             onClick={handleScrollDown}
             aria-label="向下滚动"
