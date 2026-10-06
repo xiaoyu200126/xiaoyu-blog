@@ -9,9 +9,10 @@
     "generate": "npx tsx scripts/generate-articles.ts",
     "images": "node scripts/optimize-images.mjs",
     "verify:graph": "node scripts/verify-module-graph.mjs",
+    "verify:og": "node scripts/verify-og.mjs dist",
     "prebuild": "npx tsx scripts/generate-articles.ts && node scripts/generate-feed.mjs",
     "build": "tsc -b && vite build",
-    "postbuild": "node scripts/spa-fallback.mjs",
+    "postbuild": "node scripts/spa-fallback.mjs && npx tsx scripts/prerender-og.ts",
     "lint": "eslint .",
     "preview": "vite preview"
   },
