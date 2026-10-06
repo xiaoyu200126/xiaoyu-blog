@@ -66,8 +66,10 @@ for (const file of files) {
 console.log(`Found ${entries.length} articles in content/posts/`)
 
 // Build articles array as JSON-like strings, then write entire file
+// 注意：这里刻意不写生成时间戳。带上时间戳会让每次 build 都改动这个文件，
+// 导致工作区被弄脏、git diff 里全是无意义噪音，也掩盖真正需要提交的变更。
 let out = `// AUTO-GENERATED from content/posts/*.md — DO NOT EDIT MANUALLY
-// Generated on ${new Date().toISOString()}
+// 内容确定性生成：同样的 content/posts/*.md 必然产出完全相同的本文件
 
 export interface Article {
   id: string

@@ -1,99 +1,86 @@
-# 落笔阁 (LuoBiGe) — Technical Specification
+# 落笔阁 — Technical Specification
 
-## Dependencies
+> 本文件描述的是**当前仓库的真实状态**。若你发现某处与代码不符，以代码为准并顺手修正本文件。
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| react | ^19.0.0 | UI framework |
-| react-dom | ^19.0.0 | DOM renderer |
-| react-router-dom | ^7.0.0 | Client-side routing (Home, About, Archives) |
-| gsap | ^3.12.0 | Animation engine (ScrollTrigger, timelines) |
-| lenis | ^1.2.0 | Smooth scroll with inertia |
-| lucide-react | ^0.460.0 | Icon library (Menu, Arrow, Mail, etc.) |
-| tailwindcss | ^4.0.0 | Utility-first CSS |
-| @tailwindcss/vite | ^4.0.0 | Tailwind Vite integration |
-| typescript | ^5.6.0 | Type safety |
-| vite | ^6.0.0 | Build tool |
-| @types/react | ^19.0.0 | React types |
-| @types/react-dom | ^19.0.0 | ReactDOM types |
+## 技术栈
 
-No shadcn/ui components — this is a fully custom design with no standard UI patterns (no forms, dialogs, tables, or dropdowns).
+| 领域 | 选型 | 版本 | 说明 |
+|------|------|------|------|
+| 框架 | React | 19.2 | 根渲染，启用 StrictMode |
+| 路由 | react-router-dom | 7.14 | BrowserRouter，9 条路由 |
+| 构建 | Vite | 7.2 | `@` 别名指向 `app/src` |
+| 语言 | TypeScript | 5.9 | `strict` + `noUnusedLocals` |
+| 样式 | Tailwind CSS | **3.4** | 注意是 v3，走 `tailwind.config.js` + PostCSS |
+| 组件 | shadcn 风格 + Radix | — | 53 个 `components/ui/` 文件，**实际只用到 10 个** |
+| 包管理 | npm | 11 | 只提交 `package-lock.json` |
 
----
+### 依赖取舍记录
 
-## Component Inventory
+- **`tailwindcss-animate`（v3 插件）是必需的。** `dialog` / `sheet` / `tooltip` 三个
+  在用的组件依赖它提供的 `animate-in`、`fade-in-0`、`zoom-in-95`、`slide-in-from-*`。
+  历史上该包被从 `package.json` 删掉却没删配置引用，导致全新克隆无法构建。
+- **`tw-animate-css` 目前未被使用。** 它是 Tailwind v4 的替代方案，v3 配置下用不上，
+  属于预留。若将来迁到 v4，应连同 `tailwind.config.js`、`postcss.config.js` 一起重构。
+- **recharts / cmdk / vaul / sonner / embla / react-day-picker 不进包体。** 它们只被
+  `components/ui/` 里那 43 个未引用的组件 import，已被 tree-shaking 完全排除
+  （产物中 0 命中）。它们只影响 `npm install` 耗时，不影响线上流量。
 
-### Layout
+## 动画
 
-| Component | Source | Notes |
-|-----------|--------|-------|
-| AppLayout | Custom | Wraps all pages: Lenis provider, magnetic cursor, navigation, footer |
-| Header | Custom | Minimal top bar with site logo (text-only) and hamburger menu trigger |
-| MobileMenu | Custom | Full-screen overlay menu with staggered link reveals |
-| Footer | Custom | Large subscribe input + minimal link columns |
+三套引擎并存，各自负责不同场景：
 
-### Sections (Page-specific)
+| 引擎 | 使用位置 | 用途 |
+|------|----------|------|
+| GSAP | MobileMenu、About/Archives/Article/BrandAI/Friends/Life/Pragmatism 页 | 滚动入场、时间轴 |
+| Flickity | HeroSection | 首页满屏轮播 |
+| AOS | HomePage | LoopSection 的滚动显现 |
 
-| Component | Source | Notes |
-|-----------|--------|-------|
-| HeroSection | Custom | 100vh, Letterpress effect, no images |
-| FeaturedArchive | Custom | 150vh scroll area, 3 articles in asymmetric grid with parallax |
-| VisualStorytelling | Custom | Dark background section, CMYK scatter polaroid array |
+**维护提示**：三套引擎的生命周期各自独立（无统一清理），新增页面时注意在
+`useEffect` 的清理函数里 `kill()`，否则路由来回切换会累积动画实例。
+这是后续可考虑收敛成单一 GSAP 的主要动机。
 
-### Reusable Components
+## 构建产物
 
-| Component | Source | Used By |
-|-----------|--------|---------|
-| MagneticCursor | Custom | AppLayout (global) — custom cursor with hover expansion + magnetic snap |
-| PolaroidFrame | Custom | VisualStorytelling — image container with 4 CMYK overlay layers |
+代码分割后（首页同步、其余 8 页懒加载）：
 
-### Hooks
+| 产物 | 体积 | gzip | 加载时机 |
+|------|------|------|----------|
+| `index-*.js`（入口） | 431 kB | 148 kB | 首屏 |
+| `ArticlePage-*.js` | 207 kB | 69 kB | 仅 `/article/:id` |
+| 其余 7 个页面 chunk | 1.4–3.6 kB | <2 kB | 按需 |
+| `index-*.css` | 108 kB | 17 kB | 首屏 |
 
-| Hook | Purpose |
-|------|---------|
-| useLenis | Initialize and manage Lenis smooth scroll instance |
-| useLetterpress | Initialize GSAP timeline + mouse tracking for Hero effect |
-| usePrintScatter | Initialize GSAP timeline for CMYK scatter on each polaroid |
+分割前入口为单块 654 kB（gzip 212 kB），分割后首屏 gzip 降至 148 kB（**-30%**），
+并消除了 Vite 的 500 kB 超限告警。
 
----
+`ArticlePage` 体积占比高是因为它独占 `react-markdown` + `remark-gfm`，
+这也是它最值得单独切分的原因。
 
-## Animation Implementation
+## 内容管线
 
-| Animation | Library | Approach | Complexity |
-|-----------|---------|----------|------------|
-| **Letterpress Reveal** (Hero title) | GSAP | `clipPath: inset()` reveal + mouse-driven `radial-gradient` position via CSS custom properties | **High** |
-| **Letterpress Grid** (background words) | GSAP | `opacity` stagger from random + class toggle to enable `::before`/`::after` pseudo-layers | **High** |
-| **Mouse light tracking** (Hero) | Vanilla JS | `mousemove` listener updates `--px`/`--py` CSS vars on title + grid container | Medium |
-| **Featured Archive parallax** | GSAP ScrollTrigger | `scrub: 1` timeline: text drifts `y: 50`, images drift `y: -30` on scroll | Medium |
-| **CMYK Print Scatter** | GSAP | 4-layer `drop-shadow` offset → converge with `elastic.out` easing on scroll trigger | **High** |
-| **Smooth scroll** | Lenis | Global instance with `lerp: 0.08`, synced with GSAP ScrollTrigger | Low |
-| **Magnetic cursor** | Vanilla JS | Custom cursor element follows mouse with lerp; expands + snaps on hoverable elements | Medium |
-| **Nav link hover** | CSS | `transition` on `letter-spacing` + `color` to `var(--color-cmyk-red)` | Low |
-| **Menu overlay reveal** | GSAP | Staggered fade/slide of links on hamburger click | Medium |
-| **Polaroid scroll trigger** | GSAP ScrollTrigger | `onEnter` triggers `initPrintScatterEffect` per figure | Medium |
+```
+content/posts/*.md
+      │  scripts/generate-articles.ts（prebuild 自动触发）
+      ▼
+src/data/articles.ts
+      │  静态 import
+      ▼
+src/data/articles.ts → 页面
+```
 
----
+生成过程是**确定性**的：不写入时间戳，同样的文章源产出逐字节一致的文件。
+这是刻意的设计 —— 否则每次 `npm run build` 都会弄脏工作区，让真实的代码变更
+淹没在无意义的时间戳 diff 里。
 
-## State & Logic Plan
+必填 frontmatter 字段：`id` / `title` / `date` / `tags` / `image` / `category` /
+`excerpt` / `readTime`，缺任一项构建即失败并指明是哪个文件。
 
-### Lenis ↔ GSAP ScrollTrigger Bridge
-Lenis must drive GSAP's scroll position. On every Lenis scroll event, call `ScrollTrigger.update()`. This is a global integration in `AppLayout`.
+## 已知技术债
 
-### Letterpress Effect — CSS Variable Coordination
-The `--px`/`--py` custom properties must be updated simultaneously on **two selectors**: `.title` (for its own `radial-gradient`) and `.grid--bg` (for the grid items' `::before` pseudo-element highlight layer). This is a single `mousemove` handler writing to two elements.
-
-### CMYK Scatter — Imperative Per-Element Timelines
-Each `PolaroidFrame` manages its own GSAP timeline. The component receives a trigger ref (from ScrollTrigger `onEnter`) and creates/destroys its timeline on mount/unmount. The 4 overlay layers are DOM elements appended at runtime, not pre-declared in JSX.
-
-### Magnetic Cursor — Global Hover Detection
-The cursor component needs a global mechanism to detect hoverable elements. Use a CSS class (e.g., `.cursor-hover`) on all links/buttons, and listen for `mouseenter`/`mouseleave` via event delegation on `document.body`.
-
----
-
-## Other Key Decisions
-
-- **No shadcn/ui**: Every element is custom-styled; no standard UI primitives needed.
-- **Chinese font loading**: Use Google Fonts CDN with `<link rel="preload">` for Noto Serif SC and Noto Sans SC to prevent FOUT during GSAP animations.
-- **Routing**: React Router with 3 routes: `/` (Home), `/about`, `/archives`. Only Home has the full animated sections; other pages reuse Header/Footer with simpler content.
-- **Image strategy**: 4 generated images (2 featured, 2 polaroid). All served as static assets, loaded normally (no lazy-load needed for a small photography site).
-- **Dark mode toggle**: Not required — the design uses intentional dark sections within a light page, not a global dark mode.
+1. **`components/ui/` 有 43 个死组件。** 只用到 button、dialog、input、label、
+   separator、sheet、skeleton、textarea、toggle、tooltip 十个。删掉可让
+   `npm install` 明显变快，但不改变包体（已被 tree-shaking 排除）。
+2. **三套动画引擎未收敛**（见上）。
+3. **`启动管理后台.bat` 对新克隆者不可用**，因为 `app/admin-server/` 已 gitignore。
+4. **`app/src/data/articles.ts` 仍在版本控制中。** 它是生成物，理论上可以加进
+   `.gitignore`；但保留它能让不装 Node 的人直接看到文章数据，故暂时保留。

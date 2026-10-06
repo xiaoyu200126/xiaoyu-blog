@@ -251,27 +251,26 @@ function modeAll() {
     .split(/\r?\n/)
     .filter(Boolean)
   checkPaths(files)
-  // 逐个从工作区读（此处不在 index 里）
-  const savedCat = checkContent
-  const origExec = execFileSync
-  void savedCat
-  void origExec
+  const allow = loadAllowlist()
+  const rules = [...SECRET_CONTENT, ...loadPersonalPatterns()]
+
   for (const f of files) {
     const p = inRepo(f)
-    if (loadAllowlist().has(p) || SELF.some((s) => p === s)) continue
+    if (allow.has(p) || SELF.some((s) => p === s || p.endsWith('/' + s))) continue
+    if (/(package-lock\.json|pnpm-lock\.yaml|yarn\.lock)$/.test(p)) continue
     const abs = join(process.cwd(), p)
     if (!existsSync(abs)) continue
+
     const buf = readFileSync(abs)
     if (buf.length > MAX_FILE_MB * 1024 * 1024) {
       report('超大文件', p, null, `${(buf.length / 1024 / 1024).toFixed(1)} MB 超过 ${MAX_FILE_MB} MB 上限`)
       continue
     }
-    if (buf.includes(0)) continue
+    if (buf.includes(0)) continue // 二进制
+
     const text = buf.toString('utf8')
-    const rules = [...SECRET_CONTENT, ...loadPersonalPatterns()]
     for (const { name, re } of rules) {
-      const rx = new RegExp(re.source, re.flags.includes('g') ? re.flags : re.flags + 'g')
-      const m = rx.exec(text)
+      const m = new RegExp(re.source, re.flags.replace('g', '')).exec(text)
       if (m) {
         const lineNo = text.slice(0, m.index).split(/\r?\n/).length
         report('内容特征', p, lineNo, name)
