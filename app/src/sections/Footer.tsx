@@ -1,27 +1,6 @@
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 export default function Footer() {
-  const [email, setEmail] = useState('')
-  const [subscribed, setSubscribed] = useState(false)
-
-  useEffect(() => {
-    const saved = localStorage.getItem('xiaoyu_blog_subscribed')
-    if (saved === 'true') {
-      setSubscribed(true)
-    }
-  }, [])
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (email.trim()) {
-      localStorage.setItem('xiaoyu_blog_subscribed', 'true')
-      localStorage.setItem('xiaoyu_blog_subscriber_email', email.trim())
-      setSubscribed(true)
-      setEmail('')
-    }
-  }
-
   return (
     <footer
       style={{
@@ -62,61 +41,42 @@ export default function Footer() {
             fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
             fontSize: '15px',
             color: 'var(--color-text-muted)',
-            marginBottom: '36px',
-            lineHeight: 1.6,
+            marginBottom: '32px',
+            lineHeight: 1.7,
           }}
         >
-          输入邮箱以订阅更新提醒（仅本地记录）
+          新文章发布时，订阅 RSS，第一时间送到你的阅读器。
         </p>
 
-        <form
-          onSubmit={handleSubmit}
+        {/* 原来这里是一个「输入邮箱订阅更新提醒」的表单：提交后只写进
+            localStorage，既不发送邮件也不做任何后续动作，却显示「订阅成功」。
+            那是个不产生任何结果的入口，还会收集一个毫无用途的邮箱。
+            换成 RSS —— 博客读者真正需要的更新方式，且不需要后端。 */}
+        <a
+          href="/feed.xml"
           style={{
-            display: 'flex',
+            display: 'inline-flex',
             alignItems: 'center',
-            borderBottom: `1px solid ${subscribed ? 'var(--color-accent)' : 'var(--color-border-light)'}`,
-            maxWidth: '400px',
-            margin: '0 auto',
-            transition: 'border-color 0.3s ease',
+            gap: '10px',
+            padding: '12px 26px',
+            border: '1px solid var(--color-border)',
+            color: 'var(--color-text)',
+            fontFamily: 'var(--font-display)',
+            fontSize: '12px',
+            letterSpacing: '0.15em',
+            transition: 'border-color 0.3s ease, color 0.3s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'var(--color-accent)'
+            e.currentTarget.style.color = 'var(--color-accent)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'var(--color-border)'
+            e.currentTarget.style.color = 'var(--color-text)'
           }}
         >
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder={subscribed ? '订阅成功！' : 'your@email.com'}
-            disabled={subscribed}
-            style={{
-              flex: 1,
-              background: 'none',
-              border: 'none',
-              outline: 'none',
-              padding: '12px 0',
-              fontSize: '14px',
-              fontFamily: "'Crimson Pro', serif",
-              color: 'var(--color-text)',
-              letterSpacing: '0.02em',
-            }}
-          />
-          <button
-            type="submit"
-            disabled={subscribed}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '12px',
-              fontFamily: 'var(--font-display)',
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              color: subscribed ? 'var(--color-accent)' : 'var(--color-text)',
-              padding: '12px 0 12px 16px',
-              transition: 'color 0.3s ease',
-              cursor: 'pointer',
-            }}
-          >
-            {subscribed ? '已订阅' : '订阅'}
-          </button>
-        </form>
+          订阅 RSS
+        </a>
       </div>
 
       {/* Footer links */}

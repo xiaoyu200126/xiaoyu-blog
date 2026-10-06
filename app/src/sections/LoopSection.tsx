@@ -146,8 +146,11 @@ export default function LoopSection() {
               <h3 style={{
                 fontFamily: 'var(--font-display)',
                 fontSize: isMobile ? 'clamp(18px, 4.5vw, 24px)' : 'clamp(22px, 3vw, 32px)',
-                fontWeight: 700, lineHeight: 1.3,
-                margin: '0 0 20px', letterSpacing: '0.05em',
+                // 同 HeroSection：中英混排标题降到 600，缓解 Playfair 发丝细
+                // 与 Noto Serif SC 偏粗之间的光学重量差。
+                fontWeight: 600, lineHeight: 1.35,
+                margin: '0 0 20px', letterSpacing: '0.02em',
+                textWrap: 'balance',
               }}>
                 <Link
                   to={`/article/${article.id}`}

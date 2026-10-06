@@ -254,11 +254,15 @@ export default function HeroSection() {
                     </div>
                     <h1 style={{
                       fontFamily: 'var(--font-display)',
-                      fontSize: '4.8vw',
-                      fontWeight: 700, lineHeight: 1.35,
+                      fontSize: 'clamp(28px, 4.8vw, 58px)',
+                      // 标题是中英混排（如「ALL IN AI是智力相关行业转型的必然」）：
+                      // Playfair Display 在 700 时发丝极细，而中文回退到 Noto Serif SC
+                      // 明显更粗，同一 font-weight 下两半对不上。降到 600 拉近。
+                      fontWeight: 600, lineHeight: 1.35,
                       color: 'var(--color-text)',
                       margin: '0 0 2.2vw',
-                      letterSpacing: '0.04em',
+                      letterSpacing: '0.02em',
+                      textWrap: 'balance',
                       flexShrink: 0,
                     }}>
                       <Link to={`/article/${article.id}`}

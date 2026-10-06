@@ -7,7 +7,7 @@
     "dev": "vite",
     "admin": "node admin-server/index.cjs",
     "generate": "npx tsx scripts/generate-articles.ts",
-    "prebuild": "npx tsx scripts/generate-articles.ts",
+    "prebuild": "npx tsx scripts/generate-articles.ts && node scripts/generate-feed.mjs",
     "build": "tsc -b && vite build",
     "postbuild": "node scripts/spa-fallback.mjs",
     "lint": "eslint .",
