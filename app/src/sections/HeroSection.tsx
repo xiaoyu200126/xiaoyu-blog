@@ -274,10 +274,12 @@ export default function HeroSection() {
                     margin: isNarrow ? '0' : '0 20px',
                   }}
                 >
-                  {/* Image 16:9 */}
+                  {/* Image —— 由 16:9 加高到 4:3。
+                      图片是这一屏的主角，16:9 在手机上太扁，撑不起分量；
+                      加高之后与下方文字块的比例也更协调。 */}
                   <div style={{
                     width: '100%',
-                    paddingBottom: '56.25%',
+                    paddingBottom: '75%',
                     position: 'relative',
                     overflow: 'hidden',
                   }}>
@@ -292,29 +294,17 @@ export default function HeroSection() {
                         position: 'absolute', top: 0, left: 0,
                         width: '100%', height: '100%',
                         objectFit: 'cover',
-                        // 与桌面一致：轻微降饱和，去掉数码味，让照片和纸感底色相融
+                        // 与桌面一致：轻微降饱和，去掉数码味
                         filter: 'saturate(0.9)',
                       }}
                     />
-
-                    {/* 底部渐隐 —— 与桌面 L613 同一手法。
-                        没有它，16:9 的图会在文字上方切出一条硬边，
-                        卡片和页面各是一块，缺少融入感。 */}
-                    <div
-                      aria-hidden="true"
-                      style={{
-                        position: 'absolute',
-                        left: 0, right: 0, bottom: 0,
-                        height: '38%',
-                        background:
-                          'linear-gradient(to bottom, transparent 0%, var(--color-bg) 88%)',
-                        pointerEvents: 'none',
-                      }}
-                    />
                   </div>
-                  {/* Text — uniform layout, flow naturally */}
+                  {/* Text */}
                   <div style={{
-                    padding: isNarrow ? '20px 20px 24px' : '18px 20px 22px',
+                    // 顶部的 32px 把文字块整体下移，与加高后的图片拉开呼吸；
+                    // 横向 20px 与图片的满出血形成错位是刻意的 —— 但底部收口
+                    // 保持一致，避免上下两段的左右边界看着不对称。
+                    padding: isNarrow ? '32px 20px 24px' : '18px 20px 22px',
                     minHeight: '210px',
                     display: 'flex',
                     flexDirection: 'column',
@@ -441,8 +431,12 @@ export default function HeroSection() {
 
         {/* Scroll-down indicator —— 与桌面同一套 keyframes。
             之前只有桌面分支有（position:absolute 浮在轮播之上），
-            手机分支整块是文档流布局，浮层会盖住分页圆点，所以放在圆点下方。 */}
-        <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '28px' }}>
+            手机分支整块是文档流布局，浮层会盖住分页圆点，所以放在圆点下方。
+
+            图标由桌面那套「鼠标轮廓 + 内点」换成一支细的向下箭头：
+            触屏上根本没有鼠标，鼠标轮廓反而在传递错误暗示。
+            颜色压到 text-muted 的一半透明，整体更轻，不与内容抢视线。 */}
+        <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '32px' }}>
           <button
             onClick={handleScrollDown}
             aria-label="向下滚动"
@@ -454,28 +448,33 @@ export default function HeroSection() {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: '8px',
+              gap: '10px',
               fontFamily: 'var(--font-display)',
               fontSize: '10px',
               letterSpacing: '0.24em',
               textTransform: 'uppercase',
               color: 'var(--color-text-muted)',
-              transition: 'color 0.3s ease',
+              opacity: 0.55,
+              transition: 'opacity 0.3s ease, color 0.3s ease',
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)' }}
-            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-muted)' }}
+            onMouseEnter={(e) => { e.currentTarget.style.opacity = '1' }}
+            onMouseLeave={(e) => { e.currentTarget.style.opacity = '0.55' }}
           >
             <span>Scroll</span>
             <svg
-              width="14"
-              height="20"
-              viewBox="0 0 14 20"
+              width="16"
+              height="10"
+              viewBox="0 0 16 10"
               fill="none"
-              style={{ animation: 'hero-scroll-bounce 2s ease-in-out infinite' }}
+              style={{ animation: 'hero-scroll-bounce 2.2s ease-in-out infinite' }}
             >
-              <rect x="1" y="1" width="12" height="18" rx="6" stroke="currentColor" strokeWidth="1.5" />
-              <rect x="6" y="5" width="2" height="4" rx="1" fill="currentColor"
-                style={{ animation: 'hero-scroll-dot 2s ease-in-out infinite' }} />
+              <path
+                d="M1 1.5 L8 8.5 L15 1.5"
+                stroke="currentColor"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
           </button>
         </div>
