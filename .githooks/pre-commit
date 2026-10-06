@@ -1,0 +1,14 @@
+#!/bin/sh
+# 提交前守卫：由 core.hooksPath 指向本目录。
+# 任何 git commit 都会先过 tools/guard-secrets.mjs，命中即中止提交。
+#
+# 首次 clone 后需激活一次：  git config core.hooksPath .githooks
+# 不想本地拦截可临时绕过：    git commit --no-verify（CI 仍会兜底）
+set -e
+
+if ! command -v node >/dev/null 2>&1; then
+  echo "❌ 未找到 node，跳过密钥守卫。请安装 Node 或用 --no-verify（不推荐）。" >&2
+  exit 1
+fi
+
+node "$(git rev-parse --show-toplevel)/tools/guard-secrets.mjs" --staged
