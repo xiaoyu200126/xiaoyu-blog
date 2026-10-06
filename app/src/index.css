@@ -323,6 +323,27 @@
   50% { opacity: 1; transform: translateY(3px); }
 }
 
+/* 首屏卡片的栏目徽标。
+   原来是四边描边的方块 —— 框内文字会被横向内边距推右，与下方的日期、
+   标题、摘要对不齐；而且无论内边距调到多小都治不了根：
+   「带边框 + 横向内边距」这个组合本身就不可能让内部文字和外部齐平
+   （margin-left 负值会把整个框拉出内容栏，更难看）。
+   改成左侧一条竖线、无横向内边距，文字与全卡左缘严丝合缝；
+   记号保留，且与文章正文 blockquote 的处理是同一套语言。 */
+.hero-label {
+  display: block;
+  font-family: var(--font-sans);
+  /* 原为裸 2.6vw：1440px 下 37px 尚可，375px 下只剩 9.75px，小到等于没有 */
+  font-size: clamp(12px, 2.6vw, 20px);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  border-left: 2px solid var(--color-border);
+  padding: 2px 0 2px 10px;
+  margin-bottom: clamp(12px, 2.5vw, 28px);
+  flex-shrink: 0;
+}
+
 /* 标签行。标签是带边框的小方块，框左缘与上方标题对齐（原版做法）；
      横向内边距已收窄到 9px，框内文字的错位小到不显眼。
      这里只负责排布，不再用负外边距拉框。 */

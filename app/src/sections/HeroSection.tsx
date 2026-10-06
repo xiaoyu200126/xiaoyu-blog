@@ -305,27 +305,22 @@ export default function HeroSection() {
                     // 横向 20px 与图片的满出血形成错位是刻意的 —— 但底部收口
                     // 保持一致，避免上下两段的左右边界看着不对称。
                     padding: isNarrow ? '32px 20px 24px' : '18px 20px 22px',
-                    minHeight: '210px',
+                    // 原来固定 minHeight:210px。内容比它矮时，多余空间会全堆在
+                    // 标签下面，分页圆点和 Scroll 就被顶得很远，看着像空了一截。
+                    // 手机端交给内容自然撑开即可。
+                    minHeight: isNarrow ? '0' : '210px',
                     display: 'flex',
                     flexDirection: 'column',
                   }}>
-                    <span style={{
-                      display: 'inline-block',
-                      fontFamily: 'var(--font-sans)',
-                      // 原为裸 2.6vw：1440px 下 37px 尚可，375px 下只剩 9.75px，
-                      // 小到等于没有。clamp 给一个手机可读的下限。
-                      fontSize: 'clamp(12px, 2.6vw, 20px)',
-                      letterSpacing: '0.22em', textTransform: 'uppercase',
-                      color: 'var(--color-text-muted)',
-                      border: '1px solid var(--color-border)',
-                      // 保持「原版对齐」：徽标的框左缘与下方日期、标题左缘对齐。
-                      // 之前试过用 margin-left:-15px 把框内的文字也拉齐，
-                      // 但框体会左移出内容栏，看起来反而更歪。
-                      // 这里改为把横向内边距收窄，让框内文字的错位小到不显眼。
-                      padding: '6px 9px',
-                      marginBottom: 'clamp(14px, 2.5vw, 28px)',
-                      flexShrink: 0,
-                    }}>
+                    <span className="hero-label">
+                      {/*
+                        徽标原本是「四边描边的方块 + 横向内边距」，
+                        框内文字必然比下方的日期、标题、摘要右移约 10-15px，
+                        无论怎么调内边距都对不齐 —— 带边框 + 横向内边距这个
+                        组合本身就不可能让文字和外面齐平。
+                        改用「左侧竖线 + 无横向内边距」，文字与全卡左缘严丝合缝，
+                        记号也还在；同时与文章正文 blockquote 的样式是同一套语言。
+                      */}
                       XIAOYU THOUGHT &amp; NOTES
                     </span>
                     <div style={{
@@ -397,7 +392,8 @@ export default function HeroSection() {
         <div style={{
           display: 'flex', justifyContent: 'center', alignItems: 'center',
           gap: '4px',
-          padding: '10px 0 20px',
+          // 上下留白收到最小，44px 的触控高度已由每个圆点的 padding 提供
+          padding: '0 0 4px',
         }}>
           {featuredArticles.map((_, i) => (
             <button
@@ -436,7 +432,7 @@ export default function HeroSection() {
             图标由桌面那套「鼠标轮廓 + 内点」换成一支细的向下箭头：
             触屏上根本没有鼠标，鼠标轮廓反而在传递错误暗示。
             颜色压到 text-muted 的一半透明，整体更轻，不与内容抢视线。 */}
-        <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', paddingBottom: '20px' }}>
           <button
             onClick={handleScrollDown}
             aria-label="向下滚动"
