@@ -7,6 +7,11 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+# actions-gh-pages 要往 gh-pages 分支推送产物。
+# GITHUB_TOKEN 默认只读，不声明这一项发布步骤必然失败。
+permissions:
+  contents: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
