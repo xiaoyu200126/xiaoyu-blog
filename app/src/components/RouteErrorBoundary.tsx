@@ -11,10 +11,9 @@ interface State {
 /**
  * 路由级错误边界。
  *
- * 懒加载场景下这一层不是可有可无的：`React.lazy` 的 chunk 一旦加载失败
- * （网络抖动、CDN 缓存不一致、重新部署后旧 chunk 变成 404），
- * 若没有边界，用户会永久卡在 Suspense 的骨架屏上，且控制台只有一条警告。
- * 这里把它变成可恢复的界面。
+ * 懒加载场景下不能省：chunk 加载失败（网络抖动、CDN 不一致、重新部署后
+ * 旧 chunk 变 404）时，没有这层用户会永久卡在 Suspense 骨架屏，
+ * 控制台只有一条警告。
  */
 export default class RouteErrorBoundary extends Component<Props, State> {
   state: State = { error: null }

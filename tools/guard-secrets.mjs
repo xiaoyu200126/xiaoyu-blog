@@ -1,20 +1,12 @@
 #!/usr/bin/env node
 /**
- * 仓库密钥/隐私守卫 —— 提交前的强制闸门
- *
- * 三道检查，任何一道不过就中止提交：
- *   1. 路径黑名单  .env / 私钥 / 凭据 / 证书 等绝不该进版本库的文件
+ * 仓库密钥/隐私守卫 —— 提交前的强制闸门。三道检查：
+ *   1. 路径黑名单  .env / 私钥 / 凭据 / 证书等绝不该进版本库的文件
  *   2. 内容特征    已暂存内容里的密钥格式（API key / token / 私钥 / 密码）
- *   3. 体积闸门    超大文件（防止又塞进一张 6MB+ 的死图）
+ *   3. 体积闸门    超大文件
  *
- * 用法：
- *   node tools/guard-secrets.mjs              检查已暂存内容（pre-commit 用）
- *   node tools/guard-secrets.mjs --staged     同上，显式写法
- *   node tools/guard-secrets.mjs --history    扫描全部历史提交（CI 用）
- *   node tools/guard-secrets.mjs --all        扫描工作区全部受版本控制的文件
- *   node tools/guard-secrets.mjs --self-test  跑注入反例自测
- *
- * 退出码：0 = 通过；1 = 拦截；2 = 脚本自身出错。
+ * 用法：node tools/guard-secrets.mjs [--staged|--history|--all|--self-test]
+ * 退出码：0 通过 / 1 拦截 / 2 脚本自身出错
  */
 
 import { execFileSync } from 'node:child_process'

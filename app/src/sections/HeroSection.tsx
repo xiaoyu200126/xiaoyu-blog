@@ -39,7 +39,7 @@ export default function HeroSection() {
     setCurrentSlide((prev) => (prev - 1 + totalSlides) % totalSlides)
   }, [totalSlides])
 
-  // ---- Desktop: Flickity ----
+  // 桌面轮播（Flickity）
   useEffect(() => {
     if (isMobile) return
     if (!carouselRef.current || featuredArticles.length === 0) return
@@ -86,7 +86,7 @@ export default function HeroSection() {
     }
   }, [featuredArticles.length, isMobile])
 
-  // ---- Mobile: auto-advance + touch swipe ----
+  // 手机卡片流（自动轮播 + 触摸滑动）
   useEffect(() => {
     if (!isMobile || totalSlides <= 1) return
 

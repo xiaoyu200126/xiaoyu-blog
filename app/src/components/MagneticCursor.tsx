@@ -1,16 +1,11 @@
 import { useEffect, useRef } from 'react'
 
 /**
- * 磁性光标 —— 现在只作为「可交互元素」的 hover 提示，不再替代系统光标。
+ * 磁性光标 —— 只作 hover 提示，不替代系统光标。
  *
- * 之前的三处问题：
- * 1. CSS 里用 `* { cursor: none }` 把它当成了光标的唯一替代品，
- *    正文上无法选字、输入框里没有插入光标。已移除该规则。
- * 2. requestAnimationFrame 永久循环：即使鼠标静止也每帧写 5 个样式属性，
- *    等于 60 次/秒的强制样式重算 + 重绘，且永不停止。
- *    现在改为：只在移动时运行，静止 700ms 后自动停机。
- * 3. mouseover / mouseout 的匿名监听器没有在 cleanup 里移除，
- *    路由切换会持续累积。
+ * 三条别再踩的：CSS 里不得用 `* { cursor: none }`（正文无法选字）；
+ * rAF 不得常驻（静止 700ms 停机，否则每帧强制重算）；
+ * mouseover/out 必须在 cleanup 里解绑，否则路由切换持续累积。
  */
 export default function MagneticCursor() {
   const cursorRef = useRef<HTMLDivElement>(null)

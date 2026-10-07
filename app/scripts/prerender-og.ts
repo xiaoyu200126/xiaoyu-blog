@@ -1,26 +1,15 @@
 /**
- * 构建后注入 Open Graph / Twitter Card 元信息，让微信、微博等
- * 分享出去时是一张有图有标题的卡片，而不是一条光秃秃的链接。
+ * 构建后预渲染 Open Graph 卡片 + 栏目/文章页。
  *
- * ── 为什么必须写在 HTML 里，不能靠前端 JS 动态注入 ──
- * 微信内置浏览器转发时，会模拟爬虫去抓取页面 <head>。
- * 这个爬虫**不执行 JavaScript**，抓到的就是服务端返回的原始 HTML。
- * 所以前端在 useEffect 里 createElement('meta') 注入的那套 og 标签
- * （见 ArticlePage.tsx），对爬虫而言等于不存在。
+ * 微信转发时内置浏览器会模拟爬虫抓 <head>，且不执行 JavaScript，所以
+ * og 标签必须写死在 HTML 里（前端 useEffect 动态注入的那套等于不存在）。
  *
- * ── 为什么纯静态站也能做到「每篇文章一张自己的卡片」 ──
- * 这是 GitHub Pages 这类纯静态托管上唯一的可行解法：
- * 为每个文章路由预生成一个真实的 index.html，把该篇的 og 标签写死在
- * <head> 里。爬虫访问 /article/<id> 时，GitHub Pages 会优先返回这个
- * 目录下的 index.html（而不是走 SPA fallback），拿到的就是正确卡片。
- * 这与 spa-fallback.mjs 生成 404.html 是两套互补机制：
- * 浏览器直接访问仍由前端路由接管；爬虫则命中预渲染的静态 HTML。
+ * 纯静态托管下让深链接返回 200 的唯一解法：为每条路由生成真实的
+ * <route>/index.html。爬虫和状态码看到它，浏览器端仍由前端路由接管。
+ * 与 spa-fallback.mjs 生成的 404.html 互补（后者带 404 状态码）。
  *
- * ── 微信的硬性要求 ──
- * · og:image 必须是绝对 URL（https 开头），相对路径抓不到
- * · 图片不能被防盗链拦截，Content-Type 必须是 image/*
- * · 尺寸建议 ≥300×300，横图 1200×630 通用兼容性最好
- * · 微信缓存卡片 24–72 小时，改动后需带随机参数重新抓取才看得到
+ * 微信硬性要求：og:image 须为 https 绝对 URL、Content-Type 为 image/*、
+ * 尺寸 ≥300×300；卡片缓存 24–72 小时，验证时加 ?v=随机数 强制重抓。
  */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -188,13 +177,11 @@ async function main() {
     console.log(`  📄 /article/${a.id}  ${a.title}`);
   }
 
-  // 4) 静态路由：为每个栏目预生成 index.html
+  // 静态路由：为每个栏目预生成 index.html
   //
-  // 为什么需要这一步：GitHub Pages 对不存在的路径只会回退到 404.html，
-  // 而回退响应**带 404 状态码**。浏览器能渲染（内容是对的），
-  // 但搜索引擎与链接预览会当成「页面不存在」——这正是本站深链接
-  // 长期被判 404 的原因。预生成目录后命中真实文件，状态码才是 200。
-  // 浏览器端仍由前端路由接管，这里只决定「爬虫与状态码看到什么」。
+  // GitHub Pages 对不存在的路径只回退到 404.html，而回退响应带 404 状态码 ——
+  // 浏览器能渲染，但搜索引擎与链接预览会判为「页面不存在」。
+  // 预生成目录后命中真实文件，状态码才是 200。
   for (const s of STATIC_ROUTES) {
     const tags = buildTags({
       title: s.title,
@@ -214,11 +201,7 @@ async function main() {
   console.log(`   ⚠️ 微信缓存卡片 24–72 小时，验证时给链接加 ?v=随机数 强制重抓\n`);
 }
 
-/**
- * 为一个路由写出 dist/<path>/index.html。
- * 以带 og 标签的首页 HTML 作模板，保留同源脚本/样式引用，
- * 保证浏览器端的 SPA 行为完全不变。
- */
+/** 为一个路由写出 dist/<path>/index.html，以首页 HTML 为模板保留同源资源引用 */
 function writeRouteHtml(
   routePath: string,
   title: string,

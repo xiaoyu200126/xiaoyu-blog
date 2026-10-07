@@ -1,15 +1,10 @@
 /**
- * 图片压缩：public/images 下的位图统一重编码。
+ * 图片压缩：public/images 下的位图统一重编码（q78 + mozjpeg + progressive）。
+ * 原图合计 692 KB，polaroid-1/2 各占 184/187 KB 但只做小尺寸展示。
+ * 原地覆盖，用法：npm run images
  *
- * 为什么需要：仓库里 6 张图原本合计 692 KB，其中 polaroid-1/2 各 184/187 KB，
- * 而它们在页面上只是小尺寸展示。JPEG 重新编码到 q78 + mozjpeg + progressive，
- * 肉眼几乎无差别，体积能降一半以上。
- *
- * 用法：npm run images
- * 注意：脚本会原地覆盖 public/images 下的文件。
- *
- * ⚠️ 不要用系统自带的 `convert` —— Windows 的 C:\Windows\System32\convert.exe
- * 是 FAT→NTFS 文件系统转换器，不是 ImageMagick，用它处理图片后果严重。
+ * ⚠️ 不要用系统 `convert` —— Windows 的 System32\convert.exe 是
+ * FAT→NTFS 转换器，不是 ImageMagick。
  */
 import fs from 'node:fs'
 import path from 'node:path'

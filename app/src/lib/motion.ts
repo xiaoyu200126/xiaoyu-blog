@@ -1,15 +1,11 @@
 /**
- * 动效门 —— 让 GSAP 尊重系统的「减少动态效果」设置。
+ * 动效门 —— 让 GSAP 尊重系统「减少动态效果」设置。
  *
- * 问题：`@media (prefers-reduced-motion: reduce)` 只对 CSS 动画/过渡有效。
- * GSAP 是 JS 直接写 inline style，完全不受 CSS 媒体查询约束 ——
- * 开启「减少动态效果」的用户，CSS 动画停了，GSAP 的位移与淡入照跑。
+ * `prefers-reduced-motion` 只约束 CSS 动画，GSAP 直接写 inline style 不受限。
+ * 这里拦截 fromTo/to/from：开启减少动态效果时直接落到终态（内容立即可见），
+ * 而不是不执行（那会让内容永久隐形）。
  *
- * 做法：在包装层拦截 fromTo/to/from，开启减少动态效果时**直接落到终态**
- * （内容立刻可见、没有任何位移），而不是干脆不执行（那会让内容永久隐形）。
- *
- * 用法：把 `import { gsap } from 'gsap'` 换成
- * `import { gsap } from '../lib/motion'`，调用点一行都不用改。
+ * 用法：把 `import { gsap } from 'gsap'` 换成 `import { gsap } from '../lib/motion'`。
  */
 import { gsap as realGsap } from 'gsap'
 

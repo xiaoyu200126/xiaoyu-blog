@@ -16,12 +16,10 @@ export default function ArticlePage() {
   const contentRef = useRef<HTMLDivElement>(null)
   const heroRef = useRef<HTMLDivElement>(null)
 
-  // Dynamic read time
   const dynamicReadTime = article
     ? `${Math.max(1, Math.ceil(article.content.length / 400))} min read`
     : ''
 
-  // Prev / Next article
   const sortedArticles = [...articles].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   const currentIndex = sortedArticles.findIndex(a => a.id === id)
   const prevArticle = currentIndex > 0 ? sortedArticles[currentIndex - 1] : null
@@ -129,7 +127,7 @@ export default function ArticlePage() {
       try {
         await navigator.share(shareData)
       } catch {
-        // User cancelled
+        // 用户取消分享，非错误
       }
     } else {
       try {

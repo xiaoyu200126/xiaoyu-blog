@@ -1,16 +1,14 @@
 /**
- * SPA 深链接回退
+ * SPA 深链接回退：把 dist/index.html 复制成 dist/404.html。
  *
- * GitHub Pages 是纯静态托管：它只按真实文件路径查找，客户端路由
- * （/archives、/article/xxx、/videos…）在服务器上并不存在对应文件，
- * 于是直接返回 GitHub 自己的 404 页面 —— 站内跳转正常，外部点进来全断。
+ * GitHub Pages 只按真实文件路径查找，客户端路由在服务器上不存在对应文件。
+ * 唯一钩子是 404.html —— 未命中的路径会返回它，浏览器拿到 SPA 骨架后
+ * 由 React Router 根据 location 渲染。
  *
- * 平台提供的唯一钩子是 404.html：任何未命中的路径都会返回它。
- * 所以在构建产物里，把 index.html 复制一份成 404.html，
- * 让浏览器拿到 SPA 骨架后由 React Router 根据 location 渲染对应页面。
+ * 必须构建后复制：产物文件名带哈希，静态手写无从预知。
  *
- * 注意：不能手写一份静态的 public/404.html，因为构建后的资源文件名带
- * 哈希（如 /assets/index-XXXX.js），静态文件无从预知。必须在构建后复制。
+ * 注意：404 响应带 404 状态码，浏览器能渲染但 SEO 不认。
+ * 需要 200 状态的栏目/文章页由 prerender-og.ts 预生成为真实目录。
  */
 import { copyFileSync, existsSync } from 'node:fs'
 import { join, resolve } from 'node:path'

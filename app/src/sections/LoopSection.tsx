@@ -98,7 +98,7 @@ export default function LoopSection() {
                 <img
                   src={article.image}
                   alt={article.title}
-                  // 首屏之下，懒加载
+                  // 在首屏之下，可安全懒加载
                   loading="lazy"
                   decoding="async"
                   style={{

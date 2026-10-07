@@ -24,7 +24,6 @@ interface ArticleMeta {
   featured?: boolean
 }
 
-// Read all .md files
 const files = fs.readdirSync(POSTS_DIR).filter(f => f.endsWith('.md')).sort()
 
 if (files.length === 0) {

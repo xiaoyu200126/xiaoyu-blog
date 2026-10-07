@@ -1,19 +1,12 @@
 #!/usr/bin/env node
 /**
- * 死代码分析器
+ * 死代码分析器：从 app/src/main.tsx 沿 import 做可达性分析，
+ * 列出走不到的文件，并核对 package.json 里没被 import 过的依赖。
  *
- * 从真实入口（app/src/main.tsx）出发，沿 import 关系做可达性分析，
- * 列出 src/ 下所有「从入口永远走不到」的文件，并顺带核对 package.json
- * 里有没有从没被 import 过的依赖。
+ * 用 TypeScript 编译器 API 而非正则：正则会把注释掉的代码、字符串里的路径
+ * 一并算进去，结论不可复现。
  *
- * 为什么要用 TypeScript 编译器 API 而不是正则：
- * 正则扫 import 会把注释掉的代码、字符串里的路径、
- * 甚至守卫脚本自己写的正则全算进去，得出「看起来很全其实很假」的结果。
- * ts.createSourceFile 走的是真正的语法树，结论可复现。
- *
- * 用法：
- *   node tools/find-dead-code.mjs            报告死代码（不改文件）
- *   node tools/find-dead-code.mjs --check    有死代码就 exit 1（CI 用）
+ * 用法：node tools/find-dead-code.mjs [--check]（--check 有死代码则 exit 1）
  */
 
 import { readFileSync, existsSync, readdirSync, statSync } from 'node:fs'

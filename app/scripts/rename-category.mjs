@@ -1,8 +1,6 @@
 /**
- * 把 markdown 源里的 category 分类名改名。
- *
- * articles.ts 是由 content/posts/*.md 生成的，改分类必须改源 markdown，
- * 否则下次 npm run generate 会把手改覆盖掉。
+ * 改 markdown 源里的 category 分类名。
+ * articles.ts 由 content/posts/*.md 生成，改分类必须改源，否则会被覆盖。
  *
  * 用法：node scripts/rename-category.mjs "<旧名>" "<新名>"
  *        node scripts/rename-category.mjs --list

@@ -121,8 +121,7 @@ fs.mkdirSync(path.dirname(OUT_FILE), { recursive: true })
 fs.writeFileSync(OUT_FILE, xml, 'utf-8')
 console.log(`已生成 public/feed.xml（${posts.length} 篇文章）`)
 
-// ── 同时产出 sitemap.xml 与 robots.txt ────────────────────────────
-// 之前两者都缺失，搜索引擎只能靠爬链接猜测站点结构。
+// 同时产出 sitemap.xml 与 robots.txt（此前两者都缺失，搜索引擎只能爬链接猜结构）
 const STATIC_ROUTES = [
   { path: '/', priority: '1.0', changefreq: 'weekly' },
   { path: '/archives', priority: '0.9', changefreq: 'weekly' },
