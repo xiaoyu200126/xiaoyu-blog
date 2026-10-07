@@ -37,6 +37,25 @@ const SITE_URL = process.env.SITE_URL || 'https://xiaoyu-blog.cn';
 const SITE_NAME = 'XIAOYU的随笔';
 const DEFAULT_OG_IMAGE = '/og/blog_cover_ALL_IN_AI.jpg';
 
+/**
+ * 需要预生成目录的静态路由。
+ *
+ * 必须与 App.tsx 的路由表保持一致——新增页面时这里要同步加，
+ * 否则该路由会退回 404 状态码。路由表见 src/App.tsx。
+ * 标题文案与 MobileMenu / Footer 保持一致。
+ */
+const STATIC_ROUTES: { path: string; title: string; desc: string; image?: string }[] = [
+  { path: '/about', title: '关于XIAOYU', desc: '我是谁，这个博客为什么存在，以及接下来打算写些什么。' },
+  { path: '/archives', title: '精选文章', desc: '全部文章的归档与标签索引，按时间倒序排列。' },
+  { path: '/life', title: '生活碎碎念', desc: '技术之外的思考。关于城市、关于摄影、关于那些无关紧要但真实存在的感受。' },
+  { path: '/pragmatism-connectivism', title: '思考随笔', desc: '记录我关于学习方法、认知边界与知识管理的思考。' },
+  { path: '/brand-ai', title: 'BRAND & AI', desc: 'BRAND ALL IN AI 的实践记录：从认知外包到认知卸载。' },
+  { path: '/friends', title: '晓宇友人账', desc: '朋友们的小站，逛逛看。' },
+];
+
+/** 构建产物首页 HTML，writeRouteHtml 以它为模板（模块作用域，供函数访问） */
+let indexHtml = '';
+
 /** HTML 属性转义：标题/摘要里出现引号或尖括号会截断整个 meta 标签 */
 const esc = (s: string) =>
   String(s ?? '')
@@ -118,7 +137,7 @@ async function main() {
     process.exit(1);
   }
 
-  const indexHtml = readFileSync(indexPath, 'utf-8');
+  indexHtml = readFileSync(indexPath, 'utf-8');
   const base = readBaseMeta(indexHtml);
 
   console.log(`\n【分享卡片】文章数: ${articles.length}`);
@@ -165,25 +184,57 @@ async function main() {
       tags: a.tags,
     });
 
-    // 用带 og 标签的首页 HTML 作模板：保留同源脚本/样式引用，
-    // 浏览器端仍由前端路由接管渲染，预渲染只解决爬虫看到什么。
-    const dir = join(DIST, 'article', a.id);
-    mkdirSync(dir, { recursive: true });
-    const html = indexHtml
-      .replace(/<title>[^<]*<\/title>/i, `<title>${esc(a.title)} — ${esc(SITE_NAME)}</title>`)
-      .replace(
-        /<meta\s+name=["']description["']\s+content=["'][^"']*["']\s*\/?>/i,
-        `<meta name="description" content="${esc(clamp(a.excerpt, 110))}" />`
-      );
-    writeFileSync(join(dir, 'index.html'), injectTags(html, tags), 'utf-8');
+    writeRouteHtml(`/article/${a.id}`, a.title, a.excerpt, tags, coverUrl);
     console.log(`  📄 /article/${a.id}  ${a.title}`);
+  }
+
+  // 4) 静态路由：为每个栏目预生成 index.html
+  //
+  // 为什么需要这一步：GitHub Pages 对不存在的路径只会回退到 404.html，
+  // 而回退响应**带 404 状态码**。浏览器能渲染（内容是对的），
+  // 但搜索引擎与链接预览会当成「页面不存在」——这正是本站深链接
+  // 长期被判 404 的原因。预生成目录后命中真实文件，状态码才是 200。
+  // 浏览器端仍由前端路由接管，这里只决定「爬虫与状态码看到什么」。
+  for (const s of STATIC_ROUTES) {
+    const tags = buildTags({
+      title: s.title,
+      desc: s.desc,
+      image: `${SITE_URL}${s.image ?? DEFAULT_OG_IMAGE}`,
+      url: `${SITE_URL}${s.path}`,
+    });
+    writeRouteHtml(s.path, s.title, s.desc, tags, `${SITE_URL}${s.image ?? DEFAULT_OG_IMAGE}`);
+    console.log(`  📁 ${s.path}  ${s.title}`);
   }
 
   console.log(
     `\n✅ 分享卡片已生成：全站 1 张 + 每篇文章各 1 张（共 ${articles.length + 1} 张）`
   );
+  console.log(`   栏目页预渲染 ${STATIC_ROUTES.length} 个（状态码 200，深链接不再 404）`);
   console.log(`   封面目录 dist/og/（${coverMap.size} 张，1200×630）`);
   console.log(`   ⚠️ 微信缓存卡片 24–72 小时，验证时给链接加 ?v=随机数 强制重抓\n`);
+}
+
+/**
+ * 为一个路由写出 dist/<path>/index.html。
+ * 以带 og 标签的首页 HTML 作模板，保留同源脚本/样式引用，
+ * 保证浏览器端的 SPA 行为完全不变。
+ */
+function writeRouteHtml(
+  routePath: string,
+  title: string,
+  desc: string,
+  tags: string,
+  _coverUrl: string
+) {
+  const dir = join(DIST, ...routePath.split('/').filter(Boolean));
+  mkdirSync(dir, { recursive: true });
+  const html = indexHtml
+    .replace(/<title>[^<]*<\/title>/i, `<title>${esc(title)} — ${esc(SITE_NAME)}</title>`)
+    .replace(
+      /<meta\s+name=["']description["']\s+content=["'][^"']*["']\s*\/?>/i,
+      `<meta name="description" content="${esc(clamp(desc, 110))}" />`
+    );
+  writeFileSync(join(dir, 'index.html'), injectTags(html, tags), 'utf-8');
 }
 
 await main();

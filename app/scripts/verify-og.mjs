@@ -13,7 +13,8 @@
  * 用法：node scripts/verify-og.mjs [distDir]
  */
 import { readFileSync, existsSync, statSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const DIST = process.argv[2] || 'dist';
 
@@ -41,6 +42,13 @@ function collectPages() {
       if (!d.isDirectory()) continue;
       pages.push({ name: `/article/${d.name}/`, file: join(articleDir, d.name, 'index.html') });
     }
+  }
+  // 栏目页：dist 根下的每一个目录都是一条静态路由，
+  // 漏生成会退回 GitHub Pages 的 404 状态码，所以一并校验。
+  for (const d of readdirSync(DIST, { withFileTypes: true })) {
+    if (!d.isDirectory() || d.name === 'article' || d.name === 'og') continue;
+    const f = join(DIST, d.name, 'index.html');
+    if (existsSync(f)) pages.push({ name: `/${d.name}/`, file: f });
   }
   return pages;
 }
@@ -103,4 +111,32 @@ console.log(
     ? `\n✅ 全部 ${pages.length} 个页面的 og 三件套均合法`
     : `\n❌ ${fail}/${pages.length} 个页面存在问题`
 );
+
+// 反向断言：App.tsx 里声明了路由、但产物里没有对应目录的，必须报错。
+// 没有这一步的话，新增页面忘了同步到 prerender-og.ts 的 STATIC_ROUTES，
+// CI 依然是绿的，而线上那条链接会是 404 状态码。
+// 从脚本自身位置推导 App.tsx，而不是从 DIST 往上找 ——
+// DIST 是可传参的，用 join(DIST, '..', ...) 在非默认路径下会找不到文件。
+const scriptDir = dirname(fileURLToPath(import.meta.url));
+const appTsPath = join(scriptDir, '..', 'src', 'App.tsx');
+if (!existsSync(appTsPath)) {
+  console.log(`\n⚠️  找不到 ${appTsPath}，跳过路由覆盖检查`);
+  process.exit(fail === 0 ? 0 : 1);
+}
+const appTs = readFileSync(appTsPath, 'utf-8');
+const routePaths = [...appTs.matchAll(/<Route\s+path="([^"]+)"/g)]
+  .map((m) => m[1])
+  // '/' 是 index.html，'/article/:id' 是动态路由由文章数据驱动，
+  // '*' 是 404 页——三者都不在 dist 里以目录形式出现。
+  .filter((p) => p !== '/' && !p.includes(':') && p !== '*');
+
+const missing = routePaths.filter((p) => !existsSync(join(DIST, ...p.split('/'), 'index.html')));
+if (missing.length) {
+  console.log(`\n❌ 路由表里有 ${missing.length} 条路由未预渲染，深链接会返回 404 状态码：`);
+  for (const p of missing) console.log(`   ${p}`);
+  console.log('   请把它们补进 prerender-og.ts 的 STATIC_ROUTES。');
+  process.exit(1);
+}
+console.log(`✅ 路由表中的 ${routePaths.length} 条静态路由均已预渲染`);
+
 process.exit(fail === 0 ? 0 : 1);
