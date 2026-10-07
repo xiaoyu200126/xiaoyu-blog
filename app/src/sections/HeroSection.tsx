@@ -47,32 +47,38 @@ export default function HeroSection() {
     const timer = setTimeout(() => {
       if (!carouselRef.current) return
 
-      flktyRef.current = new Flickity(carouselRef.current, {
-        cellAlign: 'left',
-        contain: true,
-        prevNextButtons: false,
-        pageDots: false,
-        autoPlay: 6000,
-        pauseAutoPlayOnHover: true,
-        wrapAround: featuredArticles.length > 1,
-        adaptiveHeight: false,
-        setGallerySize: true,
-      })
+      try {
+        flktyRef.current = new Flickity(carouselRef.current, {
+          cellAlign: 'left',
+          contain: true,
+          prevNextButtons: false,
+          pageDots: false,
+          autoPlay: 6000,
+          pauseAutoPlayOnHover: true,
+          wrapAround: featuredArticles.length > 1,
+          adaptiveHeight: false,
+          setGallerySize: true,
+        })
 
-      flktyRef.current.on('change', (index: number) => {
-        setCurrentSlide(index)
-      })
+        flktyRef.current.on('change', (index: number) => {
+          setCurrentSlide(index)
+        })
 
-      setIsReady(true)
-
-      // 字体是异步加载的（见 index.html 的 media="print" 方案）。
-      // Flickity 在上面初始化时量的是回退字体的尺寸，字体换上后文字重排、
-      // cell 变宽，若不通知它重新布局，被选中的 cell 会停在 translateX(100%)
-      // —— 整个 Hero 滑出屏幕，页面上看起来就是一片空白。
-      const relayout = () => flktyRef.current?.resize()
-      document.fonts?.ready.then(relayout).catch(() => {})
-      window.addEventListener('resize', relayout)
-      fontsReadyCleanup.current = () => window.removeEventListener('resize', relayout)
+        // 字体是异步加载的（见 index.html 的 media="print" 方案）。
+        // Flickity 在上面初始化时量的是回退字体的尺寸，字体换上后文字重排、
+        // cell 变宽，若不通知它重新布局，被选中的 cell 会停在 translateX(100%)
+        // —— 整个 Hero 滑出屏幕，页面上看起来就是一片空白。
+        const relayout = () => flktyRef.current?.resize()
+        document.fonts?.ready.then(relayout).catch(() => {})
+        window.addEventListener('resize', relayout)
+        fontsReadyCleanup.current = () => window.removeEventListener('resize', relayout)
+      } catch (err) {
+        // 轮播初始化失败时必须让内容显示出来：容器是 opacity:isReady?1:0，
+        // 一旦这里吞掉异常不置位，整个 Hero 就是永久空白且无任何报错。
+        console.error('[HeroSection] Flickity 初始化失败，退回静态首屏:', err)
+      } finally {
+        setIsReady(true)
+      }
     }, 100)
 
     return () => {
