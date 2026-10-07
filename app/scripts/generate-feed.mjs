@@ -111,7 +111,7 @@ const xml = `<?xml version="1.0" encoding="UTF-8"?>
     <description>一间生活，旅拍摄影。${esc(AUTHOR)}的随笔记录发生过的事、遇见过的人、去过的地方。</description>
     <language>zh-cn</language>
     <lastBuildDate>${rfc822(posts[0].date)}</lastBuildDate>
-    <generator>落笔阁 build</generator>
+    <generator>XIAOYU的随笔</generator>
 ${items}
   </channel>
 </rss>

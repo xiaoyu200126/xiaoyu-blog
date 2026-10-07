@@ -1,4 +1,4 @@
-# 落笔阁（XIAOYU 的随笔）
+# XIAOYU的随笔
 
 个人博客站点。Vite + React 19 + TypeScript + Tailwind CSS v3，纯静态部署到 GitHub Pages / 自定义域名。
 

@@ -7,7 +7,7 @@
 
 @layer base {
   :root {
-    /* 落笔阁 Paper Texture Colors */
+    /* Paper Texture Colors */
     --color-bg: #f5f0e8;
     --color-bg-secondary: #ede7db;
     --color-bg-warm: #f0ead8;
@@ -27,7 +27,7 @@
     --color-border: #d4c9b8;
     --color-border-light: #e0d8cc;
 
-    /* 落笔阁 Typography */
+    /* Typography */
     /* 两支 display 字体，字库和气质完全不变，只是顺序不同：
        - display       Playfair 打头，用于纯拉丁元素（XIAOYU 标识、ARCHIVES 之类
                         标签、日期）。保留它的高对比线条与编辑感。
@@ -134,7 +134,7 @@
   }
 }
 
-/* Article typography - 落笔阁 editorial style */
+/* Article typography - editorial style */
 .article-content {
   max-width: 720px;
   margin: 0 auto;
@@ -286,7 +286,7 @@
     font-family: var(--font-sans);
   }
 
-  /* 落笔阁 style utilities */
+  /* style utilities */
   .text-accent {
     color: var(--color-accent);
   }
@@ -299,7 +299,7 @@
     border-color: var(--color-border);
   }
 
-  /* Section label - 落笔阁 style */
+  /* Section label */
   .badge-month {
     font-family: var(--font-display);
     font-size: 11px;
