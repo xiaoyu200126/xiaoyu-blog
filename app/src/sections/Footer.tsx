@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { NAV_ITEMS } from '../data/nav'
 
 export default function Footer() {
   return (
@@ -105,15 +106,7 @@ export default function Footer() {
           borderTop: '1px solid var(--color-border)',
         }}
       >
-        {[
-          { label: '首页', path: '/' },
-          { label: '生活碎碎念', path: '/life' },
-          { label: '思考随笔', path: '/pragmatism-connectivism' },
-          { label: 'BRAND & AI', path: '/brand-ai' },
-          { label: '晓宇友人账', path: '/friends' },
-          { label: '关于XIAOYU', path: '/about' },
-          { label: '精选文章', path: '/archives' },
-        ].map((item, index, arr) => (
+        {NAV_ITEMS.map((item, index, arr) => (
           <span className="footer-nav-item" key={item.path}>
             <Link
               to={item.path}

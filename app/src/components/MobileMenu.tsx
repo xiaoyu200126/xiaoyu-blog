@@ -1,21 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { gsap } from '../lib/motion'
+import { NAV_ITEMS } from '../data/nav'
 
 interface MobileMenuProps {
   isOpen: boolean
   onClose: () => void
 }
-
-const menuLinks = [
-  { label: '首页', path: '/' },
-  { label: '生活碎碎念', path: '/life' },
-  { label: '思考随笔', path: '/pragmatism-connectivism' },
-  { label: 'BRAND & AI', path: '/brand-ai' },
-  { label: '晓宇友人账', path: '/friends' },
-  { label: '关于XIAOYU', path: '/about' },
-  { label: '精选文章', path: '/archives' },
-]
 
 export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -102,7 +93,7 @@ export default function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
         Close
       </button>
 
-      {menuLinks.map((link, i) => (
+      {NAV_ITEMS.map((link, i) => (
         <Link
           key={link.path}
           to={link.path}
