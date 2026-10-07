@@ -5,79 +5,89 @@ export default function Footer() {
     <footer
       style={{
         position: 'relative',
-        minHeight: '50vh',
         backgroundColor: 'var(--color-bg)',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
         alignItems: 'center',
-        padding: 'clamp(60px, 8vw, 100px) 40px',
+        padding: 'clamp(72px, 10vw, 120px) 40px 0',
         borderTop: '1px solid var(--color-border)',
       }}
     >
-      {/* Subscribe section */}
+      {/* 落款 —— 原来这里是「订阅 RSS」。RSS 本身仍在运行，但它是给少数人的工具，
+          不该占掉页脚最显眼的位置；降级为导航行里的小字链接，见下。 */}
       <div
-        className="footer-subscribe"
+        className="footer-signoff"
         style={{
           textAlign: 'center',
-          maxWidth: '500px',
+          maxWidth: '560px',
           width: '100%',
-          marginBottom: 'clamp(60px, 8vw, 100px)',
+          marginBottom: 'clamp(56px, 8vw, 88px)',
         }}
       >
-        <h3
+        {/* 居中的短横线：落款的视觉锚点。不用通栏分隔线，
+            那样会和 footer 顶边那条 border 打架，视觉上像两条线。 */}
+        <div
+          aria-hidden="true"
           style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(20px, 2vw, 28px)',
-            fontWeight: 700,
-            marginBottom: '12px',
-            color: 'var(--color-text)',
-            letterSpacing: '0.05em',
+            width: '32px',
+            height: '1px',
+            backgroundColor: 'var(--color-accent)',
+            opacity: 0.5,
+            margin: '0 auto',
+            marginBottom: '32px',
           }}
-        >
-          让我们成为追求智慧路上的伙伴
-        </h3>
+        />
+
         <p
           style={{
-            fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
-            fontSize: '15px',
-            color: 'var(--color-text-muted)',
-            marginBottom: '32px',
-            lineHeight: 1.7,
+            fontFamily: 'var(--font-display)',
+            fontSize: 'clamp(19px, 2.2vw, 26px)',
+            fontWeight: 400,
+            color: 'var(--color-text)',
+            letterSpacing: '0.02em',
+            lineHeight: 1.6,
+            marginBottom: '28px',
           }}
         >
-          新文章发布时，订阅 RSS，第一时间送到你的阅读器。
+          记录发生过的事、遇见过的人、去过的地方
         </p>
 
-        {/* 原来这里是一个「输入邮箱订阅更新提醒」的表单：提交后只写进
-            localStorage，既不发送邮件也不做任何后续动作，却显示「订阅成功」。
-            那是个不产生任何结果的入口，还会收集一个毫无用途的邮箱。
-            换成 RSS —— 博客读者真正需要的更新方式，且不需要后端。 */}
-        <a
-          href="/feed.xml"
+        {/* 署名与年份分列两端。堆叠成两行更像版权声明，
+            左右分开才有「落款」的重量感。 */}
+        <div
           style={{
-            display: 'inline-flex',
+            display: 'flex',
             alignItems: 'center',
-            gap: '10px',
-            padding: '12px 26px',
-            border: '1px solid var(--color-border)',
-            color: 'var(--color-text)',
-            fontFamily: 'var(--font-display)',
-            fontSize: '12px',
-            letterSpacing: '0.15em',
-            transition: 'border-color 0.3s ease, color 0.3s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = 'var(--color-accent)'
-            e.currentTarget.style.color = 'var(--color-accent)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'var(--color-border)'
-            e.currentTarget.style.color = 'var(--color-text)'
+            justifyContent: 'space-between',
+            gap: '20px',
+            maxWidth: '280px',
+            margin: '0 auto',
           }}
         >
-          订阅 RSS
-        </a>
+          <span
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: '11px',
+              fontWeight: 400,
+              color: 'var(--color-text-muted)',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+            }}
+          >
+            XIAOYU
+          </span>
+          <span
+            style={{
+              fontFamily: "'Crimson Pro', serif",
+              fontSize: '12px',
+              color: 'var(--color-text-muted)',
+              letterSpacing: '0.12em',
+              opacity: 0.7,
+            }}
+          >
+            {new Date().getFullYear()}
+          </span>
+        </div>
       </div>
 
       {/* Footer links —— 手机端改用两列网格。
@@ -129,31 +139,38 @@ export default function Footer() {
         ))}
       </div>
 
-      {/* Copyright */}
+      {/* 版权行 —— 署名与年份已在落款里出现过，这里不重复。 */}
       <div style={{ textAlign: 'center', padding: '20px 40px 40px' }}>
         <p
           style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '11px',
-            fontWeight: 400,
-            color: 'var(--color-text-muted)',
-            letterSpacing: '0.15em',
-            textTransform: 'uppercase',
-          }}
-        >
-          XIAOYU &copy; {new Date().getFullYear()} THOUGHT & NOTES
-        </p>
-        <p
-          style={{
-            fontFamily: "'Crimson Pro', serif",
+            fontFamily: "'Crimson Pro', 'Noto Serif SC', serif",
             fontSize: '12px',
             color: 'var(--color-text-muted)',
-            letterSpacing: '0.02em',
-            marginTop: '8px',
+            letterSpacing: '0.06em',
             opacity: 0.6,
+            margin: 0,
           }}
         >
           均为原创，请勿转载
+          <span style={{ margin: '0 10px', opacity: 0.5 }}>·</span>
+          {/* RSS 从主视觉降级到这里：feed.xml 仍在正常生成，链接照常可用，
+              只是不再占据页脚最显眼的位置。 */}
+          <a
+            href="/feed.xml"
+            style={{
+              fontFamily: 'var(--font-sans)',
+              fontSize: '11px',
+              letterSpacing: '0.14em',
+              textTransform: 'uppercase',
+              color: 'var(--color-text-muted)',
+              textDecoration: 'none',
+              transition: 'color 0.3s ease',
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-accent)' }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-text-muted)' }}
+          >
+            RSS
+          </a>
         </p>
       </div>
     </footer>

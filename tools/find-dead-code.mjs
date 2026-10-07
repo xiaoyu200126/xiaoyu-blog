@@ -189,6 +189,9 @@ const NON_IMPORT_REFS = new Set([
   // scripts/optimize-images.mjs 用的是 createRequire(...)(...) 拿 sharp，
   // 不是静态 import，本工具的 import 分析看不到它。
   'sharp',
+  // scripts/shoot.mjs 用 playwright-core 出视觉快照。scripts/ 不在 src/
+  // 的可达性分析范围内，所以它会被误报成「无引用依赖」。
+  'playwright-core',
 ])
 
 const pkg = JSON.parse(readFileSync(join(appDir, 'package.json'), 'utf8'))

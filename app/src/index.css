@@ -406,8 +406,14 @@
       display: none;
     }
 
-    .footer-subscribe {
-      margin-bottom: 40px;
+    /* 7 个链接填两列会剩一个孤零零挂在左边，让它跨两列居中 */
+    .footer-nav-item:last-child {
+      grid-column: 1 / -1;
+    }
+
+    /* 落款：主句在窄屏折行后行距要更松，不然两行挤在一起 */
+    .footer-signoff p {
+      line-height: 1.8;
     }
   }
 
