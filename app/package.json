@@ -14,7 +14,8 @@
     "build": "tsc -b && vite build",
     "postbuild": "node scripts/spa-fallback.mjs && npx tsx scripts/prerender-og.ts",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "shoot": "node scripts/shoot.mjs"
   },
   "dependencies": {
     "aos": "^2.3.4",
@@ -45,6 +46,7 @@
     "gray-matter": "^4.0.3",
     "kimi-plugin-inspect-react": "^1.0.3",
     "multer": "^2.1.1",
+    "playwright-core": "^1.63.0",
     "postcss": "^8.5.6",
     "sharp": "^0.35.5",
     "tailwindcss": "^3.4.19",

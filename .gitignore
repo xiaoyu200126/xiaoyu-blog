@@ -18,6 +18,7 @@ desktop.ini
 node_modules/
 dist/
 dist-ssr/
+dist-shots/
 build/
 *.tgz
 *.log
