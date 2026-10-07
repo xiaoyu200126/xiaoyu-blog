@@ -59,8 +59,10 @@ export default function Footer() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            gap: '20px',
-            maxWidth: '280px',
+            gap: '16px',
+            // 280px 时 space-between 把两端撑得太开，署名与年份看着不像一组。
+            // 收到 150px 刚好：仍是左右分列，但视觉上紧挨着。
+            maxWidth: '150px',
             margin: '0 auto',
           }}
         >
