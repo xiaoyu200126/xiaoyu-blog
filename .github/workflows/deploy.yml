@@ -1,9 +1,10 @@
 name: Deploy to GitHub Pages
 
 on:
-  # 自动部署已关闭，由 deploy2.py 和 Netlify 负责
-  # push:
-  #   branches: [main, master]
+  # push 到 main 即自动部署。
+  # workflow_dispatch 保留，便于需要时手动重跑。
+  push:
+    branches: [main, master]
   workflow_dispatch:
 
 jobs:

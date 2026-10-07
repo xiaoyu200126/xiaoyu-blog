@@ -103,10 +103,13 @@ featured: true            # 可选，是否进精选
 
 ## 部署
 
-`main` 分支的 `.github/workflows/deploy.yml` **手动触发**（`workflow_dispatch`）。
-自动部署已关闭，实际发布由本地脚本 + Netlify 负责。
+`main` 分支的 `.github/workflows/deploy.yml`：**push 到 main 即自动部署**，
+同时保留 `workflow_dispatch` 以便手动重跑。
 
 部署时会把 `app/dist` 发布到 GitHub Pages，CNAME 固定为 `xiaoyu-blog.cn`。
+
+> 注：线上实际由 GitHub Pages 承载（响应头 `Server: GitHub.com`）。
+> 本仓库不含 Netlify 配置，线上也没有 Netlify 在服务。
 
 ---
 
